@@ -47,6 +47,22 @@ export const register = async (data: Registration): Promise<AuthResponse> => {
 
   return response;
 };
+export const checkUser = async (data: Registration): Promise<AuthResponse> => {
+  const authUrl = import.meta.env.VITE_AUTH_URL;
+
+  // Optional: Ensure there's a trailing slash if needed
+  const url = authUrl.endsWith('/')
+    ? `${authUrl}auth/CheckUserName`
+    : `${authUrl}/auth/CheckUserName`;
+
+  const response = await apiPost<AuthResponse>({
+    url,
+    data,
+  });
+
+  return response;
+};
+
 
 /**
  * Get current user
