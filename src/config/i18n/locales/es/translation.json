@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Aplicación React Empresarial",
+    "description": "Una aplicación React escalable y lista para producción"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ha ocurrido un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "submit": "Enviar",
+    "retry": "Reintentar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "create": "Crear",
+    "add": "Añadir",
+    "remove": "Eliminar",
+    "update": "Actualizar",
+    "select": "Seleccionar",
+    "required": "Obligatorio"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "signup": "Registrarse",
+    "forgotPassword": "Olvidé mi contraseña",
+    "resetPassword": "Restablecer contraseña",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "email": "Correo electrónico",
+    "rememberMe": "Recordarme",
+    "signIn": "Iniciar sesión",
+    "signInWith": "Iniciar sesión con {{provider}}",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "createAccount": "Crear cuenta"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel de control",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "users": "Usuarios",
+    "about": "Acerca de"
+  },
+  "errors": {
+    "general": "Algo salió mal",
+    "notFound": "Página no encontrada",
+    "unauthorized": "No estás autorizado para ver esta página",
+    "forbidden": "Acceso prohibido",
+    "serverError": "Error del servidor",
+    "offline": "Estás desconectado",
+    "tryAgain": "Por favor, inténtalo de nuevo"
+  }
+}

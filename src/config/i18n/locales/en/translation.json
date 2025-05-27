@@ -1,0 +1,61 @@
+{
+  "app": {
+    "title": "Enterprise React App",
+    "description": "A scalable and production ready React application"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "edit": "Edit",
+    "delete": "Delete",
+    "submit": "Submit",
+    "retry": "Retry",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "create": "Create",
+    "add": "Add",
+    "remove": "Remove",
+    "update": "Update",
+    "select": "Select",
+    "required": "Required"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "rememberMe": "Remember Me",
+    "signIn": "Sign In",
+    "signInWith": "Sign In with {{provider}}",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "createAccount": "Create Account"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "users": "Users",
+    "about": "About"
+  },
+  "errors": {
+    "general": "Something went wrong",
+    "notFound": "Page not found",
+    "unauthorized": "You are not authorized to view this page",
+    "forbidden": "Access forbidden",
+    "serverError": "Server error",
+    "offline": "You are offline",
+    "tryAgain": "Please try again"
+  }
+}
