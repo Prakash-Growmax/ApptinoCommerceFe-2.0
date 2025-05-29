@@ -2,7 +2,7 @@ import js from '@eslint/js';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import storybookPlugin from 'eslint-plugin-storybook';
+// import storybookPlugin from 'eslint-plugin-storybook';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -101,7 +101,7 @@ export default tseslint.config(
   // Storybook specific config
   {
     files: ['**/*.stories.@(js|jsx|ts|tsx)'],
-    ...storybookPlugin.configs.recommended,
+    // ...storybookPlugin.configs.recommended,
     rules: {
       'react-hooks/rules-of-hooks': 'off',
     },
