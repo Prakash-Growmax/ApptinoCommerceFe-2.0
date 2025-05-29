@@ -1,5 +1,23 @@
 import { z } from 'zod';
 
+export const CheckUserNameSchema = z.object({
+  UserName: z.string().email({
+    message: 'Please enter a valid email address',
+  }),
+  reqOtp: z.string().optional(),
+});
+export type CheckUserNameRequestType = z.infer<typeof CheckUserNameSchema>;
+export const checkUserNameResponseSchema = z.object({
+  data: z.object({
+    hasPassword: z.boolean(),
+    isNewUser: z.boolean(),
+    reqOtp: z.boolean(),
+  }),
+});
+export type checkUserNameResponseType = z.infer<
+  typeof checkUserNameResponseSchema
+>;
+
 // User schema
 export const userSchema = z.object({
   id: z.string(),

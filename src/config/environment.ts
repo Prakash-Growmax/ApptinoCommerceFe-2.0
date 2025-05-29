@@ -3,8 +3,8 @@ import { z } from 'zod';
 // Define environment variable schema
 const environmentSchema = z.object({
   MODE: z.enum(['development', 'production', 'test', 'staging']),
-  API_URL: z.string().url(),
-  APP_VERSION: z.string().optional(),
+  AUTH_URL: z.string().optional(),
+  API_URL: z.string().optional(),
   ENABLE_MOCKS: z.boolean().optional().default(false),
 });
 
@@ -17,8 +17,8 @@ export const getEnvironmentVariables = (): Environment => {
   // Get all environment variables from Vite
   const env = {
     MODE: import.meta.env.MODE,
-    API_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
-    APP_VERSION: import.meta.env.VITE_APP_VERSION,
+    API_URL: import.meta.env.VITE_API_URL,
+    AUTH_URL: import.meta.env.VITE_AUTH_URL,
     ENABLE_MOCKS: import.meta.env.VITE_ENABLE_MOCKS === 'true',
   };
 
@@ -34,7 +34,6 @@ export const getEnvironmentVariables = (): Environment => {
       console.warn('Using fallback environment variables');
       return {
         MODE: 'development',
-        API_URL: 'http://localhost:8000/api',
         ENABLE_MOCKS: true,
       };
     }

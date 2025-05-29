@@ -1,16 +1,27 @@
 import { apiDelete, apiGet, apiPost } from '@lib/api/client';
+
 import {
   AuthResponse,
-  authResponseSchema,
+  CheckUserNameRequestType,
   LoginCredentials,
   Registration,
   User,
+  authResponseSchema,
+  checkUserNameResponseType,
   userSchema,
 } from '../types/auth.types';
 
-/**
- * Login user
- */
+export const CheckUserName = async (
+  body: CheckUserNameRequestType
+): Promise<checkUserNameResponseType> => {
+  const response = await apiPost<checkUserNameResponseType>({
+    url: '/auth/auth/CheckUserName',
+    data: body,
+  });
+  return response;
+};
+
+// -------------------------------------------------
 export const login = async (
   credentials: LoginCredentials
 ): Promise<AuthResponse> => {
@@ -62,7 +73,6 @@ export const checkUser = async (data: Registration): Promise<AuthResponse> => {
 
   return response;
 };
-
 
 /**
  * Get current user

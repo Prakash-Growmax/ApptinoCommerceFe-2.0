@@ -1,74 +1,84 @@
-import { cva, type VariantProps } from 'class-variance-authority';
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { Loader2 } from 'lucide-react';
 
-const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-border bg-transparent hover:bg-muted',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/90',
-        ghost: 'hover:bg-muted',
-        link: 'text-primary underline-offset-4 hover:underline',
-      },
-      size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-8 px-3 py-1 text-xs',
-        lg: 'h-12 px-6 py-3 text-base',
-        icon: 'h-10 w-10',
-      },
-      fullWidth: {
-        true: 'w-full',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-      fullWidth: false,
-    },
-  }
-);
+import { Button as ShadCnButton } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+export interface ShadcnButtonProps {
+  children?: React.ReactNode;
   loading?: boolean;
+  loadingText?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  iconOnly?: boolean;
+  fullWidth?: boolean;
+  tooltip?: string;
+  testId?: string;
+  className?: string;
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  isDisabled?: boolean;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      fullWidth,
-      loading,
-      children,
-      disabled,
-      ...props
-    },
-    ref
-  ) => {
+function Button({
+  loading,
+  iconOnly,
+  loadingText,
+  children,
+  leftIcon,
+  rightIcon,
+  fullWidth,
+  className,
+  variant = 'default',
+  size = 'default',
+  isDisabled,
+  testId = 'data-testid',
+  onClick,
+}: ShadcnButtonProps) {
+  const buttonContent = () => {
+    if (loading) {
+      return (
+        <>
+          <Loader2
+            className="h-4 w-4 animate-spin"
+            data-testid="loading-spinner"
+          />
+          {!iconOnly && (loadingText || children)}
+        </>
+      );
+    }
+
+    if (iconOnly && (leftIcon || rightIcon)) {
+      return leftIcon || rightIcon;
+    }
+
     return (
-      <button
-        className={buttonVariants({ variant, size, fullWidth, className })}
-        ref={ref}
-        disabled={disabled || loading}
-        {...props}
-      >
-        {loading ? (
-          <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        ) : null}
+      <>
+        {leftIcon && <span data-testid="left-icon">{leftIcon}</span>}
         {children}
-      </button>
+        {rightIcon && <span data-testid="right-icon">{rightIcon}</span>}
+      </>
     );
-  }
-);
+  };
 
-Button.displayName = 'Button';
+  return (
+    <ShadCnButton
+      className={cn(fullWidth && 'w-full', iconOnly && 'px-0', className)}
+      variant={variant}
+      size={size}
+      disabled={isDisabled}
+      data-testid={testId}
+      onClick={onClick}
+    >
+      {buttonContent()}
+    </ShadCnButton>
+  );
+}
 
-export { Button, buttonVariants };
+export default Button;

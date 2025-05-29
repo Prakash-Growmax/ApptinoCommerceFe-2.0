@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { useTheme } from '@app/providers';
-import { Button } from '@components/atoms/Button/Button';
+import Button from '@components/atoms/Button/Button';
 
 export const Header = () => {
   const { t } = useTranslation();
-  const {  setTheme, isDarkMode } = useTheme();
+  const { setTheme, isDarkMode } = useTheme();
 
   const toggleTheme = () => {
     setTheme(isDarkMode ? 'light' : 'dark');

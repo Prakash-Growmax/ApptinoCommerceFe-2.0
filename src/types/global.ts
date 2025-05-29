@@ -7,11 +7,6 @@ export interface BaseComponentProps {
 }
 
 // API Response types
-export interface ApiResponse<T = unknown> {
-  data: T;
-  message?: string;
-  success: boolean;
-}
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -21,13 +16,6 @@ export interface PaginatedResponse<T> {
     total: number;
     totalPages: number;
   };
-}
-
-// Error types
-export interface ApiError {
-  status: number;
-  message: string;
-  details?: Record<string, unknown>;
 }
 
 // Form types
