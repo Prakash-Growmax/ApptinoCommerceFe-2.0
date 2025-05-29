@@ -33,30 +33,15 @@ export const Sidebar = () => {
         </div>
 
         <nav className="flex-1 space-y-1 px-2 py-4">
-          <NavItem
-            to="/"
-            icon="🏠"
-            label={t('navigation.home')}
-            isCollapsed={isCollapsed}
-          />
+          
           <NavItem
             to="/dashboard"
             icon="📊"
             label={t('navigation.dashboard')}
             isCollapsed={isCollapsed}
           />
-          <NavItem
-            to="/profile"
-            icon="👤"
-            label={t('navigation.profile')}
-            isCollapsed={isCollapsed}
-          />
-          <NavItem
-            to="/settings"
-            icon="⚙️"
-            label={t('navigation.settings')}
-            isCollapsed={isCollapsed}
-          />
+          
+          
         </nav>
       </div>
     </aside>

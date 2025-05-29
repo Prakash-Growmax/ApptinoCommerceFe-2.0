@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { MainLayout } from '@components/templates';
 
-import { ProtectedRoute } from './protected-route';
+// import { ProtectedRoute } from './protected-route';
 import { RouteObject } from './types';
 
 // Lazy-loaded pages
@@ -26,12 +26,13 @@ const routes: RouteObject[] = [
         element: <HomePage />,
       },
       {
-        path: 'dashboard',
-        element: (
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        ),
+        path: '/dashboard',
+        // element: (
+        //   <ProtectedRoute>
+        //     <DashboardPage />
+        //   </ProtectedRoute>
+        // ),
+        element: <DashboardPage />,
       },
     ],
   },
