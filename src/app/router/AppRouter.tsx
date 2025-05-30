@@ -1,17 +1,18 @@
 import { Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./protected-route";
-import DashboardPage from "@/features/dashboard/routes/Dashboard";
+
 import SupportTickets from "@/features/support/SupportTickets";
 import Customers from "@/features/customer/Customer";
 import { Settings } from "lucide-react";
 import Login from "@/features/auth/components/LoginForm/Login";
+import DashboardPages from "@/features/dashboard/routes/DashboardPages";
 
 const AppRoutes=()=>{
  return (
     <Routes>
       <Route path="/" element={
         <ProtectedRoute>
-          <DashboardPage />
+          <DashboardPages />
         </ProtectedRoute>
       } />
       <Route path="/supporttickets" element={
