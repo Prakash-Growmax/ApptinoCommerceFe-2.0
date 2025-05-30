@@ -7,13 +7,14 @@ import { AppRouter } from '@app/router';
 import { ErrorFallback, LoadingFallback } from '@components/organisms';
 import Test from './test';
 import { AppbarHeader } from './components/molecules/Appbar/Appbar';
+import { AppWithHeader } from './features/App/AppWithHeader';
 
 function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AppProviders>
         <Suspense fallback={<LoadingFallback />}>
-         <AppbarHeader/>
+         <AppWithHeader />
         </Suspense>
       </AppProviders>
     </ErrorBoundary>

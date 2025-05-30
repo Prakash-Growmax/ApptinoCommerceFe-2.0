@@ -1,5 +1,7 @@
-import { LoginForm } from "./LoginForm";
+
 import logo from "../../../../assets/growmax Logo New@2x.png"
+import { LoginForm } from "./LoginForm";
+
 const Login = () =>{
     return(
              <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">

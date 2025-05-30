@@ -127,18 +127,18 @@ const data = {
   projects: [
      {
       name: "Dashboard",
-      url: "#",
+      url: "/",
       icon:LayoutDashboard,
     },
     {
       name: "Support",
-      url: "#",
+      url: "/supporttickets",
       icon:Headset,
     },
    
     {
       name: "Customer",
-      url: "#",
+      url: "/customers",
       icon:Users,
     },
   ],

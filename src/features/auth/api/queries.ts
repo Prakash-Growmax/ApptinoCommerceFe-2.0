@@ -1,8 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-// Mutations also changed slightly in v5
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { getCurrentUser } from './authApi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getCurrentUser, login, logout, getUsers } from './authApi';
 
 /**
  * Auth-related query keys
@@ -16,21 +13,14 @@ export const authKeys = {
  * Query hook for getting current user (FIXED for React Query v5)
  */
 export const useUserQuery = () => {
+  const hasToken = !!localStorage.getItem('accessToken');
+
   return useQuery({
-    queryKey: authKeys.user(),
+    queryKey: ['currentUser'],
     queryFn: getCurrentUser,
-    // Only attempt to get user if there's a token
-    enabled: !!localStorage.getItem('auth_token'),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 1, // Only retry once
-    // Don't refetch on window focus if there's no token
-    refetchOnWindowFocus: !!localStorage.getItem('auth_token'),
+    enabled: hasToken, // Only runs if token exists
   });
 };
-
-// If you have other queries, fix them similarly:
-// OLD v4 syntax: useQuery(key, fn, options)
-// NEW v5 syntax: useQuery({ queryKey: key, queryFn: fn, ...options })
 
 // Example of other common query patterns in v5:
 export const useUsersQuery = (filters?: {

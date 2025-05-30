@@ -6,8 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { checkUserName, login } from '../../api/authApi';
+import { useNavigate } from 'react-router-dom';
 
-import { CheckUserName, Login } from '../../api/authApi';
+
 
 export function LoginForm({
   className,
@@ -24,11 +26,12 @@ export function LoginForm({
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
+  const navigate = useNavigate();
   const handleCheckUser = async () => {
     if (!email) return;
     setIsLoading(true);
     try {
-      const response = await CheckUserName({ UserName: email });
+      const response = await checkUserName({ UserName: email });
       if (response?.data) {
         response?.data?.hasPassword && setHasPassword(true);
       }
@@ -43,8 +46,10 @@ export function LoginForm({
     if (!email && !password) return;
     setIsLoading(true);
     try {
-      const response = await Login({ UserName: email, Password: password });
-      console.log('🚀 ~ handleLogin ~ response:', response);
+      const response = await login({ UserName: email, Password: password });
+      if(response){
+        navigate("/")
+      }
     } catch (error) {
       console.error('Fetch error:', error);
     } finally {

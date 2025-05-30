@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useNavigate } from "react-router-dom"
 
 export function NavUser({
   user,
@@ -39,7 +40,11 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
+  const navigate = useNavigate();
+  const handleLogout = () =>{
+   localStorage.removeItem('accessToken');
+  navigate('/auth/login')
+  }
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -81,16 +86,22 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
+                <div className="flex gap-2 cursor-pointer">
                 <Settings />
                 Settings
+                </div>
+             
               </DropdownMenuItem>
             </DropdownMenuGroup>
           
        
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
+              <div className="flex gap-2 cursor-pointer" onClick={handleLogout}>
+                <LogOut />
               Log out
+              </div>
+              
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
