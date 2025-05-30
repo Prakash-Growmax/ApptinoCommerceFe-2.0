@@ -1,19 +1,21 @@
-import { lazy } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
-
+import { Route, Routes } from 'react-router-dom';
 import { MainLayout } from '@components/templates';
 
-// import { ProtectedRoute } from './protected-route';
 import { RouteObject } from './types';
+import HomePage from "../../features/home/routes/HomePage"
+import DashboardPage from "@/features/dashboard/routes/Dashboard"
 
-// Lazy-loaded pages
-const HomePage = lazy(() => import('@features/home/routes/HomePage'));
-const DashboardPage = lazy(
-  () => import('@features/dashboard/routes/Dashboard')
-);
-const LoginPage = lazy(() => import('@features/auth/routes/LoginPage'));
-const RegisterPage = lazy(() => import('@features/auth/routes/RegisterPage'));
-const NotFoundPage = lazy(() => import('@features/error/routes/NotFoundPage'));
+// import { lazy } from 'react';
+// import { ProtectedRoute } from './protected-route';
+
+
+// const HomePage = lazy(() => import('@features/home/routes/HomePage'));
+// const DashboardPage = lazy(
+//   () => import('@features/dashboard/routes/Dashboard')
+// );
+// const LoginPage = lazy(() => import('@features/auth/routes/LoginPage'));
+// const RegisterPage = lazy(() => import('@features/auth/routes/RegisterPage'));
+// const NotFoundPage = lazy(() => import('@features/error/routes/NotFoundPage'));
 
 // Route configuration
 const routes: RouteObject[] = [
@@ -36,27 +38,27 @@ const routes: RouteObject[] = [
       },
     ],
   },
-  {
-    path: '/auth',
-    children: [
-      {
-        path: 'login',
-        element: <LoginPage />,
-      },
-      {
-        path: 'register',
-        element: <RegisterPage />,
-      },
-      {
-        index: true,
-        element: <Navigate to="/auth/login" replace />,
-      },
-    ],
-  },
-  {
-    path: '*',
-    element: <NotFoundPage />,
-  },
+  // {
+  //   path: '/auth',
+  //   children: [
+  //     {
+  //       path: 'login',
+  //       element: <LoginPage />,
+  //     },
+  //     {
+  //       path: 'register',
+  //       element: <RegisterPage />,
+  //     },
+  //     {
+  //       index: true,
+  //       element: <Navigate to="/auth/login" replace />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: '*',
+  //   element: <NotFoundPage />,
+  // },
 ];
 
 export const AppRouter = () => {
@@ -79,13 +81,31 @@ export const AppRouter = () => {
           );
         }
 
-        return (
-          <Route key={route.path} path={route.path} element={route.element} />
-        );
+        // return (
+        //   <Route key={route.path} path={route.path} element={route.element} />
+        // );
       })}
     </Routes>
   );
 };
 
-export * from './protected-route';
-export * from './types';
+// export * from './protected-route';
+// export * from './types';
+
+
+
+// // src/app/router/index.tsx
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+// import HomePage from "../../features/home/routes/HomePage"
+// import DashboardPage from "@/features/dashboard/routes/Dashboard"
+
+// export const AppRouter = () => {
+//   return (
+    // <Router>
+    //   <Routes>
+    //     <Route path="/" element={<HomePage />} />
+    //     <Route path="/dashboard" element={<DashboardPage />} />
+    //   </Routes>
+//     </Router>
+//   )
+// }

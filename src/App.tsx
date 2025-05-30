@@ -5,17 +5,17 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { AppProviders } from '@app/providers';
 import { AppRouter } from '@app/router';
 import { ErrorFallback, LoadingFallback } from '@components/organisms';
-import Test from './test';
-import DashboardPage from './features/dashboard/routes/Dashboard';
+
+// import { ButtonDemo } from './features/dashboard/components/DashboardButton';
 
 function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AppProviders>
         <Suspense fallback={<LoadingFallback />}>
-         {/* <Test/> */}
-         {/* <DashboardPage /> */}
+        
           <AppRouter />
+          {/* <ButtonDemo/> */}
         </Suspense>
       </AppProviders>
     </ErrorBoundary>

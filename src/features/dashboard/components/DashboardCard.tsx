@@ -1,7 +1,3 @@
-
-
-
-import { useTranslation } from 'react-i18next';
 import { TrendingDownIcon, TrendingUpIcon } from "lucide-react"
 
 import { Badge } from "../../../components/ui/badge"
@@ -14,25 +10,13 @@ import {
 } from "@/components/ui/card"
 
 const Dashboardcard = () => {
-  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold md:text-3xl">
-          {t('navigation.dashboard')}
-        </h1>
-
-        <div className="text-sm text-muted-foreground">
-          {new Date().toLocaleDateString()}
-        </div>
-      </div>
-
-      {/* Stats Overview */}
       <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4  grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>TOTAL ORDER VALUE</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
             $1,250.00
           </CardTitle>
@@ -54,7 +38,7 @@ const Dashboardcard = () => {
       </Card>
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>TOTAL QUOTES</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
             1,234
           </CardTitle>
@@ -76,7 +60,7 @@ const Dashboardcard = () => {
       </Card>
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription># OF QUOTES</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
             45,678
           </CardTitle>
@@ -96,7 +80,7 @@ const Dashboardcard = () => {
       </Card>
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription># OF ACTIVE ACCOUNTS</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
             4.5%
           </CardTitle>
@@ -115,8 +99,6 @@ const Dashboardcard = () => {
         </CardFooter>
       </Card>
     </div>
-
-     
     </div>
   );
 };
