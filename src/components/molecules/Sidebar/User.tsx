@@ -29,6 +29,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router-dom"
+import { logout } from "@/features/auth/api/authApi"
 
 export function NavUser({
   user,
@@ -41,9 +42,12 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate();
-  const handleLogout = () =>{
-   localStorage.removeItem('accessToken');
-  navigate('/auth/login')
+  const handleLogout = async() =>{
+  const res = await logout();
+  if(res){
+    navigate('/auth/login')
+  }
+ 
   }
   return (
     <SidebarMenu>

@@ -16,7 +16,7 @@ export const useUserQuery = () => {
   const hasToken = !!localStorage.getItem('accessToken');
 
   return useQuery({
-    queryKey: ['currentUser'],
+    queryKey:hasToken,
     queryFn: getCurrentUser,
     enabled: hasToken, // Only runs if token exists
   });
