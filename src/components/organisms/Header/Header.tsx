@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { useTheme } from '@app/providers';
+// import { useTheme } from '@app/providers';
 import Button from '@components/atoms/Button/Button';
 
 export const Header = () => {
   const { t } = useTranslation();
-  const { setTheme, isDarkMode } = useTheme();
+  // const { setTheme, isDarkMode } = useTheme();
 
-  const toggleTheme = () => {
-    setTheme(isDarkMode ? 'light' : 'dark');
-  };
+  // const toggleTheme = () => {
+  //   setTheme(isDarkMode ? 'light' : 'dark');
+  // };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
@@ -40,7 +40,7 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button
+          {/* <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
@@ -57,7 +57,7 @@ export const Header = () => {
                 🌙
               </span>
             )}
-          </Button>
+          </Button> */}
 
           <Link to="/auth/login">
             <Button variant="outline" size="sm">
