@@ -72,15 +72,11 @@ const SupportTickets = ({
 
   return (
     <div>
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold   tracking-wide w-[500px] mt-3 ">
-          <span className="text-2xl">S</span>ervice Ticket Management
-        </CardTitle>
-      </CardHeader>
+      
 
-      <div className="flex justify-evenly mt-4 mb-4 flex-wrap gap-2">
+      <div className="flex justify-evenly  mb-4 flex-wrap gap-2">
         {/* Search */}
-        <div>
+        <div className="flex flex-col space-y-1">
           <Label htmlFor="search" className="mb-2">Search Tickets</Label>
           {/* {!isMobile && ( */}
             <div className="relative">
@@ -105,7 +101,7 @@ const SupportTickets = ({
         </div>
 
         {/* Status*/}
-        <div>
+        <div className="flex flex-col space-y-1">
           <Label htmlFor="status" className="mb-2">Status</Label>
           <Select onValueChange={setStatus} value={status}>
             <SelectTrigger id="status" className="w-[120px] border-gray-300  ">
@@ -120,7 +116,7 @@ const SupportTickets = ({
         </div>
 
         {/* Priority */}
-        <div>
+        <div className="flex flex-col space-y-1">
           <Label htmlFor="priority" className="mb-2">Priority</Label>
           <Select onValueChange={setPriority} value={priority}>
             <SelectTrigger id="priority" className="w-[120px] border-gray-300">
@@ -135,7 +131,7 @@ const SupportTickets = ({
         </div>
 
         {/* Date */}
-        <div>
+        <div className="flex flex-col space-y-1">
           <Label htmlFor="filterDate" className="mb-2">Date of birth</Label>
           <Popover>
             <PopoverTrigger asChild>
@@ -165,7 +161,7 @@ const SupportTickets = ({
         </div>
 
         {/* Technician*/}
-        <div>
+        <div className="flex flex-col space-y-1">
           <Label htmlFor="technician" className="mb-2">Assigned Technician</Label>
           <Select onValueChange={setTechnician} value={technician}>
             <SelectTrigger id="technician" className="w-[180px] border-gray-300">
