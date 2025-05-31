@@ -31,7 +31,7 @@ const CustomerFilter=()=>{
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Open">Actived</SelectItem>
-              <SelectItem value="Closed">Inactive</SelectItem>
+              <SelectItem value="Closed">Deactivated</SelectItem>
              
             </SelectContent>
           </Select>  

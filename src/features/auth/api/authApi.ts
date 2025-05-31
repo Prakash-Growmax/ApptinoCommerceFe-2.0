@@ -43,8 +43,18 @@ export const getCurrentUser = async () => {
     return true;
   }
 };
-
-
+export const getTenantIdFromToken=()=>{
+  const token = localStorage.getItem('accessToken');
+  if (!token) return null;
+    try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.tenantId || payload.tid; // 'tid' is used in Azure AD tokens
+  } catch (e) {
+    console.error("Invalid token", e);
+    return null;
+  }
+}
+ 
 export const logout = async (): Promise<boolean> => {
   // Implement logout logic
   localStorage.removeItem('accessToken');
