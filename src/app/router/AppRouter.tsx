@@ -6,6 +6,7 @@ import Customers from "@/features/customer/Customer";
 import { Settings } from "lucide-react";
 import Login from "@/features/auth/components/LoginForm/Login";
 import DashboardPages from "@/features/dashboard/routes/DashboardPages";
+import PublicRoute from "./public-route";
 
 const AppRoutes=()=>{
  return (
@@ -31,7 +32,12 @@ const AppRoutes=()=>{
         </ProtectedRoute>
       } />
       {/* Public route: Login */}
-      <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/login" element={
+        <PublicRoute>
+           <Login />
+        </PublicRoute>
+       
+        } />
     </Routes>
   );
 }

@@ -45,10 +45,11 @@ export const getCurrentUser = async () => {
 };
 
 
-export const logout = async (): Promise<void> => {
+export const logout = async (): Promise<boolean> => {
   // Implement logout logic
-  localStorage.removeItem('auth_token');
-  
+  localStorage.removeItem('accessToken');
+  return true
+ 
   // Optional: call logout API endpoint
   // await apiPost({ url: '/auth/logout' });
 };

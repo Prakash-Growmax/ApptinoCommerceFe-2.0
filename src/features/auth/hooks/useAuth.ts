@@ -23,7 +23,7 @@ export const useAuth = (): UseAuthReturn => {
 
   // Get user data from query (now using correct v5 syntax)
   const { data: user, isLoading, error: userError, refetch } = useUserQuery();
-  console.log(user);
+  
   const isAuthenticated = user;
 
   // Login handler

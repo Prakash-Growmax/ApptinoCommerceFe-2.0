@@ -47,7 +47,7 @@ const form = useForm<z.infer<typeof FormSchema>>({
         </CardTitle>
         </CardHeader>
     </div>
-    <div className="flex gap-3">
+    <div className="flex flex-end gap-3">
         <Form {...form}>
             <form className="flex gap-4">
             <FormField
