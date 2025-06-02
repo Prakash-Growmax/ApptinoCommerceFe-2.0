@@ -4,8 +4,8 @@ import useUserStore from "@/stores/useUserStore";
 
 
 export class ElasticSearchServices {
-  static async CustomerGet(BuildcustomersQuery) {
-      const {tenantId}=useUserStore();
+  static async CustomerGet(BuildcustomersQuery,tenantId) {
+     
 
     if (!tenantId) {
       throw new Error("Tenant ID not found in token.");
