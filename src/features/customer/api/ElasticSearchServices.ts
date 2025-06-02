@@ -1,10 +1,11 @@
 import { getTenantIdFromToken } from "@/features/auth/api/authApi";
 import { apiPost } from "@/lib/api/client";
+import useUserStore from "@/stores/useUserStore";
 
 
 export class ElasticSearchServices {
   static async CustomerGet(BuildcustomersQuery) {
-    const tenantId = getTenantIdFromToken();
+      const {tenantId}=useUserStore();
 
     if (!tenantId) {
       throw new Error("Tenant ID not found in token.");

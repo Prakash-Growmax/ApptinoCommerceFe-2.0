@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { checkUserName, login } from '../../api/authApi';
 import { useNavigate } from 'react-router-dom';
+import useUserStore from '@/stores/useUserStore';
 
 
 
@@ -26,6 +27,7 @@ export function LoginForm({
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
+  const {setUserId,setCompanyId,setTenantId}=useUserStore();
   const navigate = useNavigate();
   const handleCheckUser = async () => {
     if (!email) return;
@@ -42,20 +44,51 @@ export function LoginForm({
     }
   };
 
-  const handleLogin = async () => {
-    if (!email && !password) return;
-    setIsLoading(true);
-    try {
-      const response = await login({ UserName: email, Password: password });
-      if(response){
-        navigate("/")
-      }
-    } catch (error) {
-      console.error('Fetch error:', error);
-    } finally {
-      setIsLoading(false);
+ const handleLogin = async () => {
+  if (!email || !password) return;
+
+  setIsLoading(true);
+
+  try {
+    const response = await fetch('https://api.myapptino.com/auth/auth/loginNew', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        UserName: email,
+        Password: password,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData?.message || 'Login failed');
     }
-  };
+
+    const data = await response.json();
+  
+    const payload = data?.tokens?.payload
+     console.log(typeof payload?.userId);
+     console.log(typeof payload?.companyId);
+     console.log(typeof payload?.tenantId)
+      const accessToken = data?.tokens?.accessToken;
+  if(accessToken){
+    localStorage.setItem("accessToken",accessToken);
+  }
+  if(payload){
+    setUserId(payload?.userId);
+    setCompanyId(payload?.companyId);
+    setTenantId(payload?.tenantId)
+}
+  navigate("/"); 
+  } catch (error) {
+    console.error('Login error:', error.message);
+    // Optionally show toast or alert to user
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const onContinueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     console.log(e);
