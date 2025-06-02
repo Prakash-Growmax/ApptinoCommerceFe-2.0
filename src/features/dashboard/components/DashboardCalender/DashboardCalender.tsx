@@ -39,17 +39,17 @@ const form = useForm<z.infer<typeof FormSchema>>({
 
 
     return (
-    <div className="flex justify-between mx-7">
+    <div className="flex sm:gap-[150px] lg:justify-between md:mx-7">
     <div>
         <CardHeader>
-        <CardTitle className="text-xl font-bold uppercase tracking-wide w-[200px] mt-3 ">
-            <span className="text-2xl ">D</span>ashboard
+        <CardTitle className="md:   text-xl font-bold uppercase tracking-wide md:w-[200px] mt-3 ">
+            <span className="md:text-2xl ">D</span>ashboard
         </CardTitle>
         </CardHeader>
     </div>
-    <div className="flex flex-end gap-3">
+    <div className="flex flex-end lg:gap-3 gap-2    ">
         <Form {...form}>
-            <form className="flex gap-4">
+            <form className="flex lg:gap-4 gap-2">
             <FormField
                 control={form.control}
                 name="startDate"
@@ -62,7 +62,7 @@ const form = useForm<z.infer<typeof FormSchema>>({
                         <Button
                             variant="outline"
                             className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "lg:w-[240px] pl-3 text-left font-normal w-[200px]",
                             !field.value && "text-muted-foreground"
                             )}
                         >
@@ -102,7 +102,7 @@ const form = useForm<z.infer<typeof FormSchema>>({
                         <Button
                             variant="outline"
                             className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "lg:w-[240px] pl-3 text-left font-normal w-[200px]",
                             !field.value && "text-muted-foreground"
                         )}
                         >
