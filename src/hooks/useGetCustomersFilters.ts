@@ -2,11 +2,11 @@ import useUserStore from "@/stores/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetCustomersFilters=()=>{
-       const {userId,companyId,tenantId}=useUserStore();
+       const {userId,tenantId}=useUserStore();
     const token = localStorage.getItem("accessToken");
     const fetchFilters = async () => {
   try {
-    const response = await fetch(`https://api.myapptino.com/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`, {
+    const response = await fetch(`https://api.myapptino.com/corecommerce/templates/get?domainName=${tenantId}&propertyName=${userId}_filters`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const useGetCustomersFilters=()=>{
   }
 };
  const query = useQuery({
-    queryKey: [userId,companyId],
+    queryKey: [userId,tenantId],
     queryFn:fetchFilters,
   });
   return query;
