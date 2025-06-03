@@ -2,9 +2,8 @@
 export * from './atoms/Input/Input';
 
 // Molecules
-export * from './molecules/Form/Form';
-export * from './molecules/FormControl/FormControl';
-export * from './molecules/FormField/FormField';
+export * from './molecules/ReactHookForm/Form/Form.tsx';
+export * from './molecules/ReactHookForm/FormControl/FormControl.tsx';
 
 // Organisms
 export * from './organisms';

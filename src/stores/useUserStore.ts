@@ -14,14 +14,14 @@ type UserStore = {
 
 const useUserStore = create<UserStore>()(
   persist(
-    (set) => ({
+    set => ({
       userId: null,
       companyId: null,
       tenantId: null,
 
-      setUserId: (id) => set({ userId: id }),
-      setCompanyId: (id) => set({ companyId: id }),
-      setTenantId: (id) => set({ tenantId: id }),
+      setUserId: id => set({ userId: id }),
+      setCompanyId: id => set({ companyId: id }),
+      setTenantId: id => set({ tenantId: id }),
 
       resetUserData: () =>
         set({ userId: null, companyId: null, tenantId: null }),

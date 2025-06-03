@@ -1,11 +1,11 @@
 import { apiPost } from '@lib/api/client';
+
 import {
   CheckUserNameRequestType,
+  CheckUserNameResponseType,
   LoginRequestSchemaType,
   LoginResponseSchemaType,
-  CheckUserNameResponseType, // Fixed: consistent PascalCase naming
-} from '../types/auth.types';
-import { access } from 'fs';
+} from '../schemas/auth.schemas';
 
 // Fixed: consistent PascalCase naming
 export const checkUserName = async (
@@ -27,8 +27,8 @@ export const login = async (
     data: body,
   });
   const accessToken = response?.tokens?.accessToken;
-  if(accessToken){
-    localStorage.setItem("accessToken",accessToken);
+  if (accessToken) {
+    localStorage.setItem('accessToken', accessToken);
   }
   return response;
 };
@@ -39,27 +39,27 @@ export const getCurrentUser = async () => {
   if (!token) {
     throw new Error('No auth token found');
   }
-  if(token){
+  if (token) {
     return true;
   }
 };
-export const getTenantIdFromToken=()=>{
+export const getTenantIdFromToken = () => {
   const token = localStorage.getItem('accessToken');
   if (!token) return null;
-    try {
+  try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload.tenantId || payload.tid; // 'tid' is used in Azure AD tokens
   } catch (e) {
-    console.error("Invalid token", e);
+    console.error('Invalid token', e);
     return null;
   }
-}
- 
+};
+
 export const logout = async (): Promise<boolean> => {
   // Implement logout logic
   localStorage.removeItem('accessToken');
-  return true
- 
+  return true;
+
   // Optional: call logout API endpoint
   // await apiPost({ url: '/auth/logout' });
 };
