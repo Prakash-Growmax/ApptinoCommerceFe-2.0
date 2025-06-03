@@ -1,80 +1,90 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { Form } from '@/components';
 import Button from '@/components/atoms/Button/Button';
+import { FormInput } from '@/components/molecules/ReactHookForm';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import useUserStore from '@/stores/useUserStore';
 
-import { checkUserName } from '../../api/authApi';
+import { checkUserName, login } from '../../api/authApi';
+import {
+  LoginRequestSchema,
+  LoginSchemaType,
+} from '../../schemas/auth.schemas';
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
   const { t } = useTranslation();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const navigate = useNavigate();
+
   const [hasPassword, setHasPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const [apiError, setApiError] = useState<string>('');
+
+  const form = useForm<LoginSchemaType>({
+    resolver: zodResolver(LoginRequestSchema),
+    defaultValues: {
+      UserName: '',
+      Password: '',
+    },
+    mode: 'onChange',
+  });
+
+  const { watch, setError, clearErrors } = form;
+  const UserName = watch('UserName');
+  const Password = watch('Password');
+
   const { setUserId, setCompanyId, setTenantId } = useUserStore();
-  const navigate = useNavigate();
+
   const handleCheckUser = async () => {
-    if (!email) return;
+    if (!UserName) return;
     setIsLoading(true);
+    setApiError('');
+    clearErrors();
+
     try {
-      const response = await checkUserName({ UserName: email });
+      const response = await checkUserName({ UserName });
       if (response?.data) {
-        response?.data?.hasPassword && setHasPassword(true);
+        if (response?.data?.hasPassword) {
+          setHasPassword(true);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Fetch error:', error);
+      setApiError(error.message || 'Failed to check user');
+      setError('UserName', {
+        type: 'manual',
+        message: 'User not found or invalid email',
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleLogin = async () => {
-    if (!email || !password) return;
+    if (!UserName || !Password) return;
 
     setIsLoading(true);
+    setApiError('');
+    clearErrors();
 
     try {
-      const response = await fetch(
-        'https://api.myapptino.com/auth/auth/loginNew',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            UserName: email,
-            Password: password,
-          }),
-        }
-      );
+      const loginData = await login({
+        UserName: UserName,
+        Password: Password,
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.message || 'Login failed');
-      }
+      const payload = loginData?.tokens?.payload;
+      const accessToken = loginData?.tokens?.accessToken;
 
-      const data = await response.json();
-
-      const payload = data?.tokens?.payload;
-      console.log(typeof payload?.userId);
-      console.log(typeof payload?.companyId);
-      console.log(typeof payload?.tenantId);
-      const accessToken = data?.tokens?.accessToken;
       if (accessToken) {
         localStorage.setItem('accessToken', accessToken);
       }
@@ -84,101 +94,82 @@ export function LoginForm({
         setTenantId(payload?.tenantId);
       }
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error.message);
-      // Optionally show toast or alert to user
+      setApiError(error.message || 'Login failed');
+      setError('Password', {
+        type: 'manual',
+        message: 'Invalid credentials',
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onContinueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e);
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleCheckUser();
-    }
+  const handleContinueSubmit = async () => {
+    if (!UserName) return;
+    await handleCheckUser();
   };
-
-  const onLoginKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e);
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleLogin();
-    }
-  };
-
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <div className={cn('flex flex-col gap-6', className)} {...props}>
+        <div className={cn('flex flex-col gap-3', className)} {...props}>
           <Card>
             <CardContent>
               <div className="p-4">
-                <div className="flex flex-col gap-6">
+                <Form
+                  form={form}
+                  onSubmit={() => {}}
+                  className="flex flex-col gap-3"
+                >
                   <div className="flex flex-col items-center text-center">
-                    <h1 className="text-2xl font-bold">Welcome back</h1>
+                    <h1 className="text-2xl font-bold">Welcome</h1>
                     <p className="text-balance text-muted-foreground">
-                      Login to your Acme Inc account
+                      Login to your Growmax account
                     </p>
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      onChange={handleEmailChange}
-                      required
-                      onKeyDown={onContinueKeyDown}
-                    />
-                  </div>
+
+                  {apiError && (
+                    <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                      {apiError}
+                    </div>
+                  )}
+
+                  <FormInput
+                    name="UserName"
+                    label="Email"
+                    type="email"
+                    placeholder="Enter email"
+                    autoComplete="UserName"
+                    disabled={isLoading}
+                    autoFocus={!hasPassword}
+                  />
                   {hasPassword && (
-                    <div className="grid gap-2">
-                      <div className="flex items-center">
-                        <Label htmlFor="password">Password</Label>
-                        <a
-                          href="#"
-                          className="ml-auto text-sm underline-offset-2 hover:underline"
-                        >
-                          Forgot your password?
-                        </a>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Password</span>
                       </div>
-                      <Input
-                        id="password"
+                      <FormInput
+                        name="Password"
                         type="password"
-                        onChange={handlePasswordChange}
-                        autoFocus
-                        required
-                        onKeyDown={onLoginKeyDown}
+                        autoComplete="current-password"
+                        disabled={isLoading}
+                        autoFocus={hasPassword}
                       />
                     </div>
                   )}
-                  {hasPassword ? (
-                    <Button
-                      className="w-full"
-                      loading={isLoading}
-                      onClick={handleLogin}
-                    >
-                      {t('Login')}
-                    </Button>
-                  ) : (
-                    <Button
-                      className="w-full"
-                      onClick={handleCheckUser}
-                      loading={isLoading}
-                      isDisabled={isLoading}
-                    >
-                      {t('Continue')}
-                    </Button>
-                  )}
-                  <div className="text-center text-sm">
-                    Don&apos;t have an account?{' '}
-                    <a href="#" className="underline underline-offset-4">
-                      Sign up
-                    </a>
-                  </div>
-                </div>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    loading={isLoading}
+                    isDisabled={
+                      isLoading || !UserName || (hasPassword && !Password)
+                    }
+                    onClick={hasPassword ? handleLogin : handleCheckUser}
+                  >
+                    {hasPassword ? t('Login') : t('Continue')}
+                  </Button>
+                </Form>
               </div>
             </CardContent>
           </Card>

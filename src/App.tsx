@@ -6,7 +6,7 @@ import { AppProviders } from '@app/providers';
 import { ErrorFallback, LoadingFallback } from '@components/organisms';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { AppWithHeader } from './features/App/AppWithHeader';
+import { AppWithHeader } from './app/router/AppWithHeader';
 
 function App() {
   const queryClient = new QueryClient();
