@@ -14,6 +14,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import React from "react";
 
 type TablePagination = {
   pageIndex: number;
@@ -24,7 +25,7 @@ type TableProps<T> = {
   data: T[];
   columns: ColumnDef<T, any>[];
   loading: boolean;
-  pageCount: number;
+  totalDataCount: number; // 👈 total number of items (from API or source)
   pagination: TablePagination;
   setPagination: React.Dispatch<React.SetStateAction<TablePagination>>;
 };
@@ -33,16 +34,20 @@ const DashboardTable = <T,>({
   data,
   columns,
   loading,
-  pageCount,
+  totalDataCount,
   pagination,
   setPagination,
 }: TableProps<T>) => {
+  const pageCount = Math.ceil(totalDataCount / pagination.pageSize);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    pageCount,
   });
-  
+
   const handlePrevious = () => {
     setPagination((prev) => ({
       ...prev,
@@ -56,6 +61,14 @@ const DashboardTable = <T,>({
       pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
     }));
   };
+
+  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPagination({
+      pageIndex: 0,
+      pageSize: parseInt(e.target.value, 10),
+    });
+  };
+
   return (
     <div className="rounded-md border shadow-sm overflow-hidden">
       <Table>
@@ -77,8 +90,7 @@ const DashboardTable = <T,>({
         </TableHeader>
         <TableBody>
           {loading ? (
-            // Render 5 skeleton rows
-            [...Array(15)].map((_, rowIndex) => (
+            [...Array(pagination.pageSize)].map((_, rowIndex) => (
               <TableRow key={`skeleton-${rowIndex}`}>
                 {columns.map((_, colIndex) => (
                   <TableCell key={`skeleton-cell-${colIndex}`} className="px-3 py-2">
@@ -98,7 +110,6 @@ const DashboardTable = <T,>({
               </TableRow>
             ))
           ) : (
-            // No data message
             <TableRow>
               <TableCell colSpan={columns.length} className="text-center py-4 text-sm text-muted-foreground">
                 No data available
@@ -106,13 +117,29 @@ const DashboardTable = <T,>({
             </TableRow>
           )}
         </TableBody>
-           <TableFooter>
+        <TableFooter>
           <TableRow>
             <TableCell colSpan={columns.length} className="px-3 py-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">
-                  Page {pagination.pageIndex + 1} of {pageCount}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-muted-foreground">
+                    Page {pagination.pageIndex + 1} of {pageCount}
+                  </span>
+                  <label className="text-sm text-muted-foreground">
+                    Rows per page:{" "}
+                    <select
+                      className="border rounded px-2 py-1 ml-1"
+                      value={pagination.pageSize}
+                      onChange={handlePageSizeChange}
+                    >
+                      {[5,10,20].map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
