@@ -1,5 +1,10 @@
 import { ReactNode } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  ControllerFieldState,
+  ControllerRenderProps,
+  useFormContext,
+} from 'react-hook-form';
 
 import { FormControl } from '../FormControl/FormControl';
 
@@ -8,26 +13,11 @@ interface FormFieldProps {
   label?: string;
   description?: string;
   children: (props: {
-    field: {
-      value: any;
-      onChange: (...event: any[]) => void;
-      onBlur: () => void;
-      name: string;
-      ref: React.RefCallback<any>;
-    };
-    fieldState: {
-      invalid: boolean;
-      isTouched: boolean;
-      isDirty: boolean;
-      error?: {
-        type: string;
-        message: string;
-      };
-    };
+    field: ControllerRenderProps;
+    fieldState: ControllerFieldState;
   }) => ReactNode;
   className?: string;
 }
-
 export const FormField = ({
   name,
   label,
@@ -43,11 +33,13 @@ export const FormField = ({
       control={control}
       render={({ field, fieldState }) => (
         <FormControl
-          label={label}
           htmlFor={name}
-          error={fieldState.error?.message}
-          description={description}
-          className={className}
+          {...(label && { label })}
+          {...(fieldState.error?.message && {
+            error: fieldState.error.message,
+          })}
+          {...(description && { description })}
+          {...(className && { className })}
         >
           {children({ field, fieldState })}
         </FormControl>

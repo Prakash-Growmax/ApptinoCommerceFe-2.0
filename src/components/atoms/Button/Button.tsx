@@ -23,6 +23,7 @@ export interface ShadcnButtonProps {
     | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   isDisabled?: boolean;
+  type?: 'button' | 'submit' | 'reset'; // Added type prop
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -38,6 +39,7 @@ function Button({
   variant = 'default',
   size = 'default',
   isDisabled,
+  type = 'button', // Default to button type
   testId = 'data-testid',
   onClick,
 }: ShadcnButtonProps) {
@@ -69,10 +71,11 @@ function Button({
 
   return (
     <ShadCnButton
+      type={type} // Pass through the type prop
       className={cn(fullWidth && 'w-full', iconOnly && 'px-0', className)}
       variant={variant}
       size={size}
-      disabled={isDisabled}
+      disabled={isDisabled || loading} // Use disabled instead of isDisabled for the underlying button
       data-testid={testId}
       onClick={onClick}
     >
@@ -80,5 +83,7 @@ function Button({
     </ShadCnButton>
   );
 }
+
+Button.displayName = 'Button';
 
 export default Button;

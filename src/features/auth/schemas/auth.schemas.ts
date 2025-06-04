@@ -67,9 +67,11 @@ export const LoginRequestSchema = z.object({
   UserName: z.string().email({
     message: 'Please enter a valid email address',
   }),
-  Password: z.string({
-    message: 'Please enter a valid password',
-  }),
+  Password: z
+    .string({
+      message: 'Please enter a valid password',
+    })
+    .min(1, 'Password is required'),
 });
 export const LoginResponseSchema = z.object({
   tokens: z.object({
@@ -78,3 +80,14 @@ export const LoginResponseSchema = z.object({
     payload: payloadSchema,
   }),
 });
+
+export type CheckUserNameRequestType = z.infer<typeof CheckUserNameSchema>;
+
+export type CheckUserNameResponseType = z.infer<
+  typeof checkUserNameResponseSchema
+>;
+
+export type LoginRequestSchemaType = z.infer<typeof LoginRequestSchema>;
+export type LoginSchemaType = z.infer<typeof LoginRequestSchema>;
+
+export type LoginResponseSchemaType = z.infer<typeof LoginResponseSchema>;

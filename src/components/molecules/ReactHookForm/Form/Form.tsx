@@ -1,7 +1,13 @@
-import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import {
+  FieldValues,
+  FormProvider,
+  SubmitHandler,
+  UseFormReturn,
+} from 'react-hook-form';
+
 import { ZodType, ZodTypeDef } from 'zod';
 
-interface FormProps<TFormValues, Schema> {
+interface FormProps<TFormValues extends FieldValues, Schema> {
   form: UseFormReturn<TFormValues>;
   onSubmit: SubmitHandler<TFormValues>;
   children: React.ReactNode;

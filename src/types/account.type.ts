@@ -9,4 +9,10 @@ export interface AccountsState {
   setFilters:(filters:any[])=>void;
   error: string;
   setError: (error: string) => void;
+  searchText:string;
+  setSearchText:(searchText:string)=>void;
+  statuss:string;
+  setStatus:(status:string)=>void;
+  totalCount:number;
+  setTotalCount:(totalCount:number)=>void;
 }
