@@ -35,7 +35,7 @@ export function LoginForm({
       UserName: '',
       Password: '',
     },
-    mode: 'onChange',
+    mode: 'onSubmit',
   });
 
   const { watch, setError, clearErrors } = form;
@@ -46,6 +46,10 @@ export function LoginForm({
 
   const handleCheckUser = async () => {
     if (!UserName) return;
+
+    const isValid = await form.trigger('UserName');
+    if (!isValid) return;
+
     setIsLoading(true);
     setApiError('');
     clearErrors();
@@ -71,6 +75,9 @@ export function LoginForm({
 
   const handleLogin = async () => {
     if (!UserName || !Password) return;
+
+    const isValid = await form.trigger(['UserName', 'Password']);
+    if (!isValid) return;
 
     setIsLoading(true);
     setApiError('');
@@ -106,10 +113,6 @@ export function LoginForm({
     }
   };
 
-  const handleContinueSubmit = async () => {
-    if (!UserName) return;
-    await handleCheckUser();
-  };
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -143,15 +146,24 @@ export function LoginForm({
                     autoComplete="UserName"
                     disabled={isLoading}
                     autoFocus={!hasPassword}
+                    className="mb-0!"
                   />
                   {hasPassword && (
+                    <a
+                      href="#"
+                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                      onClick={() => setHasPassword(false)}
+                    >
+                      Change email?
+                    </a>
+                  )}
+                  {hasPassword && (
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Password</span>
-                      </div>
                       <FormInput
+                        label="Password"
                         name="Password"
                         type="password"
+                        placeholder="Enter password"
                         autoComplete="current-password"
                         disabled={isLoading}
                         autoFocus={hasPassword}
