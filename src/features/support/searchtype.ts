@@ -4,3 +4,5 @@ searchTextValue: string;
   handleSearchClear: () => void;
   searchPlaceholder?: string;
 };
+
+

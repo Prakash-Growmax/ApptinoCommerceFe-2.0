@@ -1,43 +1,50 @@
+// import useUserStore from "@/stores/useUserStore";
+// import useSupportStore from "@/stores/useSupportStore";
+// import { useQuery } from "@tanstack/react-query";
 
-import useSupportUserStore from "@/stores/useSupportUserStore";
-import { useQuery } from "@tanstack/react-query";
+// export const useGetSupportFilters = () => {
+//   const { userId, tenantId } = useUserStore();
+//   const token = localStorage.getItem("accessToken");
+//   const { setFilters, setLoading } = useSupportStore();
 
-export const useGetSupportFilters = () => {
-  const { userId, companyId, tenantId } = useSupportUserStore();
-  const token = localStorage.getItem("accessToken");
+//   const fetchFilters = async () => {
+//     setLoading(true);
+//     try {
+//       const url = `https://api.myapptino.com/corecommerce/templates/get?domainName=${tenantId}&propertyName=${userId}_filters`;
+//       const res = await fetch(url, {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
 
-  const fetchSupportFilters = async () => {
-    try {
-      const response = await fetch(
-        `https://api.myapptino.com/service-support/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
-            "Authorization": `Bearer ${token}`,
-          },
-        }
-      );
+//       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+//       const data = await res.json();
 
-      const data = await response.json();
-      console.log("Support Filters:", data);
-      return data;
-    } catch (error) {
-      console.error("Error fetching support filters", error);
-      return null;
-    }
-  };
+//       // Assuming filters come in data.data or data (adjust if different)
+//       const filters = data?.data || {
+//         status: "all",
+//         search: "",
+//         limit: 20,
+//         offset: 0,
+//       };
 
-  const query = useQuery({
-    queryKey: ["support-filters", userId, companyId],
-    queryFn: fetchSupportFilters,
-    enabled: !!userId && !!companyId && !!tenantId, // ensures values are available
-  });
+//       setFilters(filters);
+//       setLoading(false);
+//       return filters;
+//     } catch (error) {
+//       console.error("Error fetching support filters", error);
+//       setLoading(false);
+//       return null;
+//     }
+//   };
 
-  return query;
-};
+//   const query = useQuery({
+//     queryKey: ["supportFilters", userId, tenantId],
+//     queryFn: fetchFilters,
+//   });
+
+//   return query;
+// };

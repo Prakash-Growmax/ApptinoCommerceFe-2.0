@@ -1,24 +1,21 @@
 
-import { create } from "zustand";
+// import { create } from "zustand";
 
-interface SupportUserState {
-  userId: string;
-  companyId: string;
-  tenantId: string;
-  setSupportUser: (user: {
-    userId: string;
-    companyId: string;
-    tenantId: string;
-  }) => void;
-}
+// interface SupportUserState {
+//   userId: string;
+//   tenantId: string;
+//   setSupportUser: (user: {
+//     userId: string;
+//     tenantId: string;
+//   }) => void;
+// }
 
-const useSupportUserStore = create<SupportUserState>((set) => ({
-  userId: "",
-  companyId: "",
-  tenantId: "",
+// const useSupportUserStore = create<SupportUserState>((set) => ({
+//   userId: "",
+//   tenantId: "",
 
-  setSupportUser: ({ userId, tenantId }) =>
-    set(() => ({ userId, tenantId })),
-}));
+//   setSupportUser: ({ userId, tenantId }) =>
+//     set(() => ({ userId, tenantId })),
+// }));
 
-export default useSupportUserStore;
+// export default useSupportUserStore;

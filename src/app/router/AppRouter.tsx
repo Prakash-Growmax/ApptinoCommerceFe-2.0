@@ -7,6 +7,7 @@ import { Settings } from "lucide-react";
 import Login from "@/features/auth/components/LoginForm/Login";
 import DashboardPages from "@/features/dashboard/routes/DashboardPages";
 import PublicRoute from "./public-route";
+// import CreateTicket from "@/features/support/routes/createticket";
 
 const AppRoutes=()=>{
  return (

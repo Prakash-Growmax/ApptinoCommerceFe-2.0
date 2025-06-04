@@ -1,5 +1,5 @@
 export class AccountElastic{
-     staticBuildCustomerquery(filter, searchText, CatalogId) {
+     static BuildCustomerquery(filter, searchText, CatalogId) {
     let isfilter = false;
     const must = [];
     const must_not = [];
@@ -12,7 +12,7 @@ export class AccountElastic{
       size,
       query: {
         bool: {
-          minimum_number_should_match: 1,
+       
           must,
           must_not,
           should,
