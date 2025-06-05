@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import SupportTickets from "@/features/support/SupportTickets";
 import Customers from "@/features/customer/Customer";
-import { Settings } from "lucide-react";
+
 import DashboardPages from "@/features/dashboard/routes/DashboardPages";
 import PublicRoute from "./public-route";
 // import CreateTicket from "@/features/support/routes/createticket";
@@ -10,6 +10,7 @@ import PublicRoute from "./public-route";
 import Login from '@/features/auth/routes/LoginPage';
 
 import { ProtectedRoute } from './protected-route';
+import Settings from '@/features/settings/Settings';
 
 const AppRoutes = () => {
   return (
