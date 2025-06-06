@@ -70,8 +70,8 @@ hideDialogActions = false,
                   onClick={handleSubmit}
                   disabled={buttonDisabled || isSubmitting}
                   className={cn("text-base font-semibold", ButtonField)}
-                >
-                  {isSubmitting ? "Saving..." : primaryBtnText}
+                > Create Ticket
+                  {/* {isSubmitting ? "Saving..." : primaryBtnText} */}
                 </Button>
               </div>
             </DialogFooter>
