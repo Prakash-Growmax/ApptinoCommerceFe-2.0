@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 
 import { FormField } from '../FormField/FormField';
 
+import { RegisterOptions } from 'react-hook-form';
+
 interface FormInputProps {
   name: string;
   label?: string;
@@ -18,6 +20,8 @@ interface FormInputProps {
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  rules?: RegisterOptions
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -36,12 +40,14 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       onBlur,
       onFocus,
       onChange,
+      rules, 
     },
     ref
   ) => {
     return (
       <FormField
         name={name}
+        rules={rules}
         {...(label && { label })}
         {...(description && { description })}
         {...(className && { className })}
@@ -64,7 +70,13 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               onBlur?.(e); // Call custom onBlur if provided
             }}
             onFocus={onFocus}
+             onChange={e => {
+    field.onChange(e); // RHF onChange
+    onChange?.(e);     // Custom onChange
+  }}
           />
+            
+          
         )}
       </FormField>
     );

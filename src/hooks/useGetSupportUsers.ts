@@ -33,3 +33,43 @@
 
 //   return query;
 // };
+
+
+import { ElasticSearchServices } from "@/features/customer/api/ElasticSearchServices";
+import useSupportStore from "@/stores/useSupportStore";
+import useUserStore from "@/stores/useUserStore";
+import { useQuery } from "@tanstack/react-query";
+import { map } from "lodash";
+import { useState } from "react";
+
+export const useGetSupportFilters = () => {
+  const { setSupportData, setSupportLoading } = useSupportStore();
+
+  const { tenantId } = useUserStore();
+
+  const getSupportData = async (searchValue: string ) => {
+    try {
+      setSupportLoading(true);
+      const data = await ElasticSearchServices.CustomerSearch(searchValue, tenantId, true);
+      const resData = ElasticSearchServices.FormatResults(data);
+      const updatedData = map(resData, (e) => ({
+        ...e,
+        id: parseInt(e.ticketID),
+        title: e.ticketTitle,
+        priority: e.ticketPriority,
+        status: e.ticketStatus,
+      }));
+      setSupportData(updatedData);
+    } catch (error) {
+      console.error("Support search failed:", error);
+    } finally {
+      setSupportLoading(false);
+    }
+  };
+
+  const query = useQuery({
+    queryKey: ["Supportfilters" ],
+    queryFn:getSupportData,
+  });
+  return query;
+};

@@ -1,103 +1,181 @@
+import { useForm } from "react-hook-form";
+import { FormInput, FormSelect } from "@/components/molecules/ReactHookForm";
 import EditDialog from "@/components/molecules/EditDialog/EditDialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Form } from "@/components/molecules/ReactHookForm/Form/Form"; 
 
 type FormData = {
-  contactPerson: string;
   customer: string;
-  // Add more fields if needed
+  contactPerson: string;
+  phone: string;
+  email: string;
+  address: string;
+  subject: string;
+  category: string;
 };
 
-const SupportTicketsdialog = () => {
+
+const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>();
+  const methods = useForm<FormData>({
+    defaultValues: {
+      customer: '',
+      contactPerson: '',
+      phone: '',
+      email: '',
+      address: '',
+    subject: '',
+       category: ''
+    },
+    // mode: "onSubmit",
+  });
 
   const handleDialogClose = () => {
     setOpen(false);
-    reset();
+    methods.reset();
   };
 
   const onSubmit = (data: FormData) => {
     console.log("Form Data:", data);
     setOpen(false);
-    reset();
+    methods.reset();
   };
 
   return (
     <>
       <Button onClick={() => setOpen(true)}>Create Ticket</Button>
-            
-            
-            <ScrollArea>
+
       <EditDialog
         open={open}
         title="Create New Ticket"
         closeDialog={handleDialogClose}
-        handleSubmit={handleSubmit(onSubmit)}
-      >
+        handleSubmit={methods.handleSubmit(onSubmit)}
         
-        <form className="space-y-4">
-          <div className="space-y-2 bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg">Customer Information</h3>
+      >
+        <Form form={methods} onSubmit={onSubmit} className="space-y-4  ">
+          <div className="bg-white  rounded-lg">
+            <h3 className="font-semibold text-lg mb-2">Customer Information</h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="customer" className="text-gray-700">Customer</Label>
-                <Input
-                  id="customer"
-                  placeholder="Search customer"
-                  className="border-gray-300 mt-2"
-                  {...register("customer", { required: "Customer is required" })}
-                />
-                {errors.customer && (
-                  <p className="text-red-500 text-sm">{errors.customer.message}</p>
-                )}
-              </div>
+            <div className="grid grid-cols-2 gap-2">
+              <FormInput
+                name="customer"
+                label="Customer"
+                placeholder="Search customer"
+                autoComplete="customer"
+                rules={{ required: "Customer is required" }}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="contactPerson" className="text-gray-700">Contact Person</Label>
-                <Input
-                  id="contactPerson"
-                  placeholder="Select contact"
-                  className="border-gray-300 mt-2"
-                  {...register("contactPerson", { required: "Contact person is required" })}
-                />
-                {errors.contactPerson && (
-                  <p className="text-red-500 text-sm">{errors.contactPerson.message}</p>
-                )}
-              </div>
+              <FormInput
+                name="contactPerson"
+                label="Contact Person"
+                placeholder="Select contact"
+                autoComplete="contactPerson"
+                rules={{ required: "Contact person is required" }}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="phone" className="text-gray-700">Phone</Label>
-                <Input id="phone" placeholder="Enter phone number" className="border-gray-300 mt-2" />
-              </div>
+              <FormInput
+                name="phone"
+                label="Phone"
+                placeholder="Enter phone number"
+                rules={{
+                  required: "Phone is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: "Phone must be 10 digits",
+                  },
+                }}
+              />
 
-              <div className="space-y-1">
-                <Label htmlFor="email" className="text-gray-700">Email</Label>
-                <Input id="email" placeholder="v@gmail.com" className="border-gray-300 mt-2" />
-              </div>
+              <FormInput
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="v@gmail.com"
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: "Invalid email format",
+                  },
+                }}
+              />
 
-              <div className="space-y-1 col-span-2">
-                <Label htmlFor="address" className="text-gray-700">Address</Label>
-                <Input id="address" placeholder="Enter address" className="w-full border-gray-300 mt-2" />
-              </div>
+              <FormInput
+                name="address"
+                label="Address"
+                placeholder="Enter address"
+                className="col-span-2"
+                rules={{ required: "Address is required" }}
+              />
             </div>
           </div>
-        </form>
+
+           <div className="bg-white  rounded-lg">
+            <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
+
+            <div className="grid grid-cols-2 gap-2 ">
+              <FormInput
+                name="Subject"
+                label="Subject"
+                placeholder="Brief description of the issue"
+                autoComplete="subject"
+                rules={{ required: "Subject is required" }}
+              />
+
+              <FormSelect
+  name="category"
+  label="Category"
+  placeholder="Select a category"
+  options={[
+    { value: 'technical', label: 'Technical Issue' },
+    { value: 'billing', label: 'Billing' },
+    { value: 'general', label: 'General Inquiry' },
+  ]}
+  disabled={false}
+/>
+
+              <FormInput
+                name="phone"
+                label="Phone"
+                placeholder="Enter phone number"
+                rules={{
+                  required: "Phone is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: "Phone must be 10 digits",
+                  },
+                }}
+              />
+
+              <FormInput
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="v@gmail.com"
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: "Invalid email format",
+                  },
+                }}
+              />
+
+              <FormInput
+                name="address"
+                label="Address"
+                placeholder="Enter address"
+                className="col-span-2"
+                rules={{ required: "Address is required" }}
+              />
+            </div>
+          </div>
+        </Form>
       </EditDialog>
-      </ScrollArea>
     </>
   );
 };
 
-export default SupportTicketsdialog;
+export default SupportTicketsDialog;

@@ -42,7 +42,7 @@
 //   };
 
 //   const query = useQuery({
-//     queryKey: ["supportFilters", userId, tenantId],
+//     queryKey: ["supportFilters", userId],
 //     queryFn: fetchFilters,
 //   });
 

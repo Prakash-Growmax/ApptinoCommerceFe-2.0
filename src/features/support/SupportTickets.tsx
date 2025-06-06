@@ -42,6 +42,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
 import { useForm } from "react-hook-form";
 import SupportTicketsdialog from './routes/createticket';
+import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 
 type FormData = {
   contactPerson: string;
@@ -71,6 +72,8 @@ const SupportTickets = ({
   const [skillsOpen, setSkillsOpen] = useState(false);   
   
    const { register, handleSubmit, formState: { errors }, reset, } = useForm<FormData>();
+
+   useGetSupportFilters()
 
   const onSubmit = (data: any) => {
     console.log("Submitted data:", data);

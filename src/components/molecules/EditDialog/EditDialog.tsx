@@ -36,10 +36,10 @@ hideDialogActions = false,
 }:EditDialogProps) =>{
      const isMobile = useMediaQuery("(max-width: 768px)");
      return(
-          <Dialog open={open} onOpenChange={(v) => !v && closeDialog()}>
+          <Dialog open={open} onOpenChange={(v) => !v && closeDialog()} >
       <DialogContent
         className={cn(
-          "max-h-[90vh] overflow-y-auto sm:max-w-lg",
+          "max-h-[90vh]  overflow-y-auto sm:max-w-3xl",
           isMobile && "w-full h-full max-w-full m-0 rounded-none p-0"
         )}
       >

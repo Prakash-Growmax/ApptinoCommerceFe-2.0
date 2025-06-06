@@ -1,37 +1,17 @@
-// import create from "zustand";
+import { create } from "zustand";
 
-// interface SupportFilter {
-//   status: string | "all";
-//   search: string;
-//   limit: number;
-//   offset: number;
-//   [key: string]: any;
-// }
+interface SupportStoreState {
+  supportData: any[];
+  isLoading: boolean;
+  setSupportData: (data: any[]) => void;
+  setSupportLoading: (loading: boolean) => void;
+}
 
-// interface SupportStore {
-//   filters: SupportFilter;
-//   setFilters: (filters: SupportFilter) => void;
-//   data: any[];
-//   setData: (data: any[]) => void;
-//   loading: boolean;
-//   setLoading: (loading: boolean) => void;
-// }
+const useSupportStore = create<SupportStoreState>((set) => ({
+  supportData: [],
+  isLoading: false,
+  setSupportData: (data) => set({ supportData: data }),
+  setSupportLoading: (loading) => set({ isLoading: loading }),
+}));
 
-// const useSupportStore = create<SupportStore>((set) => ({
-//   filters: {
-//     status: "all",
-//     search: "",
-//     limit: 20,
-//     offset: 0,
-//   },
-//   setFilters: (filters) =>
-//     set(() => ({
-//       filters,
-//     })),
-//   data: [],
-//   setData: (data) => set(() => ({ data })),
-//   loading: false,
-//   setLoading: (loading) => set(() => ({ loading })),
-// }));
-
-// export default useSupportStore;
+export default useSupportStore;
