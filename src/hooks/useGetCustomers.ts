@@ -25,6 +25,7 @@ export const useGetCustomers = ({ filters }) => {
     queryKey: ["customers", filters],
     queryFn: fetchCustomers,
     enabled: !!filters && Object.keys(filters).length > 0, // only run when filters exist
+       refetchOnWindowFocus: false,
   });
 
   return query;

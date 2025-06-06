@@ -50,6 +50,8 @@ export const useGetCustomersFilters=()=>{
  const query = useQuery({
     queryKey: [userId,tenantId],
     queryFn:fetchFilters,
+    enabled: !!companyId && !!userId, // prevents running query without valid IDs
+    refetchOnWindowFocus: false,
   });
   return query;
 }

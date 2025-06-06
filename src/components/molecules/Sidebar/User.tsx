@@ -89,7 +89,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>(navigate('/settings'))}>
                 <div className="flex gap-2 cursor-pointer">
                 <Settings />
                 Settings
@@ -100,8 +100,8 @@ export function NavUser({
           
        
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <div className="flex gap-2 cursor-pointer" onClick={handleLogout}>
+            <DropdownMenuItem onClick={handleLogout}>
+              <div className="flex gap-2 cursor-pointer" >
                 <LogOut />
               Log out
               </div>
