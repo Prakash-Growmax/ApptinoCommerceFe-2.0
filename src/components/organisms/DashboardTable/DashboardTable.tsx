@@ -28,6 +28,7 @@ type TableProps<T> = {
   totalDataCount: number; // 👈 total number of items (from API or source)
   pagination: TablePagination;
   setPagination: React.Dispatch<React.SetStateAction<TablePagination>>;
+   setPage: (page: number | ((prev: number) => number)) => void;
 };
 
 const DashboardTable = <T,>({
@@ -37,6 +38,7 @@ const DashboardTable = <T,>({
   totalDataCount,
   pagination,
   setPagination,
+  setPage
 }: TableProps<T>) => {
   const pageCount = Math.ceil(totalDataCount / pagination.pageSize);
 
@@ -53,6 +55,7 @@ const DashboardTable = <T,>({
       ...prev,
       pageIndex: Math.max(prev.pageIndex - 1, 0),
     }));
+       setPage((prev) => prev - 1);
   };
 
   const handleNext = () => {
@@ -60,6 +63,7 @@ const DashboardTable = <T,>({
       ...prev,
       pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
     }));
+    setPage((prev) => prev + 1);
   };
 
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

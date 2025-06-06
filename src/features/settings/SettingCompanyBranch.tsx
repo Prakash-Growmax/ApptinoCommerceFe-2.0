@@ -5,13 +5,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import useCompanyBranchStore from "./store/useCompanyBranchStore";
 import { useState } from "react";
 import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
+import { Slice } from "lucide-react";
 
 const SettingCompanyBranch=()=>{
       const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 5, // You can change this as needed
+        pageSize: 20, // You can change this as needed
       });
-    const {branchData,loading,totalCount}=useCompanyBranchStore();
+    const {branchData,loading,totalCount,setPage}=useCompanyBranchStore();
     useGetBranchDetails();
     const getCustomLabel = (key: string, address: any) => address?.labels?.[key] || null;
 const getIsHidden = (key: string, address: any) => address?.hidden?.includes(key);
@@ -170,19 +171,24 @@ const Columns: ColumnDef<any>[] = [
     },
   },
 ];
-  const paginatedData = branchData.slice(
-    pagination.pageIndex * pagination.pageSize,
-    (pagination.pageIndex + 1) * pagination.pageSize
-  );
+      console.log(branchData);
+  // const paginatedData = branchData.slice(
+  //   pagination.pageIndex * pagination.pageSize,
+  //   (pagination.pageIndex + 1) * pagination.pageSize
+  // );
+ 
+    // console.log(paginatedData);
   return(
     <>
        <DashboardTable
-        data={paginatedData}
+        data={branchData}
         columns={Columns}
         loading={loading}
         pagination={pagination}
         setPagination={setPagination}
         totalDataCount={totalCount} // 👈 dynamically calculated
+        setPage={setPage}
+        
       />
     </>
   )
