@@ -4,6 +4,8 @@ import EditDialog from "@/components/molecules/EditDialog/EditDialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Form } from "@/components/molecules/ReactHookForm/Form/Form"; 
+import { useGetSupportFilters } from "@/hooks/useGetSupportUsers";
+import useSupportStore from "@/stores/useSupportStore";
 
 type FormData = {
   customer: string;
@@ -18,7 +20,13 @@ type FormData = {
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
-
+  useGetSupportFilters();
+  const{supportData}=useSupportStore();
+  const supportOptions = supportData?.map((item) => ({
+  value: item.id.toString(), // or item.companyID
+  label: item.companyName,
+  disabled: !item.isActivated, // optional logic to disable inactive ones
+}));
   const methods = useForm<FormData>({
     defaultValues: {
       customer: '',
@@ -59,14 +67,14 @@ const SupportTicketsDialog = () => {
             <h3 className="font-semibold text-lg mb-2">Customer Information</h3>
 
             <div className="grid grid-cols-2 gap-2">
-              <FormInput
-                name="customer"
-                label="Customer"
-                placeholder="Search customer"
-                autoComplete="customer"
-                rules={{ required: "Customer is required" }}
-              />
-
+             
+                         <FormSelect
+  name="customer"
+  label="Customer"
+  placeholder="Search customer"
+  options={supportOptions}
+  disabled={false}
+/>
               <FormInput
                 name="contactPerson"
                 label="Contact Person"

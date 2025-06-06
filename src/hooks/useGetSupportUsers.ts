@@ -52,14 +52,17 @@ export const useGetSupportFilters = () => {
       setSupportLoading(true);
       const data = await ElasticSearchServices.CustomerSearch(searchValue, tenantId, true);
       const resData = ElasticSearchServices.FormatResults(data);
-      const updatedData = map(resData, (e) => ({
-        ...e,
-        id: parseInt(e.ticketID),
-        title: e.ticketTitle,
-        priority: e.ticketPriority,
-        status: e.ticketStatus,
-      }));
-      setSupportData(updatedData);
+       const updatedResData = map(resData, (e) => {
+        e["id"] = parseInt(e.companyID);
+        e["name"] = e.companyName;
+        e["profileAccess"] = e.isProfileAccess ? true : false;
+        e["currencyId"] = {
+          currencyCode: e.currencyCode,
+          currencySymbol: e.currencySymbol,
+        };
+        return e;
+      });
+      setSupportData(updatedResData);
     } catch (error) {
       console.error("Support search failed:", error);
     } finally {
