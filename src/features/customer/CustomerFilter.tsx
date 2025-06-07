@@ -14,6 +14,7 @@ import { AccountElastic } from "./api/AccountElastics";
 import { ElasticSearchServices } from "./api/ElasticSearchServices";
 import useUserStore from "@/stores/useUserStore";
 import { useEffect, useState } from "react";
+import { upload } from "@testing-library/user-event/dist/cjs/utility/upload.js";
 
 const CustomerFilter = () => {
   const {
@@ -52,27 +53,29 @@ const CustomerFilter = () => {
   };
 
   // Debounced search effect
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (searchText.length > 2) {
-        const updatedFilters = { ...filters, offset: 0, limit: 20 };
-        setLoading(true);
-        setFilters(updatedFilters);
-        fetchCustomers(updatedFilters, searchText);
-      } else if (searchText.length === 0) {
-        setLoading(true);
-        fetchCustomers(filters, "");
-      }
-    }, 400);
+  // useEffect(() => {
+  //   const delayDebounce = setTimeout(() => {
+  //     if (searchText.length > 2) {
+  //       const updatedFilters = { ...filters, offset: 0, limit: 20 };
+  //       setLoading(true);
+  //       setFilters(updatedFilters);
+  //       fetchCustomers(updatedFilters, searchText);
+  //     } else if (searchText.length === 0) {
+  //       setLoading(true);
+  //       fetchCustomers(filters, "");
+  //     }
+  //   }, 400);
 
-    return () => clearTimeout(delayDebounce);
-  }, [searchText]);
+  //   return () => clearTimeout(delayDebounce);
+  // }, [searchText]);
 
   const handleStatusChange = (value: string) => {
+ 
     setStatus(value); // Only update status; no fetch
   };
 
   const handleApplyFilters = () => {
+    console.log(statuss)
     const updated = {
       ...filters,
       offset: 0,
@@ -80,6 +83,7 @@ const CustomerFilter = () => {
       isActivated: statuss,
       status: statuss ? [statuss] : [],
     };
+    console.log(updated);
     setFilters(updated);
     setLoading(true);
     fetchCustomers(updated, searchText);

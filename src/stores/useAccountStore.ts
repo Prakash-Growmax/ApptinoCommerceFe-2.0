@@ -19,8 +19,8 @@ const useAccountsStore = create<AccountsState>((set) => ({
   searchText: '',
   setSearchText: (searchText) => set({ searchText }),
 
-  status: '',
-  setStatus: (status) => set({ status }),
+  statuss: '',
+  setStatus: (statuss) => set({ statuss }),
 
   totalCount: 0,
   setTotalCount: (totalCount) => set({ totalCount }),

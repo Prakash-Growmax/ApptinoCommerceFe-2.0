@@ -15,8 +15,8 @@ export interface AccountsState {
   searchText: string;
   setSearchText: (searchText: string) => void;
 
-  status: string;
-  setStatus: (status: string) => void;
+  statuss: string;
+  setStatus: (statuss: string) => void;
 
   totalCount: number;
   setTotalCount: (totalCount: number) => void;
