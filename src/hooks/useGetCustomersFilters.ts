@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useGetCustomersFilters=()=>{
        const {userId,tenantId,companyId}=useUserStore();
     const token = localStorage.getItem("accessToken");
-    const {setFilters,setLoading}=useAccountsStore();
+    const {setFilters,setLoading,page,rowPerPage}=useAccountsStore();
     const fetchFilters = async () => {
   try {
     const response = await fetch(`https://api.myapptino.com/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`, {
@@ -28,8 +28,8 @@ export const useGetCustomersFilters=()=>{
         data = {
           accountName: "",
           branches: false,
-          limit: 20,
-          offset: 0,
+          limit: rowPerPage,
+          offset:page,
           pageNumber: 0,
           state: "",
           city: "",
@@ -48,7 +48,7 @@ export const useGetCustomersFilters=()=>{
   }
 };
  const query = useQuery({
-    queryKey: [userId,tenantId],
+    queryKey: [userId,tenantId,page,rowPerPage],
     queryFn:fetchFilters,
     enabled: !!companyId && !!userId, // prevents running query without valid IDs
     refetchOnWindowFocus: false,

@@ -86,9 +86,10 @@ const CustomerFilter = () => {
   };
 
   return (
-    <div className="flex items-end gap-4 w-full flex-wrap">
+    <div className="flex items-end gap-4 w-full shadow-md rounded-md flex-wrap p-4">
       {/* Search Input */}
       <div className="relative">
+         <Label htmlFor="status" className="mb-2 ml-1">Customer search</Label>
         <Input
           type="text"
           value={searchText}
@@ -98,11 +99,11 @@ const CustomerFilter = () => {
         />
         <div className="absolute inset-y-0 right-2 flex items-center">
           {searchText ? (
-            <Button variant="ghost" size="icon" onClick={handleSearchClear}>
-              <X size={16} color="black" />
-            </Button>
+            <div onClick={handleSearchClear}>
+              <X size={16} color="black"  className="mt-6"/>
+            </div>
           ) : (
-            <Search color="black" size={16} strokeWidth={2} />
+            <Search color="black" size={16} strokeWidth={2} className="mt-6" />
           )}
         </div>
       </div>

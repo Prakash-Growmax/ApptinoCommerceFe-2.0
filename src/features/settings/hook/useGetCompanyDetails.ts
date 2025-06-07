@@ -25,7 +25,7 @@ export const useGetCompanyDetails = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+      
       const data = await response.json();
       setCompanyData(data?.data);
       setLoading(false);
