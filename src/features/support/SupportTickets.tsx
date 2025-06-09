@@ -44,6 +44,7 @@ import { useForm } from "react-hook-form";
 import SupportTicketsdialog from './routes/createticket';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 import useSupportStore from '@/stores/useSupportStore';
+import SupportLandingPage from './SupportLanding';
 
 type FormData = {
   contactPerson: string;
@@ -545,6 +546,7 @@ const SupportTickets = ({
       
 
       <div className="border-b"></div>
+      <SupportLandingPage/>
     </div>
   );
 };
