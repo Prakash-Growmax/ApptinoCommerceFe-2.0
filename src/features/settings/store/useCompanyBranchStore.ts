@@ -9,7 +9,10 @@ const useCompanyBranchStore=create<BranchState>((set)=>({
     error: '',
   setError: (error) => set({ error }),
   page:0,
-  setPage:(page)=>set({page}),
+   setPage: (updater) =>
+    set((state) => ({
+      page: typeof updater === 'function' ? updater(state.page) : updater,
+    })),
   rowPerPage:20,
   setRowPerPage:(rowPerPage)=>set({rowPerPage}),
   totalCount:0,

@@ -1,42 +1,70 @@
-import { Controller, useForm, useFormContext,  } from "react-hook-form";
-import { FormInput, FormRadioGroup, FormSelect } from "@/components/molecules/ReactHookForm";
-import EditDialog from "@/components/molecules/EditDialog/EditDialog";
-import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
-import { Form } from "@/components/molecules/ReactHookForm/Form/Form"; 
-import { useSkillsMultiSelect } from "@/hooks/useSkillsMultiSelect";
-import { FormField } from "@/components/molecules/ReactHookForm/FormField/FormField";
+import { useRef, useState } from 'react';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 
+import EditDialog from '@/components/molecules/EditDialog/EditDialog';
+import {
+  FormInput,
+  FormRadioGroup,
+  FormSelect,
+} from '@/components/molecules/ReactHookForm';
+import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
+import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
+import { useSkillsMultiSelect } from '@/hooks/useSkillsMultiSelect';
+import { cn } from '@/lib/utils';
+import useSupportStore from '@/stores/useSupportStore';
+import useUserStore from '@/stores/useUserStore';
 
 type FormData = {
   customer: string;
+  CustomerBranchName: string;
   contactPerson: string;
-  phone: string;
   email: string;
+  phone: string;
+  Priority: string;
+  Severity: string;
+  Reason: string;
+  Ticketowner: string;
+  TicketSource: string;
   address: string;
   subject: string;
+  attachments?: FileList;
+  problemDescription?: string;
   category: string;
   label?: string;
   showLabel?: boolean;
+  resolutionDueDate?: Date;
 };
-
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
 
-    const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
+  const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
   const [skillsOpen, setSkillsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  
-  
-  
   const handleSelect = (skill: string) => {
     toggleSkill(skill);
     setSkillsOpen(false);
-  }
+  };
 
+  useGetSupportFilters();
+  const { supportData } = useSupportStore();
+  const supportOptions = supportData?.map(item => ({
+    value: item.id.toString(), // or item.companyID
+    label: item.companyName,
+    disabled: !item.isActivated, // optional logic to disable inactive ones
+  }));
   const methods = useForm<FormData>({
     defaultValues: {
       customer: '',
@@ -45,23 +73,126 @@ const SupportTicketsDialog = () => {
       email: '',
       address: '',
       subject: '',
-      category: ''
+      category: '',
     },
     // mode: "onSubmit",
   });
-  const { register, watch, setValue, handleSubmit, reset , control } = methods;
-  const attachments = watch("attachments");
+  const { register, watch, setValue, handleSubmit, reset, control } = methods;
+  const attachments = watch('attachments');
 
-  
   const handleDialogClose = () => {
     setOpen(false);
     methods.reset();
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
-    setOpen(false);
-    methods.reset();
+  // const onSubmit = (data: FormData) => {
+  //   console.log("Form Data:", data);
+  //   setOpen(false);
+  //   methods.reset();
+  // };
+  const { companyId, tenantId, userId } = useUserStore()
+
+  const onSubmit = async (data: FormData) => {
+    
+    console.log('Form Values:', data); // Just for visibility
+
+    const username = 'Sudhakar Varatharajan';
+    // const companyName = 'Zipstore India Limited';
+    // const now = new Date().toISOString();
+
+    const payload = {
+      supportTicketRequestDTO: {
+        title: data.subject,
+        description: data.problemDescription || '',
+        buyerCompanyName: data.customer,
+        buyerBranchName: data.CustomerBranchName,
+        buyerEmail: data.email,
+        buyerContactNumber: data.phone,
+        buyerContactPerson: data.contactPerson,
+        ticketOwner: data.Ticketowner,
+        dueDateTime: data.resolutionDueDate?.toISOString() || null,
+        productSKUs: [],
+        referenceIdentifiers: [],
+        serialNumbers: [],
+        descriptionError: data.problemDescription || '',
+        priority: data.Priority,
+        status: 'Open',
+        updatedDateTime: new Date().toISOString(),
+        createdDateTime: new Date().toISOString(),
+        updatedByUserId: userId,
+        updatedByUsername: username,
+        createdByUserId: userId,
+        createdByUserName: username,
+        createdByCompanyId: companyId,
+        createdByCompanyName: "Growmax.io",
+        resolution: '',
+        domainName: 'batademo',
+      },
+      fieldServiceRequestDTO: {
+        title: 'New Field Service ',
+        ticketIdentifier: null,
+        ownerUserId: userId,
+        ownerUsername: username,
+        status: 'Open',
+        location: data.address,
+        appointmentFromDateTime: new Date().toISOString(),
+        appointmentToDateTime: new Date(
+          Date.now() + 10 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        createdDateTime: new Date().toISOString(),
+        updatedDateTime: new Date().toISOString(),
+        createdByUserId: userId,
+        createdByUsername: username,
+        updatedByUserId: userId,
+        updatedByUsername: username,
+        attachments: [], // Handle file uploads separately
+      },
+    };
+
+     // 🔐 Get the token here
+  const token = localStorage.getItem("accessToken");
+
+  // ✅ Optional: check if token exists
+  if (!token) {
+    alert("You are not logged in. Token is missing.");
+    return;
+  }
+
+    console.log('Sending Payload:', payload); // ✅ Print payload
+
+    
+      try {
+      const response = await fetch(
+        'https://api.myapptino.com/support/service-support/fieldService/createWithSupportTicket?domainName=batademo',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // Authorization: "Bearer token" if needed
+              // 'x-tenant': tenantId,
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json();
+
+      console.log('API Response:', result); // ✅ Print response
+
+      if (response.ok) {
+        alert('Ticket Created Successfully!');
+        setOpen(false);
+        reset();
+      } else {
+        console.error('API Error:', result);
+        alert('Failed to create ticket.');
+      }
+      }catch (error) {
+     console.error('Network or API Error:', error);
+     alert('Something went wrong.');
+   }
+    
   };
 
   return (
@@ -73,94 +204,65 @@ const SupportTicketsDialog = () => {
         title="Create New Ticket"
         closeDialog={handleDialogClose}
         handleSubmit={methods.handleSubmit(onSubmit)}
-        
       >
         <Form form={methods} onSubmit={onSubmit} className="space-y-4  ">
           <div className="bg-white  rounded-lg">
             <h3 className="font-semibold text-lg mb-2">Customer Information</h3>
 
             <div className="grid grid-cols-2 gap-2">
-              <FormInput
+              <FormSelect
                 name="customer"
-                label="Customer"
-                placeholder="Search customer"
-                autoComplete="customer"
-                rules={{ required: "Customer is required" }}
+                label="Select Customer"
+                className="text-gray-700"
+                placeholder="Select customer"
+                options={supportOptions}
+                disabled={false}
               />
-
+              <FormInput
+                name="CustomerBranchName"
+                label="Customer Branch Name"
+                placeholder="Customer branch name"
+                autoComplete="contactPerson"
+                rules={{ required: 'Contact person is required' }}
+              />
               <FormInput
                 name="contactPerson"
-                label="Contact Person"
-                placeholder="Select contact"
+                label="Customer Contact Person"
+                placeholder="Select contact person"
                 autoComplete="contactPerson"
-                rules={{ required: "Contact person is required" }}
-              />
-
-              <FormInput
-                name="phone"
-                label="Phone"
-                placeholder="Enter phone number"
-                rules={{
-                  required: "Phone is required",
-                  pattern: {
-                    value: /^[0-9]{10}$/,
-                    message: "Phone must be 10 digits",
-                  },
-                }}
+                rules={{ required: 'Contact person is required' }}
               />
 
               <FormInput
                 name="email"
-                label="Email"
+                label="Customer Email"
                 type="email"
-                placeholder="v@gmail.com"
+                placeholder="Customer email"
                 rules={{
-                  required: "Email is required",
+                  required: 'Email is required',
                   pattern: {
                     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                    message: "Invalid email format",
+                    message: 'Invalid email format',
                   },
                 }}
               />
-
               <FormInput
-                name="address"
-                label="Address"
-                placeholder="Enter address"
-                className="col-span-2"
-                rules={{ required: "Address is required" }}
+                name="phone"
+                label="Customer Contact Number"
+                placeholder="Contact number"
+                rules={{
+                  required: 'Phone is required',
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: 'Phone must be 10 digits',
+                  },
+                }}
               />
-            </div>
-          </div>
-
-           <div className="bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
-
-              <FormInput
-                name="Subject"
-                label="Subject"
-                placeholder="Brief description of the issue"
-                autoComplete="subject"
-                rules={{ required: "Subject is required" }}
-              />
-            <div className="grid grid-cols-2 gap-2 ">
-
-              <FormSelect
-                name="category"
-                label="Category"
-                placeholder="Select a category"
-                options={[
-                  { value: 'technical', label: 'Technical Issue' },
-                  { value: 'billing', label: 'Billing' },
-                  { value: 'general', label: 'General Inquiry' },
-                ]}
-                disabled={false}
-              />
-
               <FormSelect
                 name="Priority"
                 label="Priority"
-                // placeholder="Select a category"
+                placeholder="Select a Priority"
+                className="text-gray-700"
                 options={[
                   { value: 'Low', label: 'Low' },
                   { value: 'High', label: 'High' },
@@ -168,50 +270,139 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
 
+              <FormSelect
+                name="Severity"
+                label="Severity"
+                placeholder="Severity"
+                className="text-gray-700"
+                options={[
+                  { value: 'Low', label: 'Low' },
+                  { value: 'High', label: 'High' },
+                ]}
+                disabled={false}
+              />
+              <FormSelect
+                name="Reason"
+                label="Reason"
+                placeholder="Reason"
+                className="text-gray-700"
+                options={[
+                  { value: 'Field Work', label: 'Field Work' },
+                  { value: 'Repair reasons', label: 'Repair reasons' },
+                ]}
+                disabled={false}
+              />
+              <FormInput
+                name="Ticketowner"
+                label="Ticket Owner"
+                placeholder="Ticket Owner"
+                // autoComplete="contactPerson"
+                rules={{ required: 'Contact person is required' }}
+              />
+              <FormSelect
+                name="TicketSource"
+                label="Ticket Source"
+                placeholder="Ticket Source"
+                className="text-gray-700"
+                options={[
+                  { value: 'WEB', label: 'WEB' },
+                  { value: 'Mobile', label: 'Mobile' },
+                ]}
+                disabled={false}
+              />
 
-             <div className="">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Attachments
-                  </label>
-                  <input
-                    type="file"
-                    {...methods.register("attachments")}
-                    multiple
-                    className="w-full border border-gray-300 rounded-md p-2"
-                  />
-                  {methods.watch("attachments")?.length > 0 && (
-                    <ul className="mt-2 list-disc pl-5 text-sm text-gray-700">
-                      {Array.from(methods.watch("attachments")).map((file: File, index: number) => (
-                        <li key={index}>{file.name}</li>
-                      ))}
-                    </ul>
+              <div className="col-span-1">
+                <label className="block text-sm font-medium mb-1 text-gray-700">
+                  Resolution Due Date
+                </label>
+                <Controller
+                  control={control}
+                  name="resolutionDueDate"
+                  rules={{ required: 'Resolution due date is required' }}
+                  render={({ field }) => (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            'w-full justify-start text-left font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value
+                            ? format(field.value, 'PPP')
+                            : 'Select a due date'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={date => field.onChange(date)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   )}
-                </div> 
-              <FormInput
-                name="Asset/Serial Number"
-                label="Asset/Serial Number"
-                placeholder="e.g., SN-123-AB"
-                 rules={{ required: "Description is required" }}
-              />
-
+                />
+              </div>
             </div>
-              <FormInput
-                name="Description"
-                label="Description"
-                placeholder="Detailed description of the issue..."
-                 rules={{ required: "Description is required" }}
-              />
-
           </div>
 
           <div className="bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Field Services Details</h3>
+            <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
+
+            <FormInput
+              name="Subject"
+              label="Subject"
+              placeholder="Brief subject"
+              autoComplete="subject"
+              rules={{ required: 'Subject is required' }}
+            />
+            <div className="grid grid-cols-2 gap-2  ">
+              <FormInput
+                name="ProblemDescription"
+                label="Problem Description"
+                placeholder="Problem Description"
+                autoComplete="subject"
+                rules={{ required: 'Subject is required' }}
+              />
+            </div>
+            <div className="">
+              <label className="block text-sm font-medium  mb-1">
+                Attachments
+              </label>
+              <input
+                type="file"
+                {...methods.register('attachments')}
+                multiple
+                className="w-full border border-gray-300 rounded-md p-2 text-gray-700"
+              />
+              {methods.watch('attachments')?.length > 0 && (
+                <ul className="mt-2  pl-5 text-sm text-gray-700">
+                  {Array.from(methods.watch('attachments')).map(
+                    (file: File, index: number) => (
+                      <li key={index}>{file.name}</li>
+                    )
+                  )}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* --------------------------------------------------- */}
+          <div className="bg-white  rounded-lg">
+            <h3 className="font-semibold text-lg mb-2">
+              Field Services Details
+            </h3>
 
             <div className="grid grid-cols-2 gap-2 ">
               <FormSelect
                 name="service type"
-                label="Service type"
-                // placeholder="Select a category"
+                label="Service Type"
+                className="text-gray-700"
+                placeholder="Select a category"
                 options={[
                   { value: 'Low', label: 'Low' },
                   { value: 'High', label: 'High' },
@@ -219,10 +410,10 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
 
-
               <FormSelect
                 name="category"
                 label="Category"
+                className="text-gray-700"
                 placeholder="Select a category"
                 options={[
                   { value: 'technical', label: 'Technical Issue' },
@@ -235,6 +426,7 @@ const SupportTicketsDialog = () => {
               <FormSelect
                 name="Preferred Time"
                 label="Preferred Time"
+                className="text-gray-700"
                 placeholder="Select time slot"
                 options={[
                   { value: 'Low', label: 'Low' },
@@ -243,9 +435,10 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
 
-             <FormSelect
+              <FormSelect
                 name="Estimated Duration"
                 label="Estimated Duration"
+                className="text-gray-700"
                 placeholder="Select time slot"
                 options={[
                   { value: '1 hour', label: '1 hour' },
@@ -254,10 +447,11 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
 
-               <FormSelect
+              <FormSelect
                 name="Service plan"
                 label="Service Plan"
                 placeholder="Service plan"
+                className="text-gray-700"
                 options={[
                   { value: 'technical', label: 'technical' },
                   { value: 'billing', label: 'billing' },
@@ -265,43 +459,41 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
 
-                <div className="relative w-[350px]" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Skills Required
-      </label>
-      <button
-        type="button"
-        className="w-full border border-gray-300 rounded-md p-2 text-left"
-        onClick={() => setSkillsOpen(true)}
-      >
-        {selectedSkills.length > 0
-          ? selectedSkills.join(", ")
-          : "Select skills..."}
-      </button>
+              <div className="relative w-[350px]" ref={dropdownRef}>
+                <label className="block text-sm font-medium  mb-1">
+                  Skills Required
+                </label>
+                <button
+                  type="button"
+                  className="w-full border border-gray-300 rounded-md p-2 text-left"
+                  onClick={() => setSkillsOpen(true)}
+                >
+                  {selectedSkills.length > 0
+                    ? selectedSkills.join(', ')
+                    : 'Select skills...'}
+                </button>
 
-      {skillsOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-md border bg-white shadow max-h-48 overflow-y-auto">
-          {skillsList.map((skill) => (
-            <div
-              key={skill}
-              onClick={() => handleSelect(skill)}
-              className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-            >
-              <input
-                type="checkbox"
-                checked={selectedSkills.includes(skill)}
-                readOnly
-                className="mr-2"
-              />
-              {skill}
+                {skillsOpen && (
+                  <div className="absolute z-10 mt-1 w-full rounded-md border bg-white shadow max-h-48 overflow-y-auto">
+                    {skillsList.map(skill => (
+                      <div
+                        key={skill}
+                        onClick={() => handleSelect(skill)}
+                        className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedSkills.includes(skill)}
+                          readOnly
+                          className="mr-2"
+                        />
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-  
-            </div>
-            
           </div>
 
           <div className="bg-white  rounded-lg">
@@ -312,17 +504,16 @@ const SupportTicketsDialog = () => {
                 name="Channel"
                 label="Channel"
                 placeholder="Phone"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                ]}
+                className="text-gray-700"
+                options={[{ value: 'Low', label: 'Low' }]}
                 disabled={false}
               />
-
 
               <FormSelect
                 name="Department"
                 label="Department"
-                placeholder="Select a Department"
+                className="text-gray-700"
+                placeholder="Select a department"
                 options={[
                   { value: 'technical', label: 'Technical Issue' },
                   { value: 'billing', label: 'Billing' },
@@ -332,88 +523,41 @@ const SupportTicketsDialog = () => {
 
               <FormSelect
                 name="Assign To"
-                label="Assign To"
+                label="Assign to"
                 placeholder="Assign To"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                ]}
+                className="text-gray-700"
+                options={[{ value: 'Low', label: 'Low' }]}
                 disabled={false}
               />
 
-             <FormSelect
+              <FormSelect
                 name="SLA"
                 label="SLA"
                 placeholder="SLA"
-                options={[
-                  { value: 'Standard (24)', label: 'Standard (24)' },
-                ]}
+                className="text-gray-700"
+                options={[{ value: 'Standard (24)', label: 'Standard (24)' }]}
                 disabled={false}
               />
 
-               <FormSelect
-                name="Service plan"
-                label="Service Plan"
-                placeholder="Service plan"
-                options={[
-                  { value: 'technical', label: 'technical' },
-                  { value: 'billing', label: 'billing' },
-                ]}
-                disabled={false}
-              />
-
-                <div className="relative w-[350px]" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Skills Required
-      </label>
-      <button
-        type="button"
-        className="w-full border border-gray-300 rounded-md p-2 text-left"
-        onClick={() => setSkillsOpen(true)}
-      >
-        {selectedSkills.length > 0
-          ? selectedSkills.join(", ")
-          : "Select skills..."}
-      </button>
-
-      {skillsOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-md border bg-white shadow max-h-48 overflow-y-auto">
-          {skillsList.map((skill) => (
-            <div
-              key={skill}
-              onClick={() => handleSelect(skill)}
-              className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-            >
-              <input
-                type="checkbox"
-                checked={selectedSkills.includes(skill)}
-                readOnly
-                className="mr-2"
-              />
-              {skill}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
               <Controller
-      name="priority" // the form field name
-      control={control} // from useForm()
-      rules={{ required: "Priority is required" }}
-      render={({ field }) => (
-        <FormRadioGroup
-          {...field}
-          options={[
-            { value: "Search Knowledge Base for similar issues", label: "Search Knowledge Base for similar issues" },
-            
-          ]}
-          // label="Priority"
-          disabled={false}
-        />
-      )}
-    />
-          
+                name="priority" // the form field name
+                control={control} // from useForm()
+                rules={{ required: 'Priority is required' }}
+                render={({ field }) => (
+                  <FormRadioGroup
+                    {...field}
+                    options={[
+                      {
+                        value: 'Search Knowledge Base for similar issues',
+                        label: 'Search Knowledge Base for similar issues',
+                      },
+                    ]}
+                    // label="Priority"
+                    disabled={false}
+                  />
+                )}
+              />
             </div>
-            
           </div>
         </Form>
       </EditDialog>

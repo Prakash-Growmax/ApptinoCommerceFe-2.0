@@ -5,7 +5,7 @@ import useUserStore from "@/stores/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetCustomersFilters=()=>{
-       const {userId,tenantId}=useUserStore();
+       const {userId,tenantId,companyId}=useUserStore();
     const token = localStorage.getItem("accessToken");
     const {setFilters,setLoading}=useAccountsStore();
     const fetchFilters = async () => {

@@ -23,7 +23,7 @@ export interface BranchState {
   error: string;
   setError: (error: string) => void;
   page:number;
-  setPage:(page:number)=>void;
+   setPage: (page: number | ((prev: number) => number)) => void;
   rowPerPage:number;
   setRowPerPage:(rowPerPage:number)=>void;
   totalCount:number;

@@ -1,17 +1,17 @@
-import { useEffect } from "react";
-import { useGetSupportFilters } from "@/hooks/useGetSupportUsers";
+// import { useEffect } from "react";
+// import { useGetSupportFilters } from "@/hooks/useGetSupportUsers";
 
-export default function SupportLandingPage() {
-  const { getSupportData } = useGetSupportFilters();
+// export default function SupportLandingPage() {
+//   const { getSupportData } = useGetSupportFilters();
 
-  useEffect(() => {
-    getSupportData(""); // <-- Make this call to trigger network
-  }, []);
+//   useEffect(() => {
+//     getSupportData(""); // <-- Make this call to trigger network
+//   }, []);
 
-  return (
-    <div>
-      <h2>Support Page</h2>
-      {/* Display tickets here */}
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <h2>Support Page</h2>
+//       {/* Display tickets here */}
+//     </div>
+//   );
+// }
