@@ -7,6 +7,8 @@ import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable
 import useAccountsStore from "@/stores/useAccountStore";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useGetCompanyDetails } from "../settings/hook/useGetCompanyDetaiLs";
+import { useFetchCustomersWithFilters } from "./hook/useGetCustomersDetails";
 
 const CustomerLanding = () => {
   const [pagination, setPagination] = useState({
@@ -14,11 +16,11 @@ const CustomerLanding = () => {
     pageSize: 5, // You can change this as needed
   });
 
-  const { data, filters, loading } = useAccountsStore();
-
-  useGetCustomersFilters();
-  useGetCustomers({ filters });
-
+  const { data, filters, loading,page,setPage,rowPerPage,setRowPerPage,totalCount } = useAccountsStore();
+  
+  // useGetCustomersFilters();
+  // useGetCustomers({ filters });
+   useFetchCustomersWithFilters()
   const columns: ColumnDef<any>[] = [
     {
       id: "companyName",
@@ -119,20 +121,36 @@ const CustomerLanding = () => {
     },
   ];
 
-  const paginatedData = data.slice(
-    pagination.pageIndex * pagination.pageSize,
-    (pagination.pageIndex + 1) * pagination.pageSize
-  );
+  // const paginatedData = data.slice(
+  //   pagination.pageIndex * pagination.pageSize,
+  //   (pagination.pageIndex + 1) * pagination.pageSize
+  // );
+   const handlePrevious = () => {
+     
+       setPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+  
+    setPage((prev) => prev + 1);
+  };
 
   return (
     <div className="w-full">
       <DashboardTable
-        data={paginatedData}
+        data={data}
         columns={columns}
         loading={loading}
         pagination={pagination}
         setPagination={setPagination}
-        totalDataCount={data.length} // 👈 dynamically calculated
+        totalDataCount={totalCount} 
+         pageOptions={[5,10,20]}
+         page={page}
+         setPage={setPage}
+         rowPerPage={rowPerPage}
+         setRowPerPage={setRowPerPage}
+         handlePrevious={handlePrevious}
+         handleNext={handleNext}
       />
     </div>
   );

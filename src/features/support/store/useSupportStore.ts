@@ -1,11 +1,12 @@
 // stores/useAccountsStore.ts
-import { AccountsState } from '@/types/account.type';
+
 import { create } from 'zustand';
+import { SupportType } from '../types/support.types';
 
 
-const useAccountsStore = create<AccountsState>((set) => ({
-  data: [],
-  setData: (data) => set({ data }),
+const useSupportStore = create<SupportType>((set) => ({
+  supportData: [],
+  setSupportData: (supportData) => set({supportData}),
 
   loading: false,
   setLoading: (loading) => set({ loading }),
@@ -16,11 +17,7 @@ const useAccountsStore = create<AccountsState>((set) => ({
   error: '',
   setError: (error) => set({ error }),
 
-  searchText: '',
-  setSearchText: (searchText) => set({ searchText }),
-
-  statuss: '',
-  setStatus: (statuss) => set({ statuss }),
+ 
 
   totalCount: 0,
   setTotalCount: (totalCount) => set({ totalCount }),
@@ -36,4 +33,4 @@ const useAccountsStore = create<AccountsState>((set) => ({
 }));
 
 
-export default useAccountsStore;
+export default useSupportStore;

@@ -12,7 +12,7 @@ const SettingCompanyBranch=()=>{
         pageIndex: 0,
         pageSize: 20, // You can change this as needed
       });
-    const {branchData,loading,totalCount,setPage}=useCompanyBranchStore();
+    const {branchData,loading,totalCount,page,setPage,rowPerPage,setRowPerPage}=useCompanyBranchStore();
     useGetBranchDetails();
     const getCustomLabel = (key: string, address: any) => address?.labels?.[key] || null;
 const getIsHidden = (key: string, address: any) => address?.hidden?.includes(key);
@@ -178,6 +178,15 @@ const Columns: ColumnDef<any>[] = [
   // );
  
     // console.log(paginatedData);
+  const handlePrevious = () => {
+     
+       setPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+  
+    setPage((prev) => prev + 1);
+  };
   return(
     <>
        <DashboardTable
@@ -188,7 +197,12 @@ const Columns: ColumnDef<any>[] = [
         setPagination={setPagination}
         totalDataCount={totalCount} // 👈 dynamically calculated
         setPage={setPage}
-        
+        pageOptions={[5,10,20]}
+        handlePrevious={handlePrevious}
+        handleNext={handleNext}
+        page={page}
+        rowPerPage={rowPerPage}
+         setRowPerPage={setRowPerPage}
       />
     </>
   )

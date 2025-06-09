@@ -1,24 +1,15 @@
-// types/accountsStore.ts
-export interface AccountsState {
-  data: any[];
-  setData: (data: any[]) => void;
+export type SupportType={
+  supportData: any[];
+  setSupportData: ( supportData: any[]) => void;
 
   loading: boolean;
   setLoading: (loading: boolean) => void;
-
   filters: any[];
   setFilters: (filters: any[]) => void;
 
   error: string;
   setError: (error: string) => void;
-
-  searchText: string;
-  setSearchText: (searchText: string) => void;
-
-  statuss: string;
-  setStatus: (statuss: string) => void;
-
-  totalCount: number;
+   totalCount: number;
   setTotalCount: (totalCount: number) => void;
 
   page: number;
@@ -27,4 +18,3 @@ export interface AccountsState {
   rowPerPage: number;
   setRowPerPage: (rowPerPage: number) => void;
 }
-

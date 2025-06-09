@@ -29,6 +29,12 @@ type TableProps<T> = {
   pagination: TablePagination;
   setPagination: React.Dispatch<React.SetStateAction<TablePagination>>;
    setPage: (page: number | ((prev: number) => number)) => void;
+    pageOptions: number[];
+     handlePrevious: () => void;
+     handleNext:()=>void;
+     page:number;
+      rowPerPage:number
+        setRowPerPage:(rowPerPage:number|string)=>void;
 };
 
 const DashboardTable = <T,>({
@@ -38,7 +44,13 @@ const DashboardTable = <T,>({
   totalDataCount,
   pagination,
   setPagination,
-  setPage
+  setPage,
+  pageOptions,
+  handlePrevious,
+  handleNext,
+  page,
+  rowPerPage,
+  setRowPerPage
 }: TableProps<T>) => {
   const pageCount = Math.ceil(totalDataCount / pagination.pageSize);
 
@@ -50,27 +62,29 @@ const DashboardTable = <T,>({
     pageCount,
   });
 
-  const handlePrevious = () => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: Math.max(prev.pageIndex - 1, 0),
-    }));
-       setPage((prev) => prev - 1);
-  };
+  // const handlePrevious = () => {
+  //   setPagination((prev) => ({
+  //     ...prev,
+  //     pageIndex: Math.max(prev.pageIndex - 1, 0),
+  //   }));
+  //      setPage((prev) => prev - 1);
+  // };
 
-  const handleNext = () => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
-    }));
-    setPage((prev) => prev + 1);
-  };
+  // const handleNext = () => {
+  //   setPagination((prev) => ({
+  //     ...prev,
+  //     pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
+  //   }));
+  //   setPage((prev) => prev + 1);
+  // };
 
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPagination({
-      pageIndex: 0,
-      pageSize: parseInt(e.target.value, 10),
-    });
+    // setPagination({
+    //   pageIndex: 0,
+    //   pageSize: parseInt(e.target.value, 10),
+    // });
+    setPage(0);
+    setRowPerPage(e.target.value)
   };
 
   return (
@@ -127,16 +141,16 @@ const DashboardTable = <T,>({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-muted-foreground">
-                    Page {pagination.pageIndex + 1} of {pageCount}
+                    Page {page + 1} of {pageCount}
                   </span>
                   <label className="text-sm text-muted-foreground">
                     Rows per page:{" "}
                     <select
                       className="border rounded px-2 py-1 ml-1"
-                      value={pagination.pageSize}
+                      value={rowPerPage}
                       onChange={handlePageSizeChange}
                     >
-                      {[5,10,20].map((size) => (
+                      { pageOptions.map((size) => (
                         <option key={size} value={size}>
                           {size}
                         </option>
@@ -149,7 +163,7 @@ const DashboardTable = <T,>({
                     variant="outline"
                     size="sm"
                     onClick={handlePrevious}
-                    disabled={pagination.pageIndex === 0}
+                    disabled={page === 0}
                   >
                     Previous
                   </Button>
@@ -157,7 +171,7 @@ const DashboardTable = <T,>({
                     variant="outline"
                     size="sm"
                     onClick={handleNext}
-                    disabled={pagination.pageIndex >= pageCount - 1}
+                    disabled={page >= pageCount - 1}
                   >
                     Next
                   </Button>

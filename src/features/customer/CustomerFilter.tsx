@@ -14,6 +14,7 @@ import { AccountElastic } from "./api/AccountElastics";
 import { ElasticSearchServices } from "./api/ElasticSearchServices";
 import useUserStore from "@/stores/useUserStore";
 import { useEffect, useState } from "react";
+import { upload } from "@testing-library/user-event/dist/cjs/utility/upload.js";
 
 const CustomerFilter = () => {
   const {
@@ -52,27 +53,29 @@ const CustomerFilter = () => {
   };
 
   // Debounced search effect
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (searchText.length > 2) {
-        const updatedFilters = { ...filters, offset: 0, limit: 20 };
-        setLoading(true);
-        setFilters(updatedFilters);
-        fetchCustomers(updatedFilters, searchText);
-      } else if (searchText.length === 0) {
-        setLoading(true);
-        fetchCustomers(filters, "");
-      }
-    }, 400);
+  // useEffect(() => {
+  //   const delayDebounce = setTimeout(() => {
+  //     if (searchText.length > 2) {
+  //       const updatedFilters = { ...filters, offset: 0, limit: 20 };
+  //       setLoading(true);
+  //       setFilters(updatedFilters);
+  //       fetchCustomers(updatedFilters, searchText);
+  //     } else if (searchText.length === 0) {
+  //       setLoading(true);
+  //       fetchCustomers(filters, "");
+  //     }
+  //   }, 400);
 
-    return () => clearTimeout(delayDebounce);
-  }, [searchText]);
+  //   return () => clearTimeout(delayDebounce);
+  // }, [searchText]);
 
   const handleStatusChange = (value: string) => {
+ 
     setStatus(value); // Only update status; no fetch
   };
 
   const handleApplyFilters = () => {
+    console.log(statuss)
     const updated = {
       ...filters,
       offset: 0,
@@ -80,15 +83,17 @@ const CustomerFilter = () => {
       isActivated: statuss,
       status: statuss ? [statuss] : [],
     };
+    console.log(updated);
     setFilters(updated);
     setLoading(true);
     fetchCustomers(updated, searchText);
   };
 
   return (
-    <div className="flex items-end gap-4 w-full flex-wrap">
+    <div className="flex items-end gap-4 w-full shadow-md rounded-md flex-wrap p-4">
       {/* Search Input */}
       <div className="relative">
+         <Label htmlFor="status" className="mb-2 ml-1">Customer search</Label>
         <Input
           type="text"
           value={searchText}
@@ -98,11 +103,11 @@ const CustomerFilter = () => {
         />
         <div className="absolute inset-y-0 right-2 flex items-center">
           {searchText ? (
-            <Button variant="ghost" size="icon" onClick={handleSearchClear}>
-              <X size={16} color="black" />
-            </Button>
+            <div onClick={handleSearchClear}>
+              <X size={16} color="black"  className="mt-6"/>
+            </div>
           ) : (
-            <Search color="black" size={16} strokeWidth={2} />
+            <Search color="black" size={16} strokeWidth={2} className="mt-6" />
           )}
         </div>
       </div>
