@@ -94,11 +94,9 @@ const SupportTicketsDialog = () => {
 
   const onSubmit = async (data: FormData) => {
     
-    console.log('Form Values:', data); // Just for visibility
+    console.log('Form Values:', data); // 
 
     const username = 'Sudhakar Varatharajan';
-    // const companyName = 'Zipstore India Limited';
-    // const now = new Date().toISOString();
 
     const payload = {
       supportTicketRequestDTO: {
@@ -145,20 +143,20 @@ const SupportTicketsDialog = () => {
         createdByUsername: username,
         updatedByUserId: userId,
         updatedByUsername: username,
-        attachments: [], // Handle file uploads separately
+        attachments: [], 
       },
     };
 
-     // 🔐 Get the token here
+    
   const token = localStorage.getItem("accessToken");
 
-  // ✅ Optional: check if token exists
+  
   if (!token) {
     alert("You are not logged in. Token is missing.");
     return;
   }
 
-    console.log('Sending Payload:', payload); // ✅ Print payload
+    console.log('Sending Payload:', payload); 
 
     
       try {
@@ -169,7 +167,7 @@ const SupportTicketsDialog = () => {
           headers: {
             'Content-Type': 'application/json',
             // Authorization: "Bearer token" if needed
-              // 'x-tenant': tenantId,
+              'x-tenant': tenantId,
             "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
@@ -178,7 +176,7 @@ const SupportTicketsDialog = () => {
 
       const result = await response.json();
 
-      console.log('API Response:', result); // ✅ Print response
+      console.log('API Response:', result); 
 
       if (response.ok) {
         alert('Ticket Created Successfully!');
