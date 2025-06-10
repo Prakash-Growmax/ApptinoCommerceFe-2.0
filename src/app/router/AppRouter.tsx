@@ -11,6 +11,7 @@ import Login from '@/features/auth/routes/LoginPage';
 
 import { ProtectedRoute } from './protected-route';
 import Settings from '@/features/settings/Settings';
+import Support from '@/features/support/Support';
 
 const AppRoutes = () => {
   return (
@@ -27,7 +28,7 @@ const AppRoutes = () => {
         path="/supporttickets"
         element={
           <ProtectedRoute>
-            <SupportTickets />
+            <Support />
           </ProtectedRoute>
         }
       />

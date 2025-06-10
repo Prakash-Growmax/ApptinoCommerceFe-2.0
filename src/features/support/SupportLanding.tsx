@@ -4,6 +4,7 @@ import { useGetSupportTicketFilters } from "./hook/useGetSupportTicketFilter";
 import useSupportStore from "./store/useSupportStore";
 import { ColumnDef } from "@tanstack/react-table";
 import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
+import useSideBarStore from "@/stores/sidebarStore";
 
 export default function SupportLandingPage() {
   // const { getSupportData } = useGetSupportFilters();
@@ -13,6 +14,7 @@ export default function SupportLandingPage() {
       });
    useGetSupportTicketFilters();
   const {supportData,page,setPage,rowPerPage,setRowPerPage,totalCount,loading} = useSupportStore();
+  const {sideOpen} = useSideBarStore();
   const Columns: ColumnDef<any>[] = [
     {
       accessorKey:"title",
@@ -192,8 +194,9 @@ export default function SupportLandingPage() {
   
     setPage((prev) => prev + 1);
   };
+  console.log(sideOpen);
   return (
-    <div>
+    <div className={sideOpen ? "lg:w-[1150px]" : "w-full p-4"}>
           <DashboardTable
         data={supportData}
         columns={Columns}
