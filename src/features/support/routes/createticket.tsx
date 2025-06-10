@@ -24,6 +24,8 @@ import { useSkillsMultiSelect } from '@/hooks/useSkillsMultiSelect';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
+import { createTicket } from '@/features/auth/api/ticketapi';
+import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 
 type FormData = {
   customer: string;
@@ -90,108 +92,178 @@ const SupportTicketsDialog = () => {
   //   setOpen(false);
   //   methods.reset();
   // };
-  const { companyId, tenantId, userId } = useUserStore()
+  // const { companyId, tenantId, userId } = useUserStore()
 
-  const onSubmit = async (data: FormData) => {
+  // const onSubmit = async (data: FormData) => {
     
-    console.log('Form Values:', data); // 
+  //   console.log('Form Values:', data); // 
 
-    const username = 'Sudhakar Varatharajan';
+  //   const username = 'Sudhakar Varatharajan';
 
-    const payload = {
-      supportTicketRequestDTO: {
-        title: data.subject,
-        description: data.problemDescription || '',
-        buyerCompanyName: data.customer,
-        buyerBranchName: data.CustomerBranchName,
-        buyerEmail: data.email,
-        buyerContactNumber: data.phone,
-        buyerContactPerson: data.contactPerson,
-        ticketOwner: data.Ticketowner,
-        dueDateTime: data.resolutionDueDate?.toISOString() || null,
-        productSKUs: [],
-        referenceIdentifiers: [],
-        serialNumbers: [],
-        descriptionError: data.problemDescription || '',
-        priority: data.Priority,
-        status: 'Open',
-        updatedDateTime: new Date().toISOString(),
-        createdDateTime: new Date().toISOString(),
-        updatedByUserId: userId,
-        updatedByUsername: username,
-        createdByUserId: userId,
-        createdByUserName: username,
-        createdByCompanyId: companyId,
-        createdByCompanyName: "Growmax.io",
-        resolution: '',
-        domainName: 'batademo',
-      },
-      fieldServiceRequestDTO: {
-        title: 'New Field Service ',
-        ticketIdentifier: null,
-        ownerUserId: userId,
-        ownerUsername: username,
-        status: 'Open',
-        location: data.address,
-        appointmentFromDateTime: new Date().toISOString(),
-        appointmentToDateTime: new Date(
-          Date.now() + 10 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        createdDateTime: new Date().toISOString(),
-        updatedDateTime: new Date().toISOString(),
-        createdByUserId: userId,
-        createdByUsername: username,
-        updatedByUserId: userId,
-        updatedByUsername: username,
-        attachments: [], 
-      },
-    };
+  //   const payload = {
+  //     supportTicketRequestDTO: {
+  //       title: data.subject,
+  //       description: data.problemDescription || '',
+  //       buyerCompanyName: data.customer,
+  //       buyerBranchName: data.CustomerBranchName,
+  //       buyerEmail: data.email,
+  //       buyerContactNumber: data.phone,
+  //       buyerContactPerson: data.contactPerson,
+  //       ticketOwner: data.Ticketowner,
+  //       dueDateTime: data.resolutionDueDate?.toISOString() || null,
+  //       productSKUs: [],
+  //       referenceIdentifiers: [],
+  //       serialNumbers: [],
+  //       descriptionError: data.problemDescription || '',
+  //       priority: data.Priority,
+  //       status: 'Open',
+  //       updatedDateTime: new Date().toISOString(),
+  //       createdDateTime: new Date().toISOString(),
+  //       updatedByUserId: userId,
+  //       updatedByUsername: username,
+  //       createdByUserId: userId,
+  //       createdByUserName: username,
+  //       createdByCompanyId: companyId,
+  //       createdByCompanyName: "Growmax.io",
+  //       resolution: '',
+  //       domainName: 'batademo',
+  //     },
+  //     fieldServiceRequestDTO: {
+  //       title: 'New Field Service ',
+  //       ticketIdentifier: null,
+  //       ownerUserId: userId,
+  //       ownerUsername: username,
+  //       status: 'Open',
+  //       location: data.address,
+  //       appointmentFromDateTime: new Date().toISOString(),
+  //       appointmentToDateTime: new Date(
+  //         Date.now() + 10 * 24 * 60 * 60 * 1000
+  //       ).toISOString(),
+  //       createdDateTime: new Date().toISOString(),
+  //       updatedDateTime: new Date().toISOString(),
+  //       createdByUserId: userId,
+  //       createdByUsername: username,
+  //       updatedByUserId: userId,
+  //       updatedByUsername: username,
+  //       attachments: [], 
+  //     },
+  //   };
 
     
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
 
   
+  // if (!token) {
+  //   alert("You are not logged in. Token is missing.");
+  //   return;
+  // }
+
+  //   console.log('Sending Payload:', payload); 
+
+    
+  //     try {
+  //     const response = await fetch(
+  //       'https://api.myapptino.com/support/service-support/fieldService/createWithSupportTicket?domainName=batademo',
+  //       {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           // Authorization: "Bearer token" if needed
+  //             'x-tenant': tenantId,
+  //           "Authorization": `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify(payload),
+  //       }
+  //     );
+
+  //     const result = await response.json();
+
+  //     console.log('API Response:', result); // ✅ Print response
+
+  //     if (response.ok) {
+  //       alert('Ticket Created Successfully!');
+  //       setOpen(false);
+  //       reset();
+  //     } else {
+  //       console.error('API Error:', result);
+  //       alert('Failed to create ticket.');
+  //     }
+  //     }catch (error) {
+  //    console.error('Network or API Error:', error);
+  //    alert('Something went wrong.');
+  //  }
+    
+  // };
+
+
+  const { companyId, tenantId, userId } = useUserStore();
+
+const onSubmit = async (data: FormData) => {
+  const username = 'Sudhakar Varatharajan';
+
+  const payload: CreateTicketRequestType = {
+    supportTicketRequestDTO: {
+      title: data.subject,
+      description: data.problemDescription || '',
+      buyerCompanyName: data.customer,
+      buyerBranchName: data.CustomerBranchName,
+      buyerEmail: data.email,
+      buyerContactNumber: data.phone,
+      buyerContactPerson: data.contactPerson,
+      ticketOwner: data.Ticketowner,
+      dueDateTime: data.resolutionDueDate?.toISOString() || null,
+      productSKUs: [],
+      referenceIdentifiers: [],
+      serialNumbers: [],
+      descriptionError: data.problemDescription || '',
+      priority: data.Priority,
+      status: 'Open',
+      updatedDateTime: new Date().toISOString(),
+      createdDateTime: new Date().toISOString(),
+      updatedByUserId: userId,
+      updatedByUsername: username,
+      createdByUserId: userId,
+      createdByUserName: username,
+      createdByCompanyId: companyId,
+      createdByCompanyName: 'Growmax.io',
+      resolution: '',
+      domainName: 'batademo',
+    },
+    fieldServiceRequestDTO: {
+      title: 'New Field Service',
+      ticketIdentifier: null,
+      ownerUserId: userId,
+      ownerUsername: username,
+      status: 'Open',
+      location: data.address,
+      appointmentFromDateTime: new Date().toISOString(),
+      appointmentToDateTime: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+      createdDateTime: new Date().toISOString(),
+      updatedDateTime: new Date().toISOString(),
+      createdByUserId: userId,
+      createdByUsername: username,
+      updatedByUserId: userId,
+      updatedByUsername: username,
+      attachments: [],
+    },
+  };
+
+  const token = localStorage.getItem('accessToken');
   if (!token) {
-    alert("You are not logged in. Token is missing.");
+    alert('Token missing');
     return;
   }
 
-    console.log('Sending Payload:', payload); 
-
-    
-      try {
-      const response = await fetch(
-        'https://api.myapptino.com/support/service-support/fieldService/createWithSupportTicket?domainName=batademo',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            // Authorization: "Bearer token" if needed
-              'x-tenant': tenantId,
-            "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const result = await response.json();
-
-      console.log('API Response:', result); 
-
-      if (response.ok) {
-        alert('Ticket Created Successfully!');
-        setOpen(false);
-        reset();
-      } else {
-        console.error('API Error:', result);
-        alert('Failed to create ticket.');
-      }
-      }catch (error) {
-     console.error('Network or API Error:', error);
-     alert('Something went wrong.');
-   }
-    
-  };
+  try {
+    const res = await createTicket(payload, token, tenantId);
+    alert('Ticket created successfully!');
+    setOpen(false);
+    reset();
+  } catch (error) {
+    alert('Ticket creation failed');
+    console.error(error);
+  }
+};
 
   return (
     <>
@@ -217,7 +289,7 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
               <FormInput
-                name="CustomerBranchName"
+                name="customerBranchName"
                 label="Customer Branch Name"
                 placeholder="Customer branch name"
                 autoComplete="contactPerson"
@@ -257,7 +329,7 @@ const SupportTicketsDialog = () => {
                 }}
               />
               <FormSelect
-                name="Priority"
+                name="priority"
                 label="Priority"
                 placeholder="Select a Priority"
                 className="text-gray-700"
@@ -269,7 +341,7 @@ const SupportTicketsDialog = () => {
               />
 
               <FormSelect
-                name="Severity"
+                name="severity"
                 label="Severity"
                 placeholder="Severity"
                 className="text-gray-700"
@@ -280,7 +352,7 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
               <FormSelect
-                name="Reason"
+                name="reason"
                 label="Reason"
                 placeholder="Reason"
                 className="text-gray-700"
@@ -291,14 +363,14 @@ const SupportTicketsDialog = () => {
                 disabled={false}
               />
               <FormInput
-                name="Ticketowner"
+                name="ticketowner"
                 label="Ticket Owner"
                 placeholder="Ticket Owner"
                 // autoComplete="contactPerson"
                 rules={{ required: 'Contact person is required' }}
               />
               <FormSelect
-                name="TicketSource"
+                name="ticketSource"
                 label="Ticket Source"
                 placeholder="Ticket Source"
                 className="text-gray-700"
@@ -352,7 +424,7 @@ const SupportTicketsDialog = () => {
             <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
 
             <FormInput
-              name="Subject"
+              name="subject"
               label="Subject"
               placeholder="Brief subject"
               autoComplete="subject"
@@ -360,7 +432,7 @@ const SupportTicketsDialog = () => {
             />
             <div className="grid grid-cols-2 gap-2  ">
               <FormInput
-                name="ProblemDescription"
+                name="problemDescription"
                 label="Problem Description"
                 placeholder="Problem Description"
                 autoComplete="subject"
