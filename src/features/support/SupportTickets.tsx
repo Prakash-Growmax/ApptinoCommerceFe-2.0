@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils';
 
 import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
 import { useSupportTicketStore } from '../../stores/useSupportTicketStore';
+import SupportLandingPage from './SupportLanding';
 import SupportTicketsdialog from './routes/createticket';
 // import { isMobile } from "react-device-detect";
 import { SearchTypes } from './searchtype';
@@ -53,10 +54,6 @@ const SupportTickets = ({
   searchPlaceholder = 'Search',
 }: SearchTypes) => {
   const setFilters = useSupportTicketStore(state => state.setFilters);
-  // const clearFilters = useSupportTicketStore((state) => state.clearFilters);
-
-  //   const { searchText, status: storedStatus, priority: storedPriority, dob, technician: storedTechnician } =
-  // useSupportTicketStore();
 
   const [status, setStatus] = useState('');
   const [priority, setPriority] = useState('');
@@ -92,42 +89,14 @@ const SupportTickets = ({
       dob: filterDate,
       technician,
     });
-
-    setTimeout(() => {
-      const currentState = useSupportTicketStore.getState();
-    });
     setStatus('');
     setPriority('');
     setFilterDate(undefined);
     setTechnician('');
     handleSearchClear();
-
-    //   const handleClearAll = () => {
-    //     setStatus("");
-    //     setPriority("");
-    //     setFilterDate(undefined);
-    //     setTechnician("");
-    //     clearFilters();
-    //     handleSearchClear();
-    //   };
   };
   const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
-  const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   return (
     <div>
@@ -592,6 +561,7 @@ const SupportTickets = ({
       </div>
 
       <div className="border-b"></div>
+      <SupportLandingPage />
     </div>
   );
 };
