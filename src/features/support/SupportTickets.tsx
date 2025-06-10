@@ -1,17 +1,16 @@
 // import { useState } from 'react';
-import React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { format } from 'date-fns';
 import { CalendarIcon, Search, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -34,22 +33,17 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
+import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
 import { useSupportTicketStore } from '../../stores/useSupportTicketStore';
+import SupportLandingPage from './SupportLanding';
+import SupportTicketsdialog from './routes/createticket';
 // import { isMobile } from "react-device-detect";
 import { SearchTypes } from './searchtype';
 
-import { useState, useRef, useEffect } from "react";
-import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
-import { useForm } from "react-hook-form";
-import SupportTicketsdialog from './routes/createticket';
-import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
-import useSupportStore from '@/stores/useSupportStore';
-import SupportLandingPage from './SupportLanding';
-
 type FormData = {
   contactPerson: string;
-  customer : string;
-  
+  customer: string;
+
   // Add more fields here as needed
 };
 
@@ -60,10 +54,6 @@ const SupportTickets = ({
   searchPlaceholder = 'Search',
 }: SearchTypes) => {
   const setFilters = useSupportTicketStore(state => state.setFilters);
-  // const clearFilters = useSupportTicketStore((state) => state.clearFilters);
-
-  //   const { searchText, status: storedStatus, priority: storedPriority, dob, technician: storedTechnician } =
-  // useSupportTicketStore();
 
   const [status, setStatus] = useState('');
   const [priority, setPriority] = useState('');
@@ -71,23 +61,25 @@ const SupportTickets = ({
   const [technician, setTechnician] = useState('');
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [skillsOpen, setSkillsOpen] = useState(false);   
-  
-   const { register, handleSubmit, formState: { errors }, reset, } = useForm<FormData>();
-   const { supportData}=useSupportStore();
- 
+  const [skillsOpen, setSkillsOpen] = useState(false);
 
-  const onSubmit = (data: any) => {
-    console.log("Submitted data:", data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>();
+
+  const onSubmit = () => {
     setIsDialogOpen(false);
-  reset();
+    reset();
   };
 
   useEffect(() => {
     if (!isDialogOpen) {
-      reset()
+      reset();
     }
-  }, [isDialogOpen, reset])
+  }, [isDialogOpen, reset]);
 
   const handleApplyFilters = () => {
     setFilters({
@@ -97,53 +89,15 @@ const SupportTickets = ({
       dob: filterDate,
       technician,
     });
-
-    setTimeout(() => {
-      const currentState = useSupportTicketStore.getState();
-      console.log('✅ Success: Store values', currentState);
-    });
-    // console.log("Filters Applied");
-
     setStatus('');
     setPriority('');
     setFilterDate(undefined);
     setTechnician('');
     handleSearchClear();
-
-    // console.log("Filters Applied and Inputs Cleared");
-
-    
-
-  //   const handleClearAll = () => {
-  //     setStatus("");
-  //     setPriority("");
-  //     setFilterDate(undefined);
-  //     setTechnician("");
-  //     clearFilters();
-  //     handleSearchClear();
-  //     console.log("Filters Cleared");
-  //   };
-
-  
-  }
+  };
   const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
-  const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-  
   return (
     <div>
       <div className="flex justify-evenly  mb-4 flex-wrap gap-2">
@@ -285,10 +239,9 @@ const SupportTickets = ({
           </Dialog>
         </div>
       </div>
-      
 
       <div className="border-b"></div>
-      <SupportLandingPage/>
+      <SupportLandingPage />
     </div>
   );
 };

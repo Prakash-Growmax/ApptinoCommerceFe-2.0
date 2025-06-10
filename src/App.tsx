@@ -5,6 +5,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { AppProviders } from '@app/providers';
 import { ErrorFallback, LoadingFallback } from '@components/organisms';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
+
 import { AppWithHeader } from './app/router/AppWithHeader';
 
 
@@ -14,6 +16,7 @@ function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AppProviders>
+        <Toaster richColors expand />
         <Suspense fallback={<LoadingFallback />}>
           <QueryClientProvider client={queryClient}>
             <AppWithHeader />

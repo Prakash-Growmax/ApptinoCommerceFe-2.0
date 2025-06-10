@@ -96,17 +96,12 @@ export const initPerformanceObserver = () => {
   const lcpObserver = new PerformanceObserver(entryList => {
     const entries = entryList.getEntries();
     const lastEntry = entries[entries.length - 1];
-
-    // Send to analytics
-    console.log('LCP:', lastEntry.startTime);
   });
   lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
   // First Input Delay
   const fidObserver = new PerformanceObserver(entryList => {
-    entryList.getEntries().forEach(entry => {
-      console.log('FID:', entry.processingStart - entry.startTime);
-    });
+    entryList.getEntries().forEach(entry => {});
   });
   fidObserver.observe({ entryTypes: ['first-input'] });
 
@@ -118,7 +113,6 @@ export const initPerformanceObserver = () => {
         clsValue += entry.value;
       }
     });
-    console.log('CLS:', clsValue);
   });
   clsObserver.observe({ entryTypes: ['layout-shift'] });
 };
@@ -159,7 +153,6 @@ export class PerformanceTracker {
         }),
       }).catch(console.error);
     } else {
-      console.log(`Performance: ${name} took ${duration.toFixed(2)}ms`);
     }
   }
 }
@@ -216,8 +209,6 @@ export const trackUserInteraction = (
       }),
     }).catch(console.error);
   }
-
-  console.log('User Interaction:', { action, element, additionalData });
 };
 
 // Bundle size tracking

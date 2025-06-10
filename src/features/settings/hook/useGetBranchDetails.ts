@@ -1,58 +1,54 @@
+import { useQuery } from '@tanstack/react-query';
 
-import useUserStore from "@/stores/useUserStore"
-import { Pagination } from "../types/company.types"
-import { useQuery } from "@tanstack/react-query"
-import useCompanyBranchStore from "../store/useCompanyBranchStore"
+import useUserStore from '@/stores/useUserStore';
 
-export const useGetBranchDetails = ({ searchString = "" }: Pagination = {}) => {
-  const { companyId, tenantId, userId } = useUserStore()
-  const {
-    page,
-    rowPerPage,
-    setBranchData,
-    setLoading,
-    setTotalCount,
-  } = useCompanyBranchStore()
+import useCompanyBranchStore from '../store/useCompanyBranchStore';
+import { Pagination } from '../types/company.types';
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : ""
+export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
+  const { companyId, tenantId, userId } = useUserStore();
+  const { page, rowPerPage, setBranchData, setLoading, setTotalCount } =
+    useCompanyBranchStore();
+
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('accessToken') : '';
 
   const fetchBranch = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const response = await fetch(
         `https://api.myapptino.com/corecommerce/branches/readBranchwithPagination/${userId}?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=${searchString}`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
+            'Content-Type': 'application/json',
+            'x-tenant': tenantId,
             Authorization: `Bearer ${token}`,
           },
         }
-      )
+      );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json()
-      console.log(data?.data?.branchResponse)
-      setBranchData(data?.data?.branchResponse || [])
-      setTotalCount(data?.data?.totalCount || 0)
-      setLoading(false)
+      const data = await response.json();
+      setBranchData(data?.data?.branchResponse || []);
+      setTotalCount(data?.data?.totalCount || 0);
+      setLoading(false);
 
-      return data
+      return data;
     } catch (error) {
-      console.error("Error fetching branches", error)
-      setLoading(false)
-      return null
+      console.error('Error fetching branches', error);
+      setLoading(false);
+      return null;
     }
-  }
+  };
 
   const query = useQuery({
     queryKey: [
-      "branch-details",
+      'branch-details',
       companyId,
       userId,
       page,
@@ -61,8 +57,8 @@ export const useGetBranchDetails = ({ searchString = "" }: Pagination = {}) => {
     ],
     queryFn: fetchBranch,
     enabled: !!companyId && !!userId, // prevents running query without valid IDs
-     refetchOnWindowFocus: false,
-  })
+    refetchOnWindowFocus: false,
+  });
 
-  return query
-}
+  return query;
+};

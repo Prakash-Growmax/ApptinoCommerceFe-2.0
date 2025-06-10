@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import { Form } from '@/components';
 import Button from '@/components/atoms/Button/Button';
@@ -38,7 +39,7 @@ export function LoginForm({
     mode: 'onSubmit',
   });
 
-  const { watch, setError, clearErrors } = form;
+  const { watch, setError, clearErrors, setValue } = form;
   const UserName = watch('UserName');
   const Password = watch('Password');
 
@@ -100,6 +101,7 @@ export function LoginForm({
         setCompanyId(payload?.companyId);
         setTenantId(payload?.tenantId);
       }
+      toast.success('Logged In Successfully.');
       navigate('/');
     } catch (error: any) {
       console.error('Login error:', error.message);
@@ -111,6 +113,12 @@ export function LoginForm({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleChangeEmail = () => {
+    setHasPassword(false);
+    setValue('Password', '');
+    clearErrors('Password');
   };
 
   return (
@@ -152,7 +160,7 @@ export function LoginForm({
                     <a
                       href="#"
                       className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      onClick={() => setHasPassword(false)}
+                      onClick={handleChangeEmail}
                     >
                       Change email?
                     </a>

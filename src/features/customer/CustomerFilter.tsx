@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { RotateCw, Search, X } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import useAccountsStore from "@/stores/useAccountStore";
-import { RotateCw, Search, X } from "lucide-react";
-import { AccountElastic } from "./api/AccountElastics";
-import { ElasticSearchServices } from "./api/ElasticSearchServices";
-import useUserStore from "@/stores/useUserStore";
-import { useEffect, useState } from "react";
-import { upload } from "@testing-library/user-event/dist/cjs/utility/upload.js";
+} from '@/components/ui/select';
+import useAccountsStore from '@/stores/useAccountStore';
+import useUserStore from '@/stores/useUserStore';
+
+import { AccountElastic } from './api/AccountElastics';
+import { ElasticSearchServices } from './api/ElasticSearchServices';
 
 const CustomerFilter = () => {
   const {
@@ -34,18 +34,15 @@ const CustomerFilter = () => {
   };
 
   const handleSearchClear = () => {
-    setSearchText("");
+    setSearchText('');
   };
 
-  const fetchCustomers = async (filterParams, searchText = "") => {
+  const fetchCustomers = async (filterParams, searchText = '') => {
     const elasticData = AccountElastic.BuildCustomerquery(
       filterParams,
       searchText
     );
-    const data = await ElasticSearchServices.CustomerGet(
-      elasticData,
-      tenantId
-    );
+    const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);
     const customerResponse = ElasticSearchServices.FormatResults(data);
     setData(customerResponse);
     setLoading(false);
@@ -70,12 +67,10 @@ const CustomerFilter = () => {
   // }, [searchText]);
 
   const handleStatusChange = (value: string) => {
- 
     setStatus(value); // Only update status; no fetch
   };
 
   const handleApplyFilters = () => {
-    console.log(statuss)
     const updated = {
       ...filters,
       offset: 0,
@@ -83,7 +78,6 @@ const CustomerFilter = () => {
       isActivated: statuss,
       status: statuss ? [statuss] : [],
     };
-    console.log(updated);
     setFilters(updated);
     setLoading(true);
     fetchCustomers(updated, searchText);
@@ -93,18 +87,20 @@ const CustomerFilter = () => {
     <div className="flex items-end gap-4 w-full shadow-md rounded-md flex-wrap p-4">
       {/* Search Input */}
       <div className="relative">
-         <Label htmlFor="status" className="mb-2 ml-1">Customer search</Label>
+        <Label htmlFor="status" className="mb-2 ml-1">
+          Customer search
+        </Label>
         <Input
           type="text"
           value={searchText}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={e => handleSearch(e.target.value)}
           placeholder="Search Customer"
           className="w-[250px] border-gray-300"
         />
         <div className="absolute inset-y-0 right-2 flex items-center">
           {searchText ? (
             <div onClick={handleSearchClear}>
-              <X size={16} color="black"  className="mt-6"/>
+              <X size={16} color="black" className="mt-6" />
             </div>
           ) : (
             <Search color="black" size={16} strokeWidth={2} className="mt-6" />
@@ -152,4 +148,3 @@ const CustomerFilter = () => {
 };
 
 export default CustomerFilter;
-
