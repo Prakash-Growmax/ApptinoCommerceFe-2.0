@@ -1,11 +1,12 @@
-import { useForm } from "react-hook-form";
-import { FormInput, FormSelect } from "@/components/molecules/ReactHookForm";
-import EditDialog from "@/components/molecules/EditDialog/EditDialog";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Form } from "@/components/molecules/ReactHookForm/Form/Form"; 
-import { useGetSupportFilters } from "@/hooks/useGetSupportUsers";
-import useSupportStore from "@/stores/useSupportStore";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import EditDialog from '@/components/molecules/EditDialog/EditDialog';
+import { FormInput, FormSelect } from '@/components/molecules/ReactHookForm';
+import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
+import { Button } from '@/components/ui/button';
+import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
+import useSupportStore from '@/stores/useSupportStore';
 
 type FormData = {
   customer: string;
@@ -17,16 +18,15 @@ type FormData = {
   category: string;
 };
 
-
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
   useGetSupportFilters();
-  const{supportData}=useSupportStore();
-  const supportOptions = supportData?.map((item) => ({
-  value: item.id.toString(), // or item.companyID
-  label: item.companyName,
-  disabled: !item.isActivated, // optional logic to disable inactive ones
-}));
+  const { supportData } = useSupportStore();
+  const supportOptions = supportData?.map(item => ({
+    value: item.id.toString(), // or item.companyID
+    label: item.companyName,
+    disabled: !item.isActivated, // optional logic to disable inactive ones
+  }));
   const methods = useForm<FormData>({
     defaultValues: {
       customer: '',
@@ -34,8 +34,8 @@ const SupportTicketsDialog = () => {
       phone: '',
       email: '',
       address: '',
-    subject: '',
-       category: ''
+      subject: '',
+      category: '',
     },
     // mode: "onSubmit",
   });
@@ -46,7 +46,6 @@ const SupportTicketsDialog = () => {
   };
 
   const onSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
     setOpen(false);
     methods.reset();
   };
@@ -60,27 +59,25 @@ const SupportTicketsDialog = () => {
         title="Create New Ticket"
         closeDialog={handleDialogClose}
         handleSubmit={methods.handleSubmit(onSubmit)}
-        
       >
         <Form form={methods} onSubmit={onSubmit} className="space-y-4  ">
           <div className="bg-white  rounded-lg">
             <h3 className="font-semibold text-lg mb-2">Customer Information</h3>
 
             <div className="grid grid-cols-2 gap-2">
-             
-                         <FormSelect
-  name="customer"
-  label="Customer"
-  placeholder="Search customer"
-  options={supportOptions}
-  disabled={false}
-/>
+              <FormSelect
+                name="customer"
+                label="Customer"
+                placeholder="Search customer"
+                options={supportOptions}
+                disabled={false}
+              />
               <FormInput
                 name="contactPerson"
                 label="Contact Person"
                 placeholder="Select contact"
                 autoComplete="contactPerson"
-                rules={{ required: "Contact person is required" }}
+                rules={{ required: 'Contact person is required' }}
               />
 
               <FormInput
@@ -88,10 +85,10 @@ const SupportTicketsDialog = () => {
                 label="Phone"
                 placeholder="Enter phone number"
                 rules={{
-                  required: "Phone is required",
+                  required: 'Phone is required',
                   pattern: {
                     value: /^[0-9]{10}$/,
-                    message: "Phone must be 10 digits",
+                    message: 'Phone must be 10 digits',
                   },
                 }}
               />
@@ -102,10 +99,10 @@ const SupportTicketsDialog = () => {
                 type="email"
                 placeholder="v@gmail.com"
                 rules={{
-                  required: "Email is required",
+                  required: 'Email is required',
                   pattern: {
                     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                    message: "Invalid email format",
+                    message: 'Invalid email format',
                   },
                 }}
               />
@@ -115,12 +112,12 @@ const SupportTicketsDialog = () => {
                 label="Address"
                 placeholder="Enter address"
                 className="col-span-2"
-                rules={{ required: "Address is required" }}
+                rules={{ required: 'Address is required' }}
               />
             </div>
           </div>
 
-           <div className="bg-white  rounded-lg">
+          <div className="bg-white  rounded-lg">
             <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
 
             <div className="grid grid-cols-2 gap-2 ">
@@ -129,30 +126,30 @@ const SupportTicketsDialog = () => {
                 label="Subject"
                 placeholder="Brief description of the issue"
                 autoComplete="subject"
-                rules={{ required: "Subject is required" }}
+                rules={{ required: 'Subject is required' }}
               />
 
               <FormSelect
-  name="category"
-  label="Category"
-  placeholder="Select a category"
-  options={[
-    { value: 'technical', label: 'Technical Issue' },
-    { value: 'billing', label: 'Billing' },
-    { value: 'general', label: 'General Inquiry' },
-  ]}
-  disabled={false}
-/>
+                name="category"
+                label="Category"
+                placeholder="Select a category"
+                options={[
+                  { value: 'technical', label: 'Technical Issue' },
+                  { value: 'billing', label: 'Billing' },
+                  { value: 'general', label: 'General Inquiry' },
+                ]}
+                disabled={false}
+              />
 
               <FormInput
                 name="phone"
                 label="Phone"
                 placeholder="Enter phone number"
                 rules={{
-                  required: "Phone is required",
+                  required: 'Phone is required',
                   pattern: {
                     value: /^[0-9]{10}$/,
-                    message: "Phone must be 10 digits",
+                    message: 'Phone must be 10 digits',
                   },
                 }}
               />
@@ -163,10 +160,10 @@ const SupportTicketsDialog = () => {
                 type="email"
                 placeholder="v@gmail.com"
                 rules={{
-                  required: "Email is required",
+                  required: 'Email is required',
                   pattern: {
                     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                    message: "Invalid email format",
+                    message: 'Invalid email format',
                   },
                 }}
               />
@@ -176,7 +173,7 @@ const SupportTicketsDialog = () => {
                 label="Address"
                 placeholder="Enter address"
                 className="col-span-2"
-                rules={{ required: "Address is required" }}
+                rules={{ required: 'Address is required' }}
               />
             </div>
           </div>

@@ -1,17 +1,16 @@
 // import { useState } from 'react';
-import React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { format } from 'date-fns';
 import { CalendarIcon, Search, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -34,21 +33,16 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
+import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
 import { useSupportTicketStore } from '../../stores/useSupportTicketStore';
+import SupportTicketsdialog from './routes/createticket';
 // import { isMobile } from "react-device-detect";
 import { SearchTypes } from './searchtype';
 
-import { useState, useRef, useEffect } from "react";
-import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
-import { useForm } from "react-hook-form";
-import SupportTicketsdialog from './routes/createticket';
-import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
-import useSupportStore from '@/stores/useSupportStore';
-
 type FormData = {
   contactPerson: string;
-  customer : string;
-  
+  customer: string;
+
   // Add more fields here as needed
 };
 
@@ -70,23 +64,25 @@ const SupportTickets = ({
   const [technician, setTechnician] = useState('');
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [skillsOpen, setSkillsOpen] = useState(false);   
-  
-   const { register, handleSubmit, formState: { errors }, reset, } = useForm<FormData>();
-   const { supportData}=useSupportStore();
- 
+  const [skillsOpen, setSkillsOpen] = useState(false);
 
-  const onSubmit = (data: any) => {
-    console.log("Submitted data:", data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>();
+
+  const onSubmit = () => {
     setIsDialogOpen(false);
-  reset();
+    reset();
   };
 
   useEffect(() => {
     if (!isDialogOpen) {
-      reset()
+      reset();
     }
-  }, [isDialogOpen, reset])
+  }, [isDialogOpen, reset]);
 
   const handleApplyFilters = () => {
     setFilters({
@@ -99,32 +95,22 @@ const SupportTickets = ({
 
     setTimeout(() => {
       const currentState = useSupportTicketStore.getState();
-      console.log('✅ Success: Store values', currentState);
     });
-    // console.log("Filters Applied");
-
     setStatus('');
     setPriority('');
     setFilterDate(undefined);
     setTechnician('');
     handleSearchClear();
 
-    // console.log("Filters Applied and Inputs Cleared");
-
-    
-
-  //   const handleClearAll = () => {
-  //     setStatus("");
-  //     setPriority("");
-  //     setFilterDate(undefined);
-  //     setTechnician("");
-  //     clearFilters();
-  //     handleSearchClear();
-  //     console.log("Filters Cleared");
-  //   };
-
-  
-  }
+    //   const handleClearAll = () => {
+    //     setStatus("");
+    //     setPriority("");
+    //     setFilterDate(undefined);
+    //     setTechnician("");
+    //     clearFilters();
+    //     handleSearchClear();
+    //   };
+  };
   const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -139,10 +125,10 @@ const SupportTickets = ({
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
+
   return (
     <div>
       <div className="flex justify-evenly  mb-4 flex-wrap gap-2">
@@ -269,280 +255,341 @@ const SupportTickets = ({
             Apply Filters
           </Button>
           {/* <Button variant="outline" type="button" onClick={handleClearAll}>Clear Filters</Button> */}
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) {
-          reset();           // Clear form
-          setSkillsOpen(false); // Close skills dropdown
-          }
-          }}>
+          <Dialog
+            open={isDialogOpen}
+            onOpenChange={open => {
+              setIsDialogOpen(open);
+              if (!open) {
+                reset(); // Clear form
+                setSkillsOpen(false); // Close skills dropdown
+              }
+            }}
+          >
             <DialogTrigger asChild>
               {/* <Button variant="outline" className='bg-black text-white'>Open Dialog</Button> */}
               {/* <Button type="button"  >
             Create Ticket
           </Button> */}
-          <SupportTicketsdialog />
+              <SupportTicketsdialog />
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-[930px] max-h-[100vh] overflow-hidden bg-gray-100 p-4   ">
-              <DialogHeader className='bg-white p-4 rounded-lg mt-4 mr-4 '>
-                <DialogTitle className='text-xl'>Create New Ticket</DialogTitle>
+              <DialogHeader className="bg-white p-4 rounded-lg mt-4 mr-4 ">
+                <DialogTitle className="text-xl">Create New Ticket</DialogTitle>
               </DialogHeader>
               {/* <div className="overflow-y-auto max-h-[60vh] space-y-6 pr-2"> */}
               <form onSubmit={handleSubmit(onSubmit)}>
-              <ScrollArea className="h-[500px] pr-4 scrollbar-thin scrollbar-thumb-rounded-md scrollbar-thumb-gray-400">
-                <div className="space-y-6">
-                  {/* Customer 1 */}
-                  <div className="space-y-2 bg-white p-4 rounded-lg">
-                    <h3 className="font-semibold text-lg">Customer Information</h3>
-                    <div className="grid grid-cols-2 gap-4 ">
-                      <div className="space-y-1">
-                        <Label htmlFor="name" className='text-gray-700'>Customer</Label>
-                        <Input id="name" placeholder="search customer " className='w-[350px] border-gray-300 mt-2 ' 
-                        {...register("customer", { required: "Customer is required" })}/>
-                        {errors.customer && (
-                        <p className="text-red-500 text-sm    ">{errors.customer?.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="email" className='text-gray-700'>Contact Person</Label>
-                        <Input id="email" placeholder="Select contact" className='w-[350px] border-gray-300 mt-2' 
-                        {...register("contactPerson", { required: "Contact person is required" })} />
-                        {errors.contactPerson && (
-                        <p className="text-red-500 text-sm    ">{errors.contactPerson?.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="phone" className='text-gray-700'>Phone</Label>
-                        <Input id="phone" placeholder="Enter phone number" className='w-[350px] border-gray-300 mt-2'  />
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="address" className='text-gray-700'>Email</Label>
-                        <Input id="address" placeholder="v@gmail.com" className='w-[350px] border-gray-300 mt-2' />
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="address" className='text-gray-700'>Address</Label>
-                        <Input id="address" placeholder="Enter address" className='w-[350px] border-gray-300 mt-2' />
+                <ScrollArea className="h-[500px] pr-4 scrollbar-thin scrollbar-thumb-rounded-md scrollbar-thumb-gray-400">
+                  <div className="space-y-6">
+                    {/* Customer 1 */}
+                    <div className="space-y-2 bg-white p-4 rounded-lg">
+                      <h3 className="font-semibold text-lg">
+                        Customer Information
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4 ">
+                        <div className="space-y-1">
+                          <Label htmlFor="name" className="text-gray-700">
+                            Customer
+                          </Label>
+                          <Input
+                            id="name"
+                            placeholder="search customer "
+                            className="w-[350px] border-gray-300 mt-2 "
+                            {...register('customer', {
+                              required: 'Customer is required',
+                            })}
+                          />
+                          {errors.customer && (
+                            <p className="text-red-500 text-sm    ">
+                              {errors.customer?.message}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="email" className="text-gray-700">
+                            Contact Person
+                          </Label>
+                          <Input
+                            id="email"
+                            placeholder="Select contact"
+                            className="w-[350px] border-gray-300 mt-2"
+                            {...register('contactPerson', {
+                              required: 'Contact person is required',
+                            })}
+                          />
+                          {errors.contactPerson && (
+                            <p className="text-red-500 text-sm    ">
+                              {errors.contactPerson?.message}
+                            </p>
+                          )}
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="phone" className="text-gray-700">
+                            Phone
+                          </Label>
+                          <Input
+                            id="phone"
+                            placeholder="Enter phone number"
+                            className="w-[350px] border-gray-300 mt-2"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="address" className="text-gray-700">
+                            Email
+                          </Label>
+                          <Input
+                            id="address"
+                            placeholder="v@gmail.com"
+                            className="w-[350px] border-gray-300 mt-2"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="address" className="text-gray-700">
+                            Address
+                          </Label>
+                          <Input
+                            id="address"
+                            placeholder="Enter address"
+                            className="w-[350px] border-gray-300 mt-2"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Customer 2 */}
-                  <div className="space-y-2 gap-5 bg-white p-4 rounded-lg">
-                    <h3 className="font-semibold">Ticket Details</h3>
-                    <div className="space-y-1 w-[770px] ">
-                      <Label htmlFor="email" className='text-gray-700'>Subject</Label>
-                      <Input
-                        id="email"
-                        placeholder="Brief description of the issue"
-                        className='border-gray-300' 
-                      />
+                    {/* Customer 2 */}
+                    <div className="space-y-2 gap-5 bg-white p-4 rounded-lg">
+                      <h3 className="font-semibold">Ticket Details</h3>
+                      <div className="space-y-1 w-[770px] ">
+                        <Label htmlFor="email" className="text-gray-700">
+                          Subject
+                        </Label>
+                        <Input
+                          id="email"
+                          placeholder="Brief description of the issue"
+                          className="border-gray-300"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2  mt-3 ">
+                        <div className="space-y-1">
+                          <Label htmlFor="email" className="text-gray-700">
+                            Category
+                          </Label>
+                          <Select>
+                            <SelectTrigger
+                              id="status"
+                              className=" w-[350px] border-gray-300  "
+                            >
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Open">Open</SelectItem>
+                              <SelectItem value="Closed">Closed</SelectItem>
+                              <SelectItem value="In Progress">
+                                In Progress
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label htmlFor="phone" className="text-gray-700">
+                            Priority
+                          </Label>
+                          <Select>
+                            <SelectTrigger
+                              id="priority"
+                              className="w-[350px] border-gray-300"
+                            >
+                              <SelectValue placeholder="Priority" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Low">Low</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="High">High</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1 w-[770px] mt-3">
+                          <Label htmlFor="address" className="text-gray-700">
+                            Description
+                          </Label>
+                          <Input
+                            id="address"
+                            placeholder="Detailed description of the issue..."
+                            className="h-[100px] border-gray-300"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="grid grid-cols-2  mt-3 ">
-                      <div className="space-y-1">
-                        <Label htmlFor="email" className='text-gray-700'>Category</Label>
-                        <Select>
-                          <SelectTrigger
-                            id="status"
-                            className=" w-[350px] border-gray-300  "
-                          >
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Open">Open</SelectItem>
-                            <SelectItem value="Closed">Closed</SelectItem>
-                            <SelectItem value="In Progress">
-                              In Progress
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
 
-                      <div className="space-y-1">
-                        <Label htmlFor="phone" className='text-gray-700'>Priority</Label>
-                        <Select>
-                          <SelectTrigger
-                            id="priority"
-                            className="w-[350px] border-gray-300"
+                    {/* Customer 3 */}
+                    <div className="space-y-2 bg-white p-4 rounded-lg">
+                      <h3 className="font-semibold">Field Service Deatils</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <Label htmlFor="name" className="text-gray-700">
+                            Service Type
+                          </Label>
+                          <Select>
+                            <SelectTrigger
+                              id="priority"
+                              className="w-[350px] border-gray-300"
+                            >
+                              <SelectValue placeholder="Select service type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Low">Low</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="High">High</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1 w-[350px]">
+                          <Label htmlFor="email" className="text-gray-700">
+                            Preferred Date
+                          </Label>
+                          <input
+                            id="dob"
+                            type="date"
+                            className="w-full border border-gray-300 rounded-md p-2 text-gray-700 "
+                            placeholder="Select your birth date"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name" className="text-gray-700">
+                            Prefered Time
+                          </Label>
+                          <Select>
+                            <SelectTrigger
+                              id="preferred-time"
+                              className=" border-gray-300"
+                            >
+                              <SelectValue placeholder="Select preferred time" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="morning">
+                                Morning (8am - 12pm)
+                              </SelectItem>
+                              <SelectItem value="afternoon">
+                                Afternoon (12pm - 4pm)
+                              </SelectItem>
+                              <SelectItem value="evening">
+                                Evening (4pm - 8pm)
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="address" className="text-gray-700">
+                            Estimated Duration
+                          </Label>
+                          <Select>
+                            <SelectTrigger
+                              id="estimated-duration"
+                              className="w-[350px] border-gray-300"
+                            >
+                              <SelectValue placeholder="Select estimated duration" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="30min">30 minutes</SelectItem>
+                              <SelectItem value="1hour">1 hour</SelectItem>
+                              <SelectItem value="2hours">2 hours</SelectItem>
+                              <SelectItem value="half-day">Half day</SelectItem>
+                              <SelectItem value="full-day">Full day</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="service-type"
+                            className="text-gray-700"
                           >
-                            <SelectValue placeholder="Priority" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Low">Low</SelectItem>
-                            <SelectItem value="Medium">Medium</SelectItem>
-                            <SelectItem value="High">High</SelectItem>
-                          </SelectContent>
-                        </Select>
+                            Service Type
+                          </Label>
+                          <Select>
+                            <SelectTrigger
+                              id="service-type"
+                              className="w-[350px] border-gray-300"
+                            >
+                              <SelectValue placeholder="Select service type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="consultation">
+                                Consultation
+                              </SelectItem>
+                              <SelectItem value="maintenance">
+                                Maintenance
+                              </SelectItem>
+                              <SelectItem value="installation">
+                                Installation
+                              </SelectItem>
+                              <SelectItem value="repair">Repair</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="relative w-[350px]" ref={dropdownRef}>
+                          <label className="block text-sm font-medium text-gray-700 mb-1 ">
+                            Skills Required
+                          </label>
+                          <button
+                            type="button"
+                            className="w-full border border-gray-300 rounded-md p-2 text-left text-gray-700"
+                            // onClick={() => setOpen(!open)}
+                            onClick={() => setSkillsOpen(!skillsOpen)}
+                          >
+                            {selectedSkills.length > 0
+                              ? selectedSkills.join(', ')
+                              : 'Select skills...'}
+                          </button>
+
+                          {skillsOpen && (
+                            <div className="absolute z-10 mt-1 w-full max-h-48 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">
+                              {skillsList.map(skill => (
+                                <label
+                                  key={skill}
+                                  className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-100"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    className="form-checkbox h-4 w-4 text-blue-600 mr-2"
+                                    checked={selectedSkills.includes(skill)}
+                                    onChange={() => toggleSkill(skill)}
+                                  />
+                                  <span className="text-gray-900">{skill}</span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div className="space-y-1 w-[770px] mt-3">
-                        <Label htmlFor="address" className='text-gray-700'>Description</Label>
+                      <div className="space-y-1 w-[780px] ">
+                        <Label htmlFor="address" className="text-gray-700">
+                          Special Instructions for Technician
+                        </Label>
                         <Input
                           id="address"
-                          placeholder="Detailed description of the issue..."
-                          className="h-[100px] border-gray-300"
+                          placeholder="Any specific instructions of requirements..."
+                          className="h-[100px]"
                         />
                       </div>
                     </div>
                   </div>
 
-                  {/* Customer 3 */}
-                  <div className="space-y-2 bg-white p-4 rounded-lg">
-                    <h3 className="font-semibold">Field Service Deatils</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <Label htmlFor="name" className='text-gray-700'>Service Type</Label>
-                        <Select>
-                          <SelectTrigger
-                            id="priority"
-                            className="w-[350px] border-gray-300"
-                          >
-                            <SelectValue placeholder="Select service type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Low">Low</SelectItem>
-                            <SelectItem value="Medium">Medium</SelectItem>
-                            <SelectItem value="High">High</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-1 w-[350px]">
-                        <Label htmlFor="email" className='text-gray-700'>Preferred Date</Label>
-                        <input
-                          id="dob"
-                          type="date"
-                          className="w-full border border-gray-300 rounded-md p-2 text-gray-700 "
-                          placeholder="Select your birth date"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="name" className='text-gray-700'>Prefered Time</Label>
-                        <Select>
-                          <SelectTrigger
-                            id="preferred-time"
-                            className=" border-gray-300"
-                          >
-                            <SelectValue placeholder="Select preferred time" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="morning">
-                              Morning (8am - 12pm)
-                            </SelectItem>
-                            <SelectItem value="afternoon">
-                              Afternoon (12pm - 4pm)
-                            </SelectItem>
-                            <SelectItem value="evening">
-                              Evening (4pm - 8pm)
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="address" className='text-gray-700'>Estimated Duration</Label>
-                        <Select>
-                          <SelectTrigger
-                            id="estimated-duration"
-                            className="w-[350px] border-gray-300"
-                          >
-                            <SelectValue placeholder="Select estimated duration" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="30min">30 minutes</SelectItem>
-                            <SelectItem value="1hour">1 hour</SelectItem>
-                            <SelectItem value="2hours">2 hours</SelectItem>
-                            <SelectItem value="half-day">Half day</SelectItem>
-                            <SelectItem value="full-day">Full day</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-1">
-                        <Label htmlFor="service-type" className='text-gray-700'>Service Type</Label>
-                        <Select>
-                          <SelectTrigger
-                            id="service-type"
-                            className="w-[350px] border-gray-300"
-                          >
-                            <SelectValue placeholder="Select service type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="consultation">
-                              Consultation
-                            </SelectItem>
-                            <SelectItem value="maintenance">
-                              Maintenance
-                            </SelectItem>
-                            <SelectItem value="installation">
-                              Installation
-                            </SelectItem>
-                            <SelectItem value="repair">Repair</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div
-                      
-                      className="relative w-[350px]" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 mb-1 ">
-        Skills Required
-      </label>
-      <button
-        type="button"
-        className="w-full border border-gray-300 rounded-md p-2 text-left text-gray-700"
-        // onClick={() => setOpen(!open)}
-        onClick={() => setSkillsOpen(!skillsOpen)}
-      >
-        {selectedSkills.length > 0
-          ? selectedSkills.join(", ")
-          : "Select skills..."}
-      </button>
-
-      {skillsOpen && (
-        <div className="absolute z-10 mt-1 w-full max-h-48 overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">
-          {skillsList.map((skill) => (
-            <label
-              key={skill}
-              className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-100"
-            >
-              <input
-                type="checkbox"
-                className="form-checkbox h-4 w-4 text-blue-600 mr-2"
-                checked={selectedSkills.includes(skill)}
-                onChange={() => toggleSkill(skill)}
-              />
-              <span className="text-gray-900">{skill}</span>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
-                    </div>
-                    <div className="space-y-1 w-[780px] ">
-                      <Label htmlFor="address" className='text-gray-700'>
-                        Special Instructions for Technician
-                      </Label>
-                      <Input
-                        id="address"
-                        placeholder="Any specific instructions of requirements..."
-                        className="h-[100px]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline" onClick={() => reset()}>Cancel</Button>
-                </DialogClose>
-                <Button type="submit">Create & Add Another</Button>
-                <Button type="submit">Create Ticket</Button>
-                
-              </DialogFooter>
-              </ScrollArea>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline" onClick={() => reset()}>
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button type="submit">Create & Add Another</Button>
+                    <Button type="submit">Create Ticket</Button>
+                  </DialogFooter>
+                </ScrollArea>
               </form>
-
             </DialogContent>
           </Dialog>
         </div>
       </div>
-      
 
       <div className="border-b"></div>
     </div>
@@ -570,14 +617,6 @@ export default SupportTickets;
 //   } = useFilterStore()
 
 //   const handleApplyFilters = () => {
-//     console.log("Filters applied:", {
-//       search,
-//       status,
-//       priority,
-//       dateOfBirth,
-//       technician,
-//     })
-
 //   }
 
 //   return (
