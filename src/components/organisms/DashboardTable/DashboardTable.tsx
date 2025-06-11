@@ -55,7 +55,7 @@ const DashboardTable = <T,>({
   setRowPerPage,
   className = 'w-full',
 }: TableProps<T>) => {
-  const pageCount = Math.ceil(totalDataCount / pagination.pageSize);
+  const pageCount = Math.ceil(totalDataCount / rowPerPage);
 
   const table = useReactTable({
     data,
