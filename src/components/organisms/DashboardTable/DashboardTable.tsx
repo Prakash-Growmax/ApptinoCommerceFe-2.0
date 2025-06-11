@@ -35,6 +35,7 @@ type TableProps<T> = {
      page:number;
       rowPerPage:number
         setRowPerPage:(rowPerPage:number|string)=>void;
+        className:string;
 };
 
 const DashboardTable = <T,>({
@@ -50,7 +51,8 @@ const DashboardTable = <T,>({
   handleNext,
   page,
   rowPerPage,
-  setRowPerPage
+  setRowPerPage,
+  className="w-full"
 }: TableProps<T>) => {
   const pageCount = Math.ceil(totalDataCount / pagination.pageSize);
 
@@ -89,7 +91,7 @@ const DashboardTable = <T,>({
 
   return (
     <div className="rounded-md border shadow-sm overflow-hidden">
-      <Table>
+      <Table >
         <TableHeader className="bg-muted/50">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -135,7 +137,7 @@ const DashboardTable = <T,>({
             </TableRow>
           )}
         </TableBody>
-        <TableFooter>
+        {/* <TableFooter>
           <TableRow>
             <TableCell colSpan={columns.length} className="px-3 py-2">
               <div className="flex items-center justify-between">
@@ -179,8 +181,49 @@ const DashboardTable = <T,>({
               </div>
             </TableCell>
           </TableRow>
-        </TableFooter>
+        </TableFooter> */}
       </Table>
+        <div className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-3">
+                  <span className=" text-xs lg:text-sm text-muted-foreground">
+                    Page {page + 1} of {pageCount}
+                  </span>
+                  <label className="text-xs lg:text-sm text-muted-foreground">
+                    Rows per page:{" "}
+                    <select
+                      className="border rounded px-2 py-1 ml-1"
+                      value={rowPerPage}
+                      onChange={handlePageSizeChange}
+                    >
+                      { pageOptions.map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                     className="text-xs lg:text-sm" 
+                    onClick={handlePrevious}
+                    disabled={page === 0}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                     className="text-xs lg:text-sm" 
+                    onClick={handleNext}
+                    disabled={page >= pageCount - 1}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
     </div>
   );
 };

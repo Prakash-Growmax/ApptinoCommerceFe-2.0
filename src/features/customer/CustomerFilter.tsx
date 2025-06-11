@@ -95,7 +95,7 @@ const CustomerFilter = () => {
           value={searchText}
           onChange={e => handleSearch(e.target.value)}
           placeholder="Search Customer"
-          className="w-[250px] border-gray-300"
+          className=" w-[300px] lg:w-[250px] border-gray-300"
         />
         <div className="absolute inset-y-0 right-2 flex items-center">
           {searchText ? (
@@ -133,14 +133,14 @@ const CustomerFilter = () => {
 
       {/* Create + Refresh */}
       <div className="flex flex-1 justify-end items-center space-x-2">
-        <Button type="button" variant="outline">
+        {/* <Button type="button" variant="outline">
           Create Customer
-        </Button>
+        </Button> */}
         <div
           onClick={handleApplyFilters}
           className="cursor-pointer hover:rotate-90 transition-transform"
         >
-          <RotateCw className="w-6 h-6 text-gray-600" />
+          <RotateCw className=" w-6 h-6 lg:w-8 lg:h-8 text-gray-600" />
         </div>
       </div>
     </div>
