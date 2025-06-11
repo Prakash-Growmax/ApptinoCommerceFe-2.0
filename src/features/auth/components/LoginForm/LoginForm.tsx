@@ -155,16 +155,18 @@ export function LoginForm({
                     disabled={isLoading}
                     autoFocus={!hasPassword}
                     className="mb-0!"
+                    rightElement={
+                      hasPassword && (
+                        <a
+                          className="ml-auto inline-block text-sm cursor-pointer"
+                          onClick={handleChangeEmail}
+                        >
+                          Change
+                        </a>
+                      )
+                    }
                   />
-                  {hasPassword && (
-                    <a
-                      href="#"
-                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      onClick={handleChangeEmail}
-                    >
-                      Change email?
-                    </a>
-                  )}
+
                   {hasPassword && (
                     <div className="space-y-2">
                       <FormInput

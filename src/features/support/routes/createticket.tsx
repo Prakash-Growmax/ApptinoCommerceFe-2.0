@@ -1,17 +1,12 @@
-import { useRef, useState } from 'react';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 
 import EditDialog from '@/components/molecules/EditDialog/EditDialog';
-import {
-  FormInput,
-  FormRadioGroup,
-  FormSelect,
-} from '@/components/molecules/ReactHookForm';
+import { FormInput, FormSelect } from '@/components/molecules/ReactHookForm';
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
-import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -22,7 +17,6 @@ import {
 import { createTicket } from '@/features/auth/api/ticketapi';
 import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
-import { useSkillsMultiSelect } from '@/hooks/useSkillsMultiSelect';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
@@ -80,7 +74,7 @@ const SupportTicketsDialog = () => {
       ticketSource: '',
       category: '',
       subject: '',
-      problemDescription:'',
+      problemDescription: '',
       // attachments: '',
       // showLabel: '',
       // resolutionDueDate: '',
@@ -99,8 +93,6 @@ const SupportTicketsDialog = () => {
   const username = 'Sudhakar Varatharajan';
 
   const onSubmit = async (data: FormData) => {
-    
-
     const payload: CreateTicketRequestType = {
       supportTicketRequestDTO: {
         title: data.subject,
@@ -197,14 +189,12 @@ const SupportTicketsDialog = () => {
                 label="Customer Branch Name"
                 placeholder="Customer branch name"
                 autoComplete="contactPerson"
-                // rules={{ required: 'Contact person is required' }}
               />
               <FormInput
                 name="contactPerson"
                 label="Customer Contact Person"
                 placeholder="Select contact person"
                 autoComplete="contactPerson"
-                // rules={{ required: 'Contact person is required' }}
               />
 
               <FormInput
@@ -212,25 +202,11 @@ const SupportTicketsDialog = () => {
                 label="Customer Email"
                 type="email"
                 placeholder="Customer email"
-                // rules={{
-                //   required: 'Email is required',
-                //   pattern: {
-                //     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                //     message: 'Invalid email format',
-                //   },
-                // }}
               />
               <FormInput
                 name="phone"
                 label="Customer Contact Number"
                 placeholder="Contact number"
-                // rules={{
-                //   required: 'Phone is required',
-                //   pattern: {
-                //     value: /^[0-9]{10}$/,
-                //     message: 'Phone must be 10 digits',
-                //   },
-                // }}
               />
               <FormSelect
                 name="priority"
@@ -270,8 +246,6 @@ const SupportTicketsDialog = () => {
                 name="ticketowner"
                 label="Ticket Owner"
                 placeholder="Ticket Owner"
-                // autoComplete="contactPerson"
-                // rules={{ required: 'Contact person is required' }}
               />
               <FormSelect
                 name="ticketSource"
@@ -292,7 +266,6 @@ const SupportTicketsDialog = () => {
                 <Controller
                   control={control}
                   name="resolutionDueDate"
-                  // rules={{ required: 'Resolution due date is required' }}
                   render={({ field }) => (
                     <Popover>
                       <PopoverTrigger asChild>
@@ -332,7 +305,6 @@ const SupportTicketsDialog = () => {
               label="Subject"
               placeholder="Brief subject"
               autoComplete="subject"
-              // rules={{ required: 'Subject is required' }}
             />
             <div className="grid grid-cols-2 gap-2  ">
               <FormInput
@@ -340,7 +312,6 @@ const SupportTicketsDialog = () => {
                 label="Problem Description"
                 placeholder="Problem Description"
                 autoComplete="subject"
-                // rules={{ required: 'Subject is required' }}
               />
             </div>
             <div className="">
@@ -516,7 +487,6 @@ const SupportTicketsDialog = () => {
               <Controller
                 name="priority" // the form field name
                 control={control} // from useForm()
-                rules={{ required: 'Priority is required' }}
                 render={({ field }) => (
                   <FormRadioGroup
                     {...field}

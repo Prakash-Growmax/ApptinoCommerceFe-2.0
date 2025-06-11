@@ -4,7 +4,6 @@ import {
   ControllerFieldState,
   ControllerRenderProps,
   useFormContext,
-  RegisterOptions,
 } from 'react-hook-form';
 
 import { FormControl } from '../FormControl/FormControl';
@@ -18,8 +17,6 @@ interface FormFieldProps {
     fieldState: ControllerFieldState;
   }) => ReactNode;
   className?: string;
-   rules?: RegisterOptions;
-  
 }
 export const FormField = ({
   name,
@@ -27,7 +24,6 @@ export const FormField = ({
   description,
   children,
   className,
-  rules,
 }: FormFieldProps) => {
   const { control } = useFormContext();
 
@@ -35,7 +31,6 @@ export const FormField = ({
     <Controller
       name={name}
       control={control}
-      rules={rules} 
       render={({ field, fieldState }) => (
         <FormControl
           htmlFor={name}
