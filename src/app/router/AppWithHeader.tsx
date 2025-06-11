@@ -2,7 +2,7 @@
 import { useLocation } from 'react-router-dom';
 
 import AppRoutes from '@/app/router/AppRouter';
-import { AppbarHeader } from '@/components/molecules/Appbar/Appbar';
+import { AppHeader } from '@/components/organisms/AppHeader/AppHeader';
 
 export const AppWithHeader = () => {
   const location = useLocation();
@@ -11,8 +11,8 @@ export const AppWithHeader = () => {
   return isLoginPage ? (
     <AppRoutes />
   ) : (
-    <AppbarHeader>
+    <AppHeader>
       <AppRoutes />
-    </AppbarHeader>
+    </AppHeader>
   );
 };

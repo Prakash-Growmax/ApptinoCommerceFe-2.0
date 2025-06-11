@@ -7,7 +7,7 @@ import { CalendarIcon } from 'lucide-react';
 import EditDialog from '@/components/molecules/EditDialog/EditDialog';
 import { FormInput, FormSelect } from '@/components/molecules/ReactHookForm';
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
-import { Button } from '@/components/ui/button';
+import { ShadCnButton } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -163,7 +163,7 @@ const SupportTicketsDialog = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Create Ticket</Button>
+      <ShadCnButton onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
 
       <EditDialog
         open={open}
@@ -269,7 +269,7 @@ const SupportTicketsDialog = () => {
                   render={({ field }) => (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button
+                        <ShadCnButton
                           variant="outline"
                           className={cn(
                             'w-full justify-start text-left font-normal',
@@ -280,7 +280,7 @@ const SupportTicketsDialog = () => {
                           {field.value
                             ? format(field.value, 'PPP')
                             : 'Select a due date'}
-                        </Button>
+                        </ShadCnButton>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
                         <Calendar

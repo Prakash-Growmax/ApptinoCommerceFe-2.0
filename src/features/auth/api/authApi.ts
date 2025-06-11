@@ -25,11 +25,12 @@ export const login = async (
   const response = await apiPost<LoginResponseSchemaType>({
     url: '/auth/auth/loginNew',
     data: body,
+    config: {
+      headers: {
+        withCredentials: true,
+      },
+    },
   });
-  const accessToken = response?.tokens?.accessToken;
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
-  }
   return response;
 };
 
@@ -53,15 +54,6 @@ export const getTenantIdFromToken = () => {
     console.error('Invalid token', e);
     return null;
   }
-};
-
-export const logout = async (): Promise<boolean> => {
-  // Implement logout logic
-  localStorage.removeItem('accessToken');
-  return true;
-
-  // Optional: call logout API endpoint
-  // await apiPost({ url: '/auth/logout' });
 };
 
 export const getUsers = async (filters?: {

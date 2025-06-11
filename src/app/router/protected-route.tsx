@@ -1,33 +1,23 @@
-import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
-import { useAuth } from '@features/auth/hooks/useAuth';
+import { LoadingFallback } from '@/components';
+import useAppStore from '@/stores/appStore';
+import { ProtectedRouteProps } from '@/types/router.types';
 
-interface ProtectedRouteProps {
-  children: ReactNode;
-  redirectTo?: string;
-}
-
-/**
- * A wrapper around routes that require authentication
- */
 export const ProtectedRoute = ({
   children,
   redirectTo = '/auth/login',
 }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isAuthLoading } = useAppStore();
   const location = useLocation();
 
-  // Show nothing while checking authentication
-  if (isLoading) {
-    return null;
+  if (isAuthLoading) {
+    return <LoadingFallback />;
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  // Render children if authenticated
   return <>{children}</>;
 };

@@ -11,7 +11,7 @@ import Button from '@/components/atoms/Button/Button';
 import { FormInput } from '@/components/molecules/ReactHookForm';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import useUserStore from '@/stores/useUserStore';
+import useAppStore from '@/stores/appStore';
 
 import { checkUserName, login } from '../../api/authApi';
 import {
@@ -43,7 +43,7 @@ export function LoginForm({
   const UserName = watch('UserName');
   const Password = watch('Password');
 
-  const { setUserId, setCompanyId, setTenantId } = useUserStore();
+  const { loginAction } = useAppStore();
 
   const handleCheckUser = async () => {
     if (!UserName) return;
@@ -90,26 +90,14 @@ export function LoginForm({
         Password: Password,
       });
 
-      const payload = loginData?.tokens?.payload;
       const accessToken = loginData?.tokens?.accessToken;
-
-      if (accessToken) {
-        localStorage.setItem('accessToken', accessToken);
-      }
-      if (payload) {
-        setUserId(payload?.userId);
-        setCompanyId(payload?.companyId);
-        setTenantId(payload?.tenantId);
-      }
+      const refreshToken = loginData?.tokens?.refreshToken;
+      const payload = loginData?.tokens?.payload;
+      loginAction(accessToken, refreshToken, payload);
       toast.success('Logged In Successfully.');
       navigate('/');
     } catch (error: any) {
-      console.error('Login error:', error.message);
-      setApiError(error.message || 'Login failed');
-      setError('Password', {
-        type: 'manual',
-        message: 'Invalid credentials',
-      });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

@@ -4,7 +4,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { ShadCnButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -68,7 +68,7 @@ function SidebarProvider({
 }) {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
-  const {setSideOpen}=useSideBarStore();
+  const { setSideOpen } = useSideBarStore();
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
   const [_open, _setOpen] = React.useState(defaultOpen);
@@ -88,7 +88,7 @@ function SidebarProvider({
     },
     [setOpenProp, open]
   );
- 
+
   // Helper to toggle the sidebar.
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile(open => !open) : setOpen(open => !open);
@@ -258,11 +258,11 @@ function SidebarTrigger({
   className,
   onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
+}: React.ComponentProps<typeof ShadCnButton>) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Button
+    <ShadCnButton
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
@@ -276,7 +276,7 @@ function SidebarTrigger({
     >
       <PanelLeftIcon />
       <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+    </ShadCnButton>
   );
 }
 

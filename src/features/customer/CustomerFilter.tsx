@@ -1,6 +1,6 @@
 import { RotateCw, Search, X } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { ShadCnButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -126,9 +126,9 @@ const CustomerFilter = () => {
 
       {/* Apply Filters Button */}
       <div className="flex flex-col justify-end">
-        <Button type="button" onClick={handleApplyFilters}>
+        <ShadCnButton type="button" onClick={handleApplyFilters}>
           Apply Filters
-        </Button>
+        </ShadCnButton>
       </div>
 
       {/* Create + Refresh */}
