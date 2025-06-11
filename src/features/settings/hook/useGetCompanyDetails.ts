@@ -1,6 +1,7 @@
 import useUserStore from "@/stores/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import useCompanyStore from "../store/useCompanyStore";
+import { GetCompanyDetails } from "../api/settings.api";
 
 export const useGetCompanyDetails = () => {
   const { companyId, tenantId } = useUserStore();
@@ -10,26 +11,11 @@ export const useGetCompanyDetails = () => {
   const fetchCompany = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `https://api.myapptino.com/corecommerce/companys/${companyId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setCompanyData(data?.data);
+      const response = await GetCompanyDetails({companyId,tenantId,token})
+    
+      setCompanyData(response?.data);
       setLoading(false);
-      return data;
+      return response;
     } catch (error) {
       console.error("Error fetching company details", error);
       setLoading(false);

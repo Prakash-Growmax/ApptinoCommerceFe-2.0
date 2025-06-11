@@ -4,6 +4,7 @@ import useUserStore from '@/stores/useUserStore';
 
 import useCompanyBranchStore from '../store/useCompanyBranchStore';
 import { Pagination } from '../types/company.types';
+import { GetBranchDetails } from '../api/settings.api';
 
 export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
   const { companyId, tenantId, userId } = useUserStore();
@@ -17,28 +18,30 @@ export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `https://api.myapptino.com/corecommerce/branches/readBranchwithPagination/${userId}?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=${searchString}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-tenant': tenantId,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+       const response = await GetBranchDetails({userId,companyId,page,rowPerPage,searchString,tenantId,token})
+      // const response = await fetch(
+      //   `https://api.myapptino.com/corecommerce/branches/readBranchwithPagination/${userId}?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=${searchString}`,
+      //   {
+      //     method: 'GET',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       'x-tenant': tenantId,
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+     
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setBranchData(data?.data?.branchResponse || []);
-      setTotalCount(data?.data?.totalCount || 0);
+      // const data = await response.json();
+      // console.log(data)
+      setBranchData(response?.data?.branchResponse || []);
+      setTotalCount(response?.data?.totalCount || 0);
       setLoading(false);
 
-      return data;
+      return response;
     } catch (error) {
       console.error('Error fetching branches', error);
       setLoading(false);
