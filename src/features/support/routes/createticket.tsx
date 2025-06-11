@@ -19,26 +19,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { createTicket } from '@/features/auth/api/ticketapi';
+import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 import { useSkillsMultiSelect } from '@/hooks/useSkillsMultiSelect';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
-import { createTicket } from '@/features/auth/api/ticketapi';
-import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 
 type FormData = {
   customer: string;
-  CustomerBranchName: string;
+  customerBranchName: string;
   contactPerson: string;
   email: string;
   phone: string;
-  Priority: string;
-  Severity: string;
-  Reason: string;
-  Ticketowner: string;
-  TicketSource: string;
-  address: string;
+  priority: string;
+  severity: string;
+  reason: string;
+  ticketOwner: string;
+  ticketSource: string;
   subject: string;
   attachments?: FileList;
   problemDescription?: string;
@@ -51,14 +50,14 @@ type FormData = {
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
 
-  const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
-  const [skillsOpen, setSkillsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
+  // const [skillsOpen, setSkillsOpen] = useState(false);
+  // const dropdownRef = useRef(null);
 
-  const handleSelect = (skill: string) => {
-    toggleSkill(skill);
-    setSkillsOpen(false);
-  };
+  // const handleSelect = (skill: string) => {
+  //   toggleSkill(skill);
+  //   setSkillsOpen(false);
+  // };
 
   useGetSupportFilters();
   const { supportData } = useSupportStore();
@@ -70,12 +69,21 @@ const SupportTicketsDialog = () => {
   const methods = useForm<FormData>({
     defaultValues: {
       customer: '',
+      customerBranchName: '',
       contactPerson: '',
       phone: '',
       email: '',
-      address: '',
-      subject: '',
+      priority: '',
+      severity: '',
+      reason: '',
+      ticketOwner: '',
+      ticketSource: '',
       category: '',
+      subject: '',
+      problemDescription:'',
+      // attachments: '',
+      // showLabel: '',
+      // resolutionDueDate: '',
     },
     // mode: "onSubmit",
   });
@@ -87,183 +95,79 @@ const SupportTicketsDialog = () => {
     methods.reset();
   };
 
-  // const onSubmit = (data: FormData) => {
-  //   console.log("Form Data:", data);
-  //   setOpen(false);
-  //   methods.reset();
-  // };
-  // const { companyId, tenantId, userId } = useUserStore()
-
-  // const onSubmit = async (data: FormData) => {
-    
-  //   console.log('Form Values:', data); // 
-
-  //   const username = 'Sudhakar Varatharajan';
-
-  //   const payload = {
-  //     supportTicketRequestDTO: {
-  //       title: data.subject,
-  //       description: data.problemDescription || '',
-  //       buyerCompanyName: data.customer,
-  //       buyerBranchName: data.CustomerBranchName,
-  //       buyerEmail: data.email,
-  //       buyerContactNumber: data.phone,
-  //       buyerContactPerson: data.contactPerson,
-  //       ticketOwner: data.Ticketowner,
-  //       dueDateTime: data.resolutionDueDate?.toISOString() || null,
-  //       productSKUs: [],
-  //       referenceIdentifiers: [],
-  //       serialNumbers: [],
-  //       descriptionError: data.problemDescription || '',
-  //       priority: data.Priority,
-  //       status: 'Open',
-  //       updatedDateTime: new Date().toISOString(),
-  //       createdDateTime: new Date().toISOString(),
-  //       updatedByUserId: userId,
-  //       updatedByUsername: username,
-  //       createdByUserId: userId,
-  //       createdByUserName: username,
-  //       createdByCompanyId: companyId,
-  //       createdByCompanyName: "Growmax.io",
-  //       resolution: '',
-  //       domainName: 'batademo',
-  //     },
-  //     fieldServiceRequestDTO: {
-  //       title: 'New Field Service ',
-  //       ticketIdentifier: null,
-  //       ownerUserId: userId,
-  //       ownerUsername: username,
-  //       status: 'Open',
-  //       location: data.address,
-  //       appointmentFromDateTime: new Date().toISOString(),
-  //       appointmentToDateTime: new Date(
-  //         Date.now() + 10 * 24 * 60 * 60 * 1000
-  //       ).toISOString(),
-  //       createdDateTime: new Date().toISOString(),
-  //       updatedDateTime: new Date().toISOString(),
-  //       createdByUserId: userId,
-  //       createdByUsername: username,
-  //       updatedByUserId: userId,
-  //       updatedByUsername: username,
-  //       attachments: [], 
-  //     },
-  //   };
-
-    
-  // const token = localStorage.getItem("accessToken");
-
-  
-  // if (!token) {
-  //   alert("You are not logged in. Token is missing.");
-  //   return;
-  // }
-
-  //   console.log('Sending Payload:', payload); 
-
-    
-  //     try {
-  //     const response = await fetch(
-  //       'https://api.myapptino.com/support/service-support/fieldService/createWithSupportTicket?domainName=batademo',
-  //       {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           // Authorization: "Bearer token" if needed
-  //             'x-tenant': tenantId,
-  //           "Authorization": `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify(payload),
-  //       }
-  //     );
-
-  //     const result = await response.json();
-
-  //     console.log('API Response:', result); // ✅ Print response
-
-  //     if (response.ok) {
-  //       alert('Ticket Created Successfully!');
-  //       setOpen(false);
-  //       reset();
-  //     } else {
-  //       console.error('API Error:', result);
-  //       alert('Failed to create ticket.');
-  //     }
-  //     }catch (error) {
-  //    console.error('Network or API Error:', error);
-  //    alert('Something went wrong.');
-  //  }
-    
-  // };
-
-
   const { companyId, tenantId, userId } = useUserStore();
-
-const onSubmit = async (data: FormData) => {
   const username = 'Sudhakar Varatharajan';
 
-  const payload: CreateTicketRequestType = {
-    supportTicketRequestDTO: {
-      title: data.subject,
-      description: data.problemDescription || '',
-      buyerCompanyName: data.customer,
-      buyerBranchName: data.CustomerBranchName,
-      buyerEmail: data.email,
-      buyerContactNumber: data.phone,
-      buyerContactPerson: data.contactPerson,
-      ticketOwner: data.Ticketowner,
-      dueDateTime: data.resolutionDueDate?.toISOString() || null,
-      productSKUs: [],
-      referenceIdentifiers: [],
-      serialNumbers: [],
-      descriptionError: data.problemDescription || '',
-      priority: data.Priority,
-      status: 'Open',
-      updatedDateTime: new Date().toISOString(),
-      createdDateTime: new Date().toISOString(),
-      updatedByUserId: userId,
-      updatedByUsername: username,
-      createdByUserId: userId,
-      createdByUserName: username,
-      createdByCompanyId: companyId,
-      createdByCompanyName: 'Growmax.io',
-      resolution: '',
-      domainName: 'batademo',
-    },
-    fieldServiceRequestDTO: {
-      title: 'New Field Service',
-      ticketIdentifier: null,
-      ownerUserId: userId,
-      ownerUsername: username,
-      status: 'Open',
-      location: data.address,
-      appointmentFromDateTime: new Date().toISOString(),
-      appointmentToDateTime: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
-      createdDateTime: new Date().toISOString(),
-      updatedDateTime: new Date().toISOString(),
-      createdByUserId: userId,
-      createdByUsername: username,
-      updatedByUserId: userId,
-      updatedByUsername: username,
-      attachments: [],
-    },
+  const onSubmit = async (data: FormData) => {
+    
+
+    const payload: CreateTicketRequestType = {
+      supportTicketRequestDTO: {
+        title: data.subject,
+        description: data.problemDescription || '',
+        buyerCompanyName: data.customer,
+        buyerBranchName: data.customerBranchName,
+        buyerEmail: data.email,
+        buyerContactNumber: data.phone,
+        buyerContactPerson: data.contactPerson,
+        ticketOwner: data.ticketOwner,
+        dueDateTime: data.resolutionDueDate?.toISOString() || null,
+        productSKUs: [],
+        referenceIdentifiers: [],
+        serialNumbers: [],
+        descriptionError: data.problemDescription || '',
+        priority: data.priority,
+        status: 'Open',
+        updatedDateTime: new Date().toISOString(),
+        createdDateTime: new Date().toISOString(),
+        updatedByUserId: userId,
+        updatedByUsername: username,
+        createdByUserId: userId,
+        createdByUserName: username,
+        createdByCompanyId: companyId,
+        createdByCompanyName: 'Growmax.io',
+        resolution: '',
+        domainName: 'dev3',
+      },
+      // fieldServiceRequestDTO: {
+      //   title: 'New Field Service',
+      //   ticketIdentifier: null,
+      //   ownerUserId: userId,
+      //   ownerUsername: username,
+      //   status: 'Open',
+      //   location: data.address,
+      //   appointmentFromDateTime: new Date().toISOString(),
+      //   appointmentToDateTime: new Date(
+      //     Date.now() + 10 * 24 * 60 * 60 * 1000
+      //   ).toISOString(),
+      //   createdDateTime: new Date().toISOString(),
+      //   updatedDateTime: new Date().toISOString(),
+      //   createdByUserId: userId,
+      //   createdByUsername: username,
+      //   updatedByUserId: userId,
+      //   updatedByUsername: username,
+      //   attachments: [],
+      // },
+    };
+
+    console.log('Submitting payload:', JSON.stringify(payload, null, 2));
+
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('Token missing');
+      return;
+    }
+
+    try {
+      const res = await createTicket(payload, token, tenantId);
+      alert('Ticket created successfully!');
+      setOpen(false);
+      reset();
+    } catch (error) {
+      alert('Ticket creation failed');
+      console.error(error);
+    }
   };
-
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    alert('Token missing');
-    return;
-  }
-
-  try {
-    const res = await createTicket(payload, token, tenantId);
-    alert('Ticket created successfully!');
-    setOpen(false);
-    reset();
-  } catch (error) {
-    alert('Ticket creation failed');
-    console.error(error);
-  }
-};
 
   return (
     <>
@@ -293,14 +197,14 @@ const onSubmit = async (data: FormData) => {
                 label="Customer Branch Name"
                 placeholder="Customer branch name"
                 autoComplete="contactPerson"
-                rules={{ required: 'Contact person is required' }}
+                // rules={{ required: 'Contact person is required' }}
               />
               <FormInput
                 name="contactPerson"
                 label="Customer Contact Person"
                 placeholder="Select contact person"
                 autoComplete="contactPerson"
-                rules={{ required: 'Contact person is required' }}
+                // rules={{ required: 'Contact person is required' }}
               />
 
               <FormInput
@@ -308,25 +212,25 @@ const onSubmit = async (data: FormData) => {
                 label="Customer Email"
                 type="email"
                 placeholder="Customer email"
-                rules={{
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                    message: 'Invalid email format',
-                  },
-                }}
+                // rules={{
+                //   required: 'Email is required',
+                //   pattern: {
+                //     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                //     message: 'Invalid email format',
+                //   },
+                // }}
               />
               <FormInput
                 name="phone"
                 label="Customer Contact Number"
                 placeholder="Contact number"
-                rules={{
-                  required: 'Phone is required',
-                  pattern: {
-                    value: /^[0-9]{10}$/,
-                    message: 'Phone must be 10 digits',
-                  },
-                }}
+                // rules={{
+                //   required: 'Phone is required',
+                //   pattern: {
+                //     value: /^[0-9]{10}$/,
+                //     message: 'Phone must be 10 digits',
+                //   },
+                // }}
               />
               <FormSelect
                 name="priority"
@@ -367,7 +271,7 @@ const onSubmit = async (data: FormData) => {
                 label="Ticket Owner"
                 placeholder="Ticket Owner"
                 // autoComplete="contactPerson"
-                rules={{ required: 'Contact person is required' }}
+                // rules={{ required: 'Contact person is required' }}
               />
               <FormSelect
                 name="ticketSource"
@@ -388,7 +292,7 @@ const onSubmit = async (data: FormData) => {
                 <Controller
                   control={control}
                   name="resolutionDueDate"
-                  rules={{ required: 'Resolution due date is required' }}
+                  // rules={{ required: 'Resolution due date is required' }}
                   render={({ field }) => (
                     <Popover>
                       <PopoverTrigger asChild>
@@ -428,7 +332,7 @@ const onSubmit = async (data: FormData) => {
               label="Subject"
               placeholder="Brief subject"
               autoComplete="subject"
-              rules={{ required: 'Subject is required' }}
+              // rules={{ required: 'Subject is required' }}
             />
             <div className="grid grid-cols-2 gap-2  ">
               <FormInput
@@ -436,7 +340,7 @@ const onSubmit = async (data: FormData) => {
                 label="Problem Description"
                 placeholder="Problem Description"
                 autoComplete="subject"
-                rules={{ required: 'Subject is required' }}
+                // rules={{ required: 'Subject is required' }}
               />
             </div>
             <div className="">
@@ -462,7 +366,7 @@ const onSubmit = async (data: FormData) => {
           </div>
 
           {/* --------------------------------------------------- */}
-          <div className="bg-white  rounded-lg">
+          {/* <div className="bg-white  rounded-lg">
             <h3 className="font-semibold text-lg mb-2">
               Field Services Details
             </h3>
@@ -628,7 +532,7 @@ const onSubmit = async (data: FormData) => {
                 )}
               />
             </div>
-          </div>
+          </div> */}
         </Form>
       </EditDialog>
     </>
