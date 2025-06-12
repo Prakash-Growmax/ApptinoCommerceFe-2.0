@@ -5,7 +5,13 @@ import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 
 import EditDialog from '@/components/molecules/EditDialog/EditDialog';
-import { FormInput, FormSelect } from '@/components/molecules/ReactHookForm';
+import {
+  FormInput,
+  FormRadioGroup,
+  FormSelect,
+  FormTextarea,
+} from '@/components/molecules/ReactHookForm';
+import { FormCalendar } from '@/components/molecules/ReactHookForm/Calendar/Calendar';
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
 import { ShadCnButton } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -20,6 +26,7 @@ import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
+import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 
 type FormData = {
   customer: string;
@@ -38,7 +45,10 @@ type FormData = {
   category: string;
   label?: string;
   showLabel?: boolean;
+  address: string;
   resolutionDueDate?: Date;
+  fromdate:Date;
+  todate:Date;
 };
 
 const SupportTicketsDialog = () => {
@@ -75,6 +85,9 @@ const SupportTicketsDialog = () => {
       category: '',
       subject: '',
       problemDescription: '',
+      address: '',
+       fromdate: new Date(),
+       todate: new Date(),
       // attachments: '',
       // showLabel: '',
       // resolutionDueDate: '',
@@ -121,25 +134,25 @@ const SupportTicketsDialog = () => {
         resolution: '',
         domainName: 'dev3',
       },
-      // fieldServiceRequestDTO: {
-      //   title: 'New Field Service',
-      //   ticketIdentifier: null,
-      //   ownerUserId: userId,
-      //   ownerUsername: username,
-      //   status: 'Open',
-      //   location: data.address,
-      //   appointmentFromDateTime: new Date().toISOString(),
-      //   appointmentToDateTime: new Date(
-      //     Date.now() + 10 * 24 * 60 * 60 * 1000
-      //   ).toISOString(),
-      //   createdDateTime: new Date().toISOString(),
-      //   updatedDateTime: new Date().toISOString(),
-      //   createdByUserId: userId,
-      //   createdByUsername: username,
-      //   updatedByUserId: userId,
-      //   updatedByUsername: username,
-      //   attachments: [],
-      // },
+      fieldServiceRequestDTO: {
+        title: 'New Field Service',
+        ticketIdentifier: null,
+        ownerUserId: userId,
+        ownerUsername: username,
+        status: 'Open',
+        location: data.address,
+        appointmentFromDateTime: new Date().toISOString(),
+        appointmentToDateTime: new Date(
+          Date.now() + 10 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        createdDateTime: new Date().toISOString(),
+        updatedDateTime: new Date().toISOString(),
+        createdByUserId: userId,
+        createdByUsername: username,
+        updatedByUserId: userId,
+        updatedByUsername: username,
+        attachments: [],
+      },
     };
 
     console.log('Submitting payload:', JSON.stringify(payload, null, 2));
@@ -151,360 +164,285 @@ const SupportTicketsDialog = () => {
     }
 
     try {
-      const res = await createTicket(payload, token, tenantId);
+      const response = await createTicket(payload, token, tenantId);
       alert('Ticket created successfully!');
       setOpen(false);
       reset();
     } catch (error) {
       alert('Ticket creation failed');
-      console.error(error);
+      // console.error(error);
     }
   };
 
   return (
     <>
       <ShadCnButton onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
+      <div className="">
+        <EditDialog
+          open={open}
+          title="Create New Ticket"
+          closeDialog={handleDialogClose}
+          handleSubmit={methods.handleSubmit(onSubmit)}
+          hideDialogActions={true}
+        >
+          <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
+            <div className="bg-white  rounded-lg">
+              <h3 className="font-semibold md:text-lg mb-2">
+                Customer Information
+              </h3>
 
-      <EditDialog
-        open={open}
-        title="Create New Ticket"
-        closeDialog={handleDialogClose}
-        handleSubmit={methods.handleSubmit(onSubmit)}
-      >
-        <Form form={methods} onSubmit={onSubmit} className="space-y-4  ">
-          <div className="bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Customer Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4  ">
+                <FormSelect
+                  name="customer"
+                  label="Select Customer"
+                  className="text-gray-700  "
+                  placeholder="Select customer"
+                  options={supportOptions}
+                  disabled={false}
+                />
+                <FormInput
+                  name="customerBranchName"
+                  label="Customer Branch Name"
+                  placeholder="Customer branch name"
+                  className="text-gray-700 md:w-[330px]"
+                  autoComplete="contactPerson"
+                  // rules={{ required: 'Contact person is required' }}
+                />
+                <FormInput
+                  name="contactPerson"
+                  label="Customer Contact Person"
+                  placeholder="Select contact person"
+                  className="text-gray-700 md:w-[320px]"
+                  autoComplete="contactPerson"
+                  // rules={{ required: 'Contact person is required' }}
+                />
 
-            <div className="grid grid-cols-2 gap-2">
-              <FormSelect
-                name="customer"
-                label="Select Customer"
-                className="text-gray-700"
-                placeholder="Select customer"
-                options={supportOptions}
-                disabled={false}
-              />
-              <FormInput
-                name="customerBranchName"
-                label="Customer Branch Name"
-                placeholder="Customer branch name"
-                autoComplete="contactPerson"
-              />
-              <FormInput
-                name="contactPerson"
-                label="Customer Contact Person"
-                placeholder="Select contact person"
-                autoComplete="contactPerson"
-              />
+                <FormInput
+                  name="email"
+                  label="Customer Email"
+                  type="email"
+                  className="text-gray-700 md:w-[330px]"
+                  placeholder="Customer email"
+                  // rules={{
+                  //   required: 'Email is required',
+                  //   pattern: {
+                  //     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  //     message: 'Invalid email format',
+                  //   },
+                  // }}
+                />
+                <FormInput
+                  name="phone"
+                  label="Customer Contact Number"
+                  className="text-gray-700 md:w-[320px]"
+                  placeholder="Contact number"
+                  // rules={{
+                  //   required: 'Phone is required',
+                  //   pattern: {
+                  //     value: /^[0-9]{10}$/,
+                  //     message: 'Phone must be 10 digits',
+                  //   },
+                  // }}
+                />
+                <FormSelect
+                  name="priority"
+                  label="Priority"
+                  placeholder="Select a Priority"
+                  className="text-gray-700 md:w-[330px]"
+                  options={[
+                    { value: 'Low', label: 'Low' },
+                    { value: 'High', label: 'High' },
+                  ]}
+                  disabled={false}
+                />
+
+                <FormSelect
+                  name="severity"
+                  label="Severity"
+                  placeholder="Severity"
+                  className="text-gray-700 md:w-[320px]"
+                  options={[
+                    { value: 'Low', label: 'Low' },
+                    { value: 'High', label: 'High' },
+                  ]}
+                  disabled={false}
+                />
+                <FormSelect
+                  name="reason"
+                  label="Reason"
+                  placeholder="Reason"
+                  className="text-gray-700 md:w-[330px]"
+                  options={[
+                    { value: 'Field Work', label: 'Field Work' },
+                    { value: 'Repair reasons', label: 'Repair reasons' },
+                  ]}
+                  disabled={false}
+                />
+                <FormInput
+                  name="ticketowner"
+                  label="Ticket Owner"
+                  placeholder="Ticket Owner"
+                  className="text-gray-700 md:w-[320px]"
+                  // autoComplete="contactPerson"
+                  // rules={{ required: 'Contact person is required' }}
+                />
+                <FormSelect
+                  name="ticketSource"
+                  label="Ticket Source"
+                  placeholder="Ticket Source"
+                  className="text-gray-700 md:w-[330px]"
+                  options={[
+                    { value: 'WEB', label: 'WEB' },
+                    { value: 'Mobile', label: 'Mobile' },
+                  ]}
+                  disabled={false}
+                />
+                <FormField 
+                  name="resolutionDueDate" 
+                  label=" Resolution Due Date"
+                  className='md:w-[320px]'
+                  >
+                    {({ field }) => (
+                      <FormCalendar
+                        value={field.value}
+                        onChange={field.onChange}
+                        
+                      />
+                    )}
+                  </FormField>
+              </div>
+            </div>
+
+            <div className="bg-white  rounded-lg">
+              <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
 
               <FormInput
-                name="email"
-                label="Customer Email"
-                type="email"
-                placeholder="Customer email"
+                name="subject"
+                label="Subject"
+                placeholder="Brief subject"
+                autoComplete="subject"
+                // rules={{ required: 'Subject is required' }}
               />
-              <FormInput
-                name="phone"
-                label="Customer Contact Number"
-                placeholder="Contact number"
-              />
-              <FormSelect
-                name="priority"
-                label="Priority"
-                placeholder="Select a Priority"
-                className="text-gray-700"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                  { value: 'High', label: 'High' },
-                ]}
-                disabled={false}
-              />
-
-              <FormSelect
-                name="severity"
-                label="Severity"
-                placeholder="Severity"
-                className="text-gray-700"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                  { value: 'High', label: 'High' },
-                ]}
-                disabled={false}
-              />
-              <FormSelect
-                name="reason"
-                label="Reason"
-                placeholder="Reason"
-                className="text-gray-700"
-                options={[
-                  { value: 'Field Work', label: 'Field Work' },
-                  { value: 'Repair reasons', label: 'Repair reasons' },
-                ]}
-                disabled={false}
-              />
-              <FormInput
-                name="ticketowner"
-                label="Ticket Owner"
-                placeholder="Ticket Owner"
-              />
-              <FormSelect
-                name="ticketSource"
-                label="Ticket Source"
-                placeholder="Ticket Source"
-                className="text-gray-700"
-                options={[
-                  { value: 'WEB', label: 'WEB' },
-                  { value: 'Mobile', label: 'Mobile' },
-                ]}
-                disabled={false}
-              />
-
-              <div className="col-span-1">
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  Resolution Due Date
-                </label>
-                <Controller
-                  control={control}
-                  name="resolutionDueDate"
-                  render={({ field }) => (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <ShadCnButton
-                          variant="outline"
-                          className={cn(
-                            'w-full justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value
-                            ? format(field.value, 'PPP')
-                            : 'Select a due date'}
-                        </ShadCnButton>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={date => field.onChange(date)}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
+              <div className="  ">
+                <FormTextarea
+                  name="problemDescription"
+                  label="Problem Description"
+                  placeholder="Problem Description"
+                  className=""
+                  // rules={{ required: 'Subject is required' }}
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
-
-            <FormInput
-              name="subject"
-              label="Subject"
-              placeholder="Brief subject"
-              autoComplete="subject"
-            />
-            <div className="grid grid-cols-2 gap-2  ">
-              <FormInput
-                name="problemDescription"
-                label="Problem Description"
-                placeholder="Problem Description"
-                autoComplete="subject"
-              />
-            </div>
-            <div className="">
-              <label className="block text-sm font-medium  mb-1">
-                Attachments
-              </label>
-              <input
-                type="file"
-                {...methods.register('attachments')}
-                multiple
-                className="w-full border border-gray-300 rounded-md p-2 text-gray-700"
-              />
-              {methods.watch('attachments')?.length > 0 && (
-                <ul className="mt-2  pl-5 text-sm text-gray-700">
-                  {Array.from(methods.watch('attachments')).map(
-                    (file: File, index: number) => (
-                      <li key={index}>{file.name}</li>
-                    )
-                  )}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          {/* --------------------------------------------------- */}
-          {/* <div className="bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">
-              Field Services Details
-            </h3>
-
-            <div className="grid grid-cols-2 gap-2 ">
-              <FormSelect
-                name="service type"
-                label="Service Type"
-                className="text-gray-700"
-                placeholder="Select a category"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                  { value: 'High', label: 'High' },
-                ]}
-                disabled={false}
-              />
-
-              <FormSelect
-                name="category"
-                label="Category"
-                className="text-gray-700"
-                placeholder="Select a category"
-                options={[
-                  { value: 'technical', label: 'Technical Issue' },
-                  { value: 'billing', label: 'Billing' },
-                  { value: 'general', label: 'General Inquiry' },
-                ]}
-                disabled={false}
-              />
-
-              <FormSelect
-                name="Preferred Time"
-                label="Preferred Time"
-                className="text-gray-700"
-                placeholder="Select time slot"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                  { value: 'High', label: 'High' },
-                ]}
-                disabled={false}
-              />
-
-              <FormSelect
-                name="Estimated Duration"
-                label="Estimated Duration"
-                className="text-gray-700"
-                placeholder="Select time slot"
-                options={[
-                  { value: '1 hour', label: '1 hour' },
-                  { value: '2 hour', label: '2 hour' },
-                ]}
-                disabled={false}
-              />
-
-              <FormSelect
-                name="Service plan"
-                label="Service Plan"
-                placeholder="Service plan"
-                className="text-gray-700"
-                options={[
-                  { value: 'technical', label: 'technical' },
-                  { value: 'billing', label: 'billing' },
-                ]}
-                disabled={false}
-              />
-
-              <div className="relative w-[350px]" ref={dropdownRef}>
+              <div className="">
                 <label className="block text-sm font-medium  mb-1">
-                  Skills Required
+                  Attachments
                 </label>
-                <button
-                  type="button"
-                  className="w-full border border-gray-300 rounded-md p-2 text-left"
-                  onClick={() => setSkillsOpen(true)}
-                >
-                  {selectedSkills.length > 0
-                    ? selectedSkills.join(', ')
-                    : 'Select skills...'}
-                </button>
-
-                {skillsOpen && (
-                  <div className="absolute z-10 mt-1 w-full rounded-md border bg-white shadow max-h-48 overflow-y-auto">
-                    {skillsList.map(skill => (
-                      <div
-                        key={skill}
-                        onClick={() => handleSelect(skill)}
-                        className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedSkills.includes(skill)}
-                          readOnly
-                          className="mr-2"
-                        />
-                        {skill}
-                      </div>
-                    ))}
-                  </div>
+                <input
+                  type="file"
+                  {...methods.register('attachments')}
+                  multiple
+                  className="w-full border border-gray-300 rounded-md p-2 text-gray-700"
+                />
+                {methods.watch('attachments')?.length > 0 && (
+                  <ul className="mt-2  pl-5 text-sm text-gray-700">
+                    {Array.from(methods.watch('attachments')).map(
+                      (file: File, index: number) => (
+                        <li key={index}>{file.name}</li>
+                      )
+                    )}
+                  </ul>
                 )}
               </div>
             </div>
-          </div>
 
-          <div className="bg-white  rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">Support Details</h3>
+            {/* --------------------------------------------------- */}
+            <div className="bg-white  rounded-lg">
+              <h3 className="font-semibold text-lg mb-2">Appointment</h3>
 
-            <div className="grid grid-cols-2 gap-2 ">
-              <FormSelect
-                name="Channel"
-                label="Channel"
-                placeholder="Phone"
-                className="text-gray-700"
-                options={[{ value: 'Low', label: 'Low' }]}
-                disabled={false}
-              />
+              <div className="md:flex  gap-10 mb-5">
+                <div>
+                  <FormField 
+                  name="fromdate" 
+                  label="From Date"
+                  className='md:w-[320px]'
+                  >
+                    {({ field }) => (
+                      <FormCalendar
+                        value={field.value}
+                        onChange={field.onChange}
+                        
+                      />
+                    )}
+                  </FormField>
+                </div>
+                <FormField 
+                name="todate" 
+                label="To Date"
+                className='md:w-[330px] '
+                >
+                  {({ field }) => (
+                    <FormCalendar
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                </FormField>
+              </div>
 
-              <FormSelect
-                name="Department"
-                label="Department"
-                className="text-gray-700"
-                placeholder="Select a department"
-                options={[
-                  { value: 'technical', label: 'Technical Issue' },
-                  { value: 'billing', label: 'Billing' },
-                ]}
-                disabled={false}
-              />
+             
 
-              <FormSelect
-                name="Assign To"
-                label="Assign to"
-                placeholder="Assign To"
-                className="text-gray-700"
-                options={[{ value: 'Low', label: 'Low' }]}
-                disabled={false}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 w-[full]  ">
+                <FormSelect
+                  name="status"
+                  label="Status"
+                  className="text-gray-700 md:w-[320px]"
+                  placeholder="Select status"
+                  options={[
+                    { value: 'Low', label: 'Low' },
+                    { value: 'High', label: 'High' },
+                  ]}
+                  disabled={false}
+                />
 
-              <FormSelect
-                name="SLA"
-                label="SLA"
-                placeholder="SLA"
-                className="text-gray-700"
-                options={[{ value: 'Standard (24)', label: 'Standard (24)' }]}
-                disabled={false}
-              />
-
-              <Controller
-                name="priority" // the form field name
-                control={control} // from useForm()
-                render={({ field }) => (
-                  <FormRadioGroup
-                    {...field}
-                    options={[
-                      {
-                        value: 'Search Knowledge Base for similar issues',
-                        label: 'Search Knowledge Base for similar issues',
-                      },
-                    ]}
-                    // label="Priority"
-                    disabled={false}
-                  />
-                )}
+                <FormSelect
+                  name="representative"
+                  label="Select Field Service Representative"
+                  className="text-gray-700 md:w-[330px]"
+                  placeholder="service representative"
+                  options={[
+                    { value: 'technical', label: 'Technical Issue' },
+                    { value: 'billing', label: 'Billing' },
+                    { value: 'general', label: 'General Inquiry' },
+                  ]}
+                  disabled={false}
+                />
+              </div>
+              <FormTextarea
+                name="address"
+                label="Customer Address"
+                placeholder="Customer address"
+                className="text-gray-700 "
+                // rules={{
+                //   required: 'Phone is required',
+                //   pattern: {
+                //     value: /^[0-9]{10}$/,
+                //     message: 'Phone must be 10 digits',
+                //   },
+                // }}
               />
             </div>
-          </div> */}
-        </Form>
-      </EditDialog>
+            <div className="flex justify-end gap-4 pt- ">
+              <ShadCnButton
+                type="button"
+                variant="outline"
+                onClick={handleDialogClose}
+              >
+                Cancel
+              </ShadCnButton>
+              <ShadCnButton type="submit">Create Ticket</ShadCnButton>
+            </div>
+          </Form>
+        </EditDialog>
+      </div>
     </>
   );
 };

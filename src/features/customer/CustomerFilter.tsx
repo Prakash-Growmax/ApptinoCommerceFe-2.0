@@ -15,6 +15,9 @@ import useUserStore from '@/stores/useUserStore';
 
 import { AccountElastic } from './api/AccountElastics';
 import { ElasticSearchServices } from './api/ElasticSearchServices';
+import useSideBarStore from '@/stores/sidebarStore';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
 
 const CustomerFilter = () => {
   const {
@@ -27,7 +30,9 @@ const CustomerFilter = () => {
     statuss,
     setStatus,
   } = useAccountsStore();
-  const { tenantId } = useUserStore();
+    const {payload}=useAppStore();
+
+  const {tenantId} = payload as TokenPayload;
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -49,22 +54,7 @@ const CustomerFilter = () => {
     return customerResponse;
   };
 
-  // Debounced search effect
-  // useEffect(() => {
-  //   const delayDebounce = setTimeout(() => {
-  //     if (searchText.length > 2) {
-  //       const updatedFilters = { ...filters, offset: 0, limit: 20 };
-  //       setLoading(true);
-  //       setFilters(updatedFilters);
-  //       fetchCustomers(updatedFilters, searchText);
-  //     } else if (searchText.length === 0) {
-  //       setLoading(true);
-  //       fetchCustomers(filters, "");
-  //     }
-  //   }, 400);
-
-  //   return () => clearTimeout(delayDebounce);
-  // }, [searchText]);
+ 
 
   const handleStatusChange = (value: string) => {
     setStatus(value); // Only update status; no fetch
@@ -82,9 +72,11 @@ const CustomerFilter = () => {
     setLoading(true);
     fetchCustomers(updated, searchText);
   };
-
+   const {sideOpen} = useSideBarStore();
   return (
-    <div className="flex items-end gap-4 w-full shadow-md rounded-md flex-wrap p-4">
+       <div className={`flex items-end gap-4 w-full shadow-md rounded-md flex-wrap p-4 ${
+      sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
+    }`}>
       {/* Search Input */}
       <div className="relative">
         <Label htmlFor="status" className="mb-2 ml-1">
@@ -95,7 +87,7 @@ const CustomerFilter = () => {
           value={searchText}
           onChange={e => handleSearch(e.target.value)}
           placeholder="Search Customer"
-          className=" w-[300px] lg:w-[250px] border-gray-300"
+          className=" w-[250px] lg:w-[250px] border-gray-300"
         />
         <div className="absolute inset-y-0 right-2 flex items-center">
           {searchText ? (
@@ -109,12 +101,13 @@ const CustomerFilter = () => {
       </div>
 
       {/* Company Status */}
+      
       <div className="flex flex-col">
         <Label htmlFor="status" className="mb-2 ml-1">
           Company Status
         </Label>
         <Select onValueChange={handleStatusChange} value={statuss}>
-          <SelectTrigger id="status" className="w-[120px] border-gray-300">
+          <SelectTrigger id="status" className="w-[100px] lg:w-[120px] border-gray-300">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -125,8 +118,8 @@ const CustomerFilter = () => {
       </div>
 
       {/* Apply Filters Button */}
-      <div className="flex flex-col justify-end">
-        <ShadCnButton type="button" onClick={handleApplyFilters}>
+      <div className="flex flex-col">
+        <ShadCnButton type="button" onClick={handleApplyFilters} className='w-[100px] lg:w-[120px] -ml-4 lg:-ml-0'>
           Apply Filters
         </ShadCnButton>
       </div>
@@ -140,7 +133,7 @@ const CustomerFilter = () => {
           onClick={handleApplyFilters}
           className="cursor-pointer hover:rotate-90 transition-transform"
         >
-          <RotateCw className=" w-6 h-6 lg:w-8 lg:h-8 text-gray-600" />
+          <RotateCw className=" w-8 h-8 text-gray-600" />
         </div>
       </div>
     </div>

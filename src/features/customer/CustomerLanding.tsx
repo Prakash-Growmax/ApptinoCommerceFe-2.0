@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useGetCompanyDetails } from "../settings/hook/useGetCompanyDetaiLs";
 import { useFetchCustomersWithFilters } from "./hook/useGetCustomersDetails";
+import useSideBarStore from "@/stores/sidebarStore";
 
 const CustomerLanding = () => {
   const [pagination, setPagination] = useState({
@@ -134,9 +135,11 @@ const CustomerLanding = () => {
   
     setPage((prev) => prev + 1);
   };
-
+   const {sideOpen} = useSideBarStore();
   return (
-    <div className="w-full">
+       <div className={`w-full ${
+      sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
+    }`}>
       <DashboardTable
         data={data}
         columns={columns}

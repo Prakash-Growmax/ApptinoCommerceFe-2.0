@@ -12,12 +12,14 @@ import {
 
 import { useGetBranchDetails } from './hook/useGetBranchDetails';
 import useCompanyBranchStore from './store/useCompanyBranchStore';
+import useSideBarStore from '@/stores/sidebarStore';
 
 const SettingCompanyBranch = () => {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 20, // You can change this as needed
   });
+   const {sideOpen} = useSideBarStore();
   const {
     branchData,
     loading,
@@ -199,8 +201,10 @@ const SettingCompanyBranch = () => {
     setPage(prev => prev + 1);
   };
   return (
-    <>
-      <DashboardTable
+       <div className={`w-full ${
+      sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
+    } overflow-x-auto`}>
+        <DashboardTable
         data={branchData}
         columns={Columns}
         loading={loading}
@@ -215,7 +219,9 @@ const SettingCompanyBranch = () => {
         rowPerPage={rowPerPage ? rowPerPage : 20}
         setRowPerPage={setRowPerPage}
       />
-    </>
+    
+    </div>
+    
   );
 };
 export default SettingCompanyBranch;

@@ -1,12 +1,24 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import useCompanyStore from "./store/useCompanyStore";
-import { Pencil } from "lucide-react";
+import { FormInput } from "@/components/molecules/ReactHookForm";
+import { useForm, FormProvider } from "react-hook-form";
+import { useEffect } from "react";
+import useSideBarStore from "@/stores/sidebarStore";
 
-// Configuration for fields
-const fields = [
+interface Field {
+  id: string;
+  label: string;
+  path: string;
+}
+
+// Fields Configuration
+const fields: Field[] = [
   { id: "name", label: "Company Name", path: "name" },
   { id: "website", label: "Website", path: "website" },
   { id: "taxId", label: "Tax ID", path: "taxDetailsId.pan" },
@@ -14,19 +26,49 @@ const fields = [
   { id: "accountType", label: "Account Type", path: "accountTypeId.name" },
   { id: "defaultCurrency", label: "Default Currency", path: "currencyId.currencyCode" },
   { id: "subIndustry", label: "SubIndustry", path: "subIndustryId.industryId.name" },
-  { id: "industryDescription", label: "Industry Description", path: "industryId.description" },
+  { id: "industryDescription", label: "Industry Description", path: "subIndustryId.description" },
 ];
 
-// Helper to get nested values safely
+// Helper to get nested values
 const getValue = (obj: any, path: string) =>
   path.split('.').reduce((acc, part) => acc?.[part], obj);
 
 const SettingDetails = () => {
   const { companyData, loading } = useCompanyStore();
+    const {sideOpen} = useSideBarStore();
+  const methods = useForm({
+    defaultValues: {
+      name: "",
+      website: "",
+      taxId: "",
+      businessType: "",
+      accountType: "",
+      defaultCurrency: "",
+      subIndustry: "",
+      industryDescription: "",
+    },
+  });
+
+  useEffect(() => {
+    if (companyData) {
+      methods.reset({
+        name: getValue(companyData, "name") || "",
+        website: getValue(companyData, "website") || "",
+        taxId: getValue(companyData, "taxDetailsId.pan") || "",
+        businessType: getValue(companyData, "businessTypeId.name") || "",
+        accountType: getValue(companyData, "accountTypeId.name") || "",
+        defaultCurrency: getValue(companyData, "currencyId.currencyCode") || "",
+        subIndustry: getValue(companyData, "subIndustryId.industryId.name") || "",
+        industryDescription: getValue(companyData, "subIndustryId.description") || "",
+      });
+    }
+  }, [companyData, methods]);
 
   return (
-    <Card>
-      {/* Mobile Header */}
+      <Card className={`w-full ${
+      sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
+    }`}>
+      {/* Header */}
       <CardHeader className="flex md:hidden flex-row items-center justify-between">
         <div className="flex items-center gap-2">
           {loading ? (
@@ -42,7 +84,6 @@ const SettingDetails = () => {
         </div>
       </CardHeader>
 
-      {/* Desktop Header */}
       <CardHeader className="hidden md:block mb-1">
         <CardTitle>Company Details</CardTitle>
       </CardHeader>
@@ -51,12 +92,17 @@ const SettingDetails = () => {
         {/* Mobile View */}
         <div className="md:hidden flex flex-col gap-3">
           {fields.map(({ id, label, path }) => (
-            <div key={id} className="flex flex-row justify-between items-start text-sm sm:text-base">
+            <div
+              key={id}
+              className="flex flex-row justify-between items-start text-sm sm:text-base"
+            >
               <span className="font-semibold w-[45%]">{label}</span>
               {loading ? (
                 <Skeleton className="h-4 w-[50%]" />
               ) : (
-                <span className="text-right w-[50%] truncate">{getValue(companyData, path) || "-"}</span>
+                <span className="text-right w-[50%] truncate">
+                  {getValue(companyData, path) || "-"}
+                </span>
               )}
             </div>
           ))}
@@ -67,7 +113,7 @@ const SettingDetails = () => {
           {/* Logo */}
           <div className="w-1/4 flex justify-center">
             {loading ? (
-              <Skeleton className="h-[143px] w-[280px] rounded-xl" />
+              <Skeleton className="h-[180px] w-[280px] rounded-xl" />
             ) : (
               <img
                 alt="logo"
@@ -77,27 +123,51 @@ const SettingDetails = () => {
             )}
           </div>
 
-          {/* Input Fields */}
-          <div className="w-3/4 grid grid-cols-2 gap-2">
-            {fields.map(({ id, label, path }) => (
-              <div className="flex flex-col gap-1" key={id}>
-                {loading ? (
-                  <Skeleton className="h-4 w-[250px]" />
+          {/* Form */}
+          <FormProvider {...methods}>
+            <form className="w-3/4 grid grid-cols-2 gap-x-2 gap-y-0.5">
+              {fields.map(({ id, label, path }) => {
+                const isIndustryDescription = id === "industryDescription";
+
+                if (loading) {
+                  return (
+                    <div
+                      key={id}
+                      className={`flex flex-col gap-1 w-full `}
+                    >
+                      <div className="text-sm font-medium text-muted-foreground">
+                        {label}
+                      </div>
+                      <Skeleton className="h-9 w-full rounded-md" />
+                    </div>
+                  );
+                }
+
+                return isIndustryDescription ? (
+                  <div
+                    key={id}
+                    className="flex flex-col gap-1 w-full"
+                  >
+                    <div className="text-sm font-medium text-black">
+                      {label}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {getValue(companyData, path) || "-"}
+                    </div>
+                  </div>
                 ) : (
-                  <>
-                    <Label htmlFor={id} className="ml-1">{label}</Label>
-                    <Input
-                      id={id}
-                      type="text"
-                      placeholder={label}
-                      value={getValue(companyData, path) || ""}
-                      readOnly
-                    />
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
+                  <FormInput
+                    key={id}
+                    name={id}
+                    label={label}
+                    placeholder={label}
+                    disabled={loading}
+                    value={getValue(companyData, path) || ""}
+                  />
+                );
+              })}
+            </form>
+          </FormProvider>
         </div>
       </CardContent>
     </Card>
