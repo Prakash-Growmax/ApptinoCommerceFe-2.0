@@ -212,7 +212,7 @@ const SettingCompanyBranch = () => {
         handlePrevious={handlePrevious}
         handleNext={handleNext}
         page={page}
-        rowPerPage={rowPerPage}
+        rowPerPage={rowPerPage ? rowPerPage : 20}
         setRowPerPage={setRowPerPage}
       />
     </>

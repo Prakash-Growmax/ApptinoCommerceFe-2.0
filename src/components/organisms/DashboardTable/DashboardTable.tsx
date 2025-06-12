@@ -36,7 +36,7 @@ type TableProps<T> = {
   page: number;
   rowPerPage: number;
   setRowPerPage: (rowPerPage: number | string) => void;
-  className: string;
+
 };
 
 const DashboardTable = <T,>({
@@ -53,7 +53,7 @@ const DashboardTable = <T,>({
   page,
   rowPerPage,
   setRowPerPage,
-  className = 'w-full',
+  
 }: TableProps<T>) => {
   const pageCount = Math.ceil(totalDataCount / rowPerPage);
 
