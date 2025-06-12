@@ -62,7 +62,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             disabled={disabled}
             aria-invalid={!!fieldState.error}
             aria-describedby={fieldState.error ? `${name}-error` : undefined}
-            className={fieldState.error ? 'border-red-500' : ''}
+            className={fieldState.error ? 'border-red-500 ' : 'border-gray-300'}
             autoFocus={autoFocus}
             onKeyDown={onKeyDown}
             onBlur={e => {

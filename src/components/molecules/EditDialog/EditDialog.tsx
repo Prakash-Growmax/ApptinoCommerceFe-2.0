@@ -34,20 +34,20 @@ hideDialogActions = false,
 
 
 }:EditDialogProps) =>{
-     const isMobile = useMediaQuery("(max-width: 768px)");
+     const isMobile = useMediaQuery("(max-width:318px)");
      return(
           <Dialog open={open} onOpenChange={(v) => !v && closeDialog()} >
       <DialogContent
         className={cn(
-          "max-h-[90vh]  overflow-y-auto sm:max-w-3xl",
-          isMobile && "w-full h-full max-w-full m-0 rounded-none p-0"
+          "max-h-[90vh]  overflow-y-auto md:max-w-3xl  ",
+          isMobile && "w-full h-full  max-w-full m-0 rounded-none p-0  overflow-x-hidden"
         )}
       >
       
-        <div className="flex flex-col w-full gap-2 -mt-2">
+        <div className="flex flex-col w-full gap-2 -mt-2 ">
               {title && (
-            <DialogHeader className="mb-4 ">
-              <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+            <DialogHeader className="mb-4 text-left ">
+              <DialogTitle className="lg:text-lg font-semibold md:mt-5  ">{title}</DialogTitle>
             </DialogHeader>
           )}
            <hr className="border-t border-gray-300 -mt-4" />
@@ -57,7 +57,7 @@ hideDialogActions = false,
 
           <div className="mb-4">{children}</div>
           {!hideDialogActions && (
-            <DialogFooter className={isMobile ? "fixed bottom-0 left-0 right-0 bg-white p-4 shadow" : ""}>
+            <DialogFooter className={isMobile ? "fixed bottom-0 left-0 right-0 bg-white p-4 shadow w-full overflow-x-hidden" : ""}>
               <div className={cn("flex w-full gap-2", isMobile ? "flex-col" : "justify-end")}>
                 <Button
                   variant="outline"

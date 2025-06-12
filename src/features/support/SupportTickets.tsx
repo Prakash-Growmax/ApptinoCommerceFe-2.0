@@ -95,8 +95,8 @@ const SupportTickets = ({
     setTechnician('');
     handleSearchClear();
   };
-  const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
+  // const dropdownRef = useRef<HTMLDivElement>(null);
 
   return (
   <div className="px-1">
