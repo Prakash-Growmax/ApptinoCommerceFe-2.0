@@ -24,7 +24,7 @@ export interface BranchState {
   setError: (error: string) => void;
   page:number;
    setPage: (page: number | ((prev: number) => number)) => void;
-  rowPerPage:number;
+  rowPerPage:number | null;
    setRowPerPage:(rowPerPage:number|string)=>void;
   totalCount:number;
   setTotalCount:(totalCount:number)=>void

@@ -6,10 +6,13 @@ import useUserStore from "@/stores/useUserStore";
 import { CustomerFilters } from "../api/customer.api";
 import { AccountElastic } from "../api/AccountElastics";
 import { ElasticSearchServices } from "../api/ElasticSearchServices";
+import useAppStore from "@/stores/appStore";
+import { TokenPayload } from "@/types/auth.types";
 
 export const useFetchCustomersWithFilters = () => {
-  const { userId, tenantId, companyId } = useUserStore();
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+   const {accessToken,payload}=useAppStore();
+  const token = accessToken as string;
+  const {userId,companyId,tenantId } = payload as TokenPayload;
 
   const {
     setFilters,
@@ -27,7 +30,7 @@ export const useFetchCustomersWithFilters = () => {
     [userId, tenantId, companyId, page, rowPerPage]
   );
 
-  // Enable query only when all required values are present
+ 
   const filtersEnabled = !!userId && !!tenantId && !!companyId && !!token;
 
   // STEP 1: Fetch filters

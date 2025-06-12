@@ -5,14 +5,17 @@ import useUserStore from '@/stores/useUserStore';
 import useCompanyBranchStore from '../store/useCompanyBranchStore';
 import { Pagination } from '../types/company.types';
 import { GetBranchDetails } from '../api/settings.api';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
 
 export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
-  const { companyId, tenantId, userId } = useUserStore();
+  const {accessToken,payload}=useAppStore();
+  const token = accessToken as string;
+  const {userId,companyId,tenantId } = payload as TokenPayload;
   const { page, rowPerPage, setBranchData, setLoading, setTotalCount } =
     useCompanyBranchStore();
 
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('accessToken') : '';
+ 
 
   const fetchBranch = async () => {
     try {

@@ -1,15 +1,16 @@
-import useUserStore from "@/stores/useUserStore";
 import useSupportStore from "../store/useSupportStore";
 import { useQuery } from "@tanstack/react-query";
 import _ from "lodash";
-import { useEffect, useState } from "react";
 import { GetFetchSupportTicket, GetSupportFilter } from "../api/support.api";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import useAppStore from "@/stores/appStore";
+import { TokenPayload } from "@/types/auth.types";
 
 export const useGetSupportTicketFilters = () => {
-  const { userId, tenantId, companyId } = useUserStore();
-  const token = localStorage.getItem("accessToken");
+   const {accessToken,payload}=useAppStore();
+  const token = accessToken as string;
+  const {userId,companyId,tenantId } = payload as TokenPayload;
   const {
     page,
     rowPerPage,
@@ -42,7 +43,7 @@ export const useGetSupportTicketFilters = () => {
     if (body.buyerCompanyName) {
       body.buyerCompanyName = _.map(filters.buyerCompanyName, "name");
     }
-
+  
     const response = await GetFetchSupportTicket({
       tenantId,
       page,
