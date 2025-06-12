@@ -1,38 +1,52 @@
+import { useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import useAccountsStore from "@/stores/useAccountStore";
 import useUserStore from "@/stores/useUserStore";
-import { useQuery } from "@tanstack/react-query";
+import { CustomerFilters } from "../api/customer.api";
 import { AccountElastic } from "../api/AccountElastics";
 import { ElasticSearchServices } from "../api/ElasticSearchServices";
+import useAppStore from "@/stores/appStore";
+import { TokenPayload } from "@/types/auth.types";
 
 export const useFetchCustomersWithFilters = () => {
-  const { userId, tenantId, companyId } = useUserStore();
-  const token = localStorage.getItem("accessToken");
+   const {accessToken,payload}=useAppStore();
+  const token = accessToken as string;
+  const {userId,companyId,tenantId } = payload as TokenPayload;
 
-  const { setFilters, setData, setLoading, page, rowPerPage,setTotalCount,filters } = useAccountsStore();
+  const {
+    setFilters,
+    setData,
+    setLoading,
+    setTotalCount,
+    page,
+    rowPerPage,
+    filters,
+  } = useAccountsStore();
+
+  // Memoized query key for filters
+  const filtersQueryKey = useMemo(
+    () => ["filters", userId, tenantId, companyId, page, rowPerPage],
+    [userId, tenantId, companyId, page, rowPerPage]
+  );
+
+ 
+  const filtersEnabled = !!userId && !!tenantId && !!companyId && !!token;
 
   // STEP 1: Fetch filters
   const filtersQuery = useQuery({
-    queryKey: ["filters", userId, tenantId, page, rowPerPage],
+    queryKey: filtersQueryKey,
     queryFn: async () => {
       setLoading(true);
-      const response = await fetch(
-        `https://api.myapptino.com/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await CustomerFilters({
+        userId,
+        companyId,
+        tenantId,
+        token,
+      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      let data = await response.json();
-      if (!data?.data?.limit) {
+      let data;
+      if (!response?.data?.limit) {
         data = {
           accountName: "",
           branches: false,
@@ -48,34 +62,38 @@ export const useFetchCustomersWithFilters = () => {
         };
       }
 
-      let resFilters = data?.data?.limit ? data.data : data;
-      
+      const resFilters = response?.data?.limit ? response?.data : data;
+
       setFilters({
         ...resFilters,
-        limit:rowPerPage,
-        offset:page
+        limit: rowPerPage,
+        offset: page,
       });
+
       return resFilters;
     },
-    enabled: !!companyId && !!userId,
+    enabled: filtersEnabled,
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 
-  // STEP 2: Fetch customers once filters are loaded
   const customersQuery = useQuery({
     queryKey: ["customers", filters],
     queryFn: async () => {
+      setLoading(true)
       const elasticData = AccountElastic.BuildCustomerquery(filters);
       const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);
       const customerResponse = ElasticSearchServices.FormatResults(data);
-      
+
       setData(customerResponse);
-      setTotalCount(data?.hits?.total)
+      setTotalCount(data?.hits?.total || 0);
       setLoading(false);
+
       return customerResponse;
     },
-    enabled: !!filtersQuery.data, // only enabled when filters are fetched
+    enabled: !!filtersQuery.data,
     refetchOnWindowFocus: false,
+    keepPreviousData: true,
   });
 
   return {

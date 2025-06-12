@@ -1,15 +1,22 @@
 import { Currency } from './general.types';
 
 export interface AuthActions {
-  setAuth: (
-    payload: TokenPayload,
+  loginAction: (
     accessToken: string,
-    refreshToken: string
+    refreshToken: string,
+    payload: TokenPayload
   ) => void;
-  logout: () => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  clearError: () => void;
+  logoutAction: () => void;
+  setAppLoadingAction: (loading: boolean) => void;
+  setAuthLoadingAction: (loading: boolean) => void;
+  setErrorAction: (error: boolean) => void;
+  getAuthHeaderAction: () => { Authorization?: string };
+  initializeAuthAction: () => void;
+  isTokenValidAction: () => boolean;
+  refreshTokensAction: (
+    newAccessToken: string,
+    newRefreshToken: string
+  ) => void;
 }
 
 export interface TokenPayload {
@@ -55,12 +62,6 @@ export interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
-
-export interface Tokens {
-  accessToken: string;
-  refreshToken: string;
-  payload: TokenPayload;
+  isAuthLoading: boolean;
+  isError: boolean;
 }

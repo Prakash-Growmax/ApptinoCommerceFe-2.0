@@ -18,3 +18,11 @@ export type SupportType={
   rowPerPage: number;
   setRowPerPage: (rowPerPage: number) => void;
 }
+export type SupportInfo={
+  userId:number,
+  tenantId:string,
+  token:string
+  page?:number;
+  rowPerPage?:number;
+  body?:any[];
+}

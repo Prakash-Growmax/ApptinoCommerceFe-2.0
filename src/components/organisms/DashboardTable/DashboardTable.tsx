@@ -1,20 +1,21 @@
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import React from 'react';
+
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import React from "react";
+} from '@tanstack/react-table';
+
+import { ShadCnButton } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 type TablePagination = {
   pageIndex: number;
@@ -28,14 +29,14 @@ type TableProps<T> = {
   totalDataCount: number; // 👈 total number of items (from API or source)
   pagination: TablePagination;
   setPagination: React.Dispatch<React.SetStateAction<TablePagination>>;
-   setPage: (page: number | ((prev: number) => number)) => void;
-    pageOptions: number[];
-     handlePrevious: () => void;
-     handleNext:()=>void;
-     page:number;
-      rowPerPage:number
-        setRowPerPage:(rowPerPage:number|string)=>void;
-        className:string;
+  setPage: (page: number | ((prev: number) => number)) => void;
+  pageOptions: number[];
+  handlePrevious: () => void;
+  handleNext: () => void;
+  page: number;
+  rowPerPage: number;
+  setRowPerPage: (rowPerPage: number | string) => void;
+
 };
 
 const DashboardTable = <T,>({
@@ -52,9 +53,9 @@ const DashboardTable = <T,>({
   page,
   rowPerPage,
   setRowPerPage,
-  className="w-full"
+  
 }: TableProps<T>) => {
-  const pageCount = Math.ceil(totalDataCount / pagination.pageSize);
+  const pageCount = Math.ceil(totalDataCount / rowPerPage);
 
   const table = useReactTable({
     data,
@@ -63,46 +64,28 @@ const DashboardTable = <T,>({
     manualPagination: true,
     pageCount,
   });
-
-  // const handlePrevious = () => {
-  //   setPagination((prev) => ({
-  //     ...prev,
-  //     pageIndex: Math.max(prev.pageIndex - 1, 0),
-  //   }));
-  //      setPage((prev) => prev - 1);
-  // };
-
-  // const handleNext = () => {
-  //   setPagination((prev) => ({
-  //     ...prev,
-  //     pageIndex: Math.min(prev.pageIndex + 1, pageCount - 1),
-  //   }));
-  //   setPage((prev) => prev + 1);
-  // };
-
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // setPagination({
-    //   pageIndex: 0,
-    //   pageSize: parseInt(e.target.value, 10),
-    // });
     setPage(0);
-    setRowPerPage(e.target.value)
+    setRowPerPage(e.target.value);
   };
 
   return (
     <div className="rounded-md border shadow-sm overflow-hidden">
-      <Table >
+      <Table>
         <TableHeader className="bg-muted/50">
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map(header => (
                 <TableHead
                   key={header.id}
                   className="text-left px-3 py-2 text-muted-foreground font-medium"
                 >
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -113,16 +96,19 @@ const DashboardTable = <T,>({
             [...Array(pagination.pageSize)].map((_, rowIndex) => (
               <TableRow key={`skeleton-${rowIndex}`}>
                 {columns.map((_, colIndex) => (
-                  <TableCell key={`skeleton-cell-${colIndex}`} className="px-3 py-2">
+                  <TableCell
+                    key={`skeleton-cell-${colIndex}`}
+                    className="px-3 py-2"
+                  >
                     <div className="h-4 bg-muted rounded animate-pulse w-full" />
                   </TableCell>
                 ))}
               </TableRow>
             ))
           ) : table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map(row => (
               <TableRow key={row.id} className="hover:bg-muted/20">
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map(cell => (
                   <TableCell key={cell.id} className="px-3 py-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
@@ -131,7 +117,10 @@ const DashboardTable = <T,>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-4 text-sm text-muted-foreground">
+              <TableCell
+                colSpan={columns.length}
+                className="text-center py-4 text-sm text-muted-foreground"
+              >
                 No data available
               </TableCell>
             </TableRow>
@@ -183,47 +172,47 @@ const DashboardTable = <T,>({
           </TableRow>
         </TableFooter> */}
       </Table>
-        <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <span className=" text-xs lg:text-sm text-muted-foreground">
-                    Page {page + 1} of {pageCount}
-                  </span>
-                  <label className="text-xs lg:text-sm text-muted-foreground">
-                    Rows per page:{" "}
-                    <select
-                      className="border rounded px-2 py-1 ml-1"
-                      value={rowPerPage}
-                      onChange={handlePageSizeChange}
-                    >
-                      { pageOptions.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                     className="text-xs lg:text-sm" 
-                    onClick={handlePrevious}
-                    disabled={page === 0}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                     className="text-xs lg:text-sm" 
-                    onClick={handleNext}
-                    disabled={page >= pageCount - 1}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
+      <div className="flex items-center justify-between p-4">
+        <div className="flex items-center gap-3">
+          <span className=" text-xs lg:text-sm text-muted-foreground">
+            Page {page + 1} of {pageCount}
+          </span>
+          <label className="text-xs lg:text-sm text-muted-foreground">
+            Rows per page:{' '}
+            <select
+              className="border rounded px-2 py-1 ml-1"
+              value={rowPerPage}
+              onChange={handlePageSizeChange}
+            >
+              {pageOptions.map(size => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="flex gap-2">
+          <ShadCnButton
+            variant="outline"
+            size="sm"
+            className="text-xs lg:text-sm"
+            onClick={handlePrevious}
+            disabled={page === 0}
+          >
+            Previous
+          </ShadCnButton>
+          <ShadCnButton
+            variant="outline"
+            size="sm"
+            className="text-xs lg:text-sm"
+            onClick={handleNext}
+            disabled={page >= pageCount - 1}
+          >
+            Next
+          </ShadCnButton>
+        </div>
+      </div>
     </div>
   );
 };

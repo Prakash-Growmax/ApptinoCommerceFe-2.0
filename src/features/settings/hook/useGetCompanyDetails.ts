@@ -1,35 +1,27 @@
 import useUserStore from "@/stores/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import useCompanyStore from "../store/useCompanyStore";
+import { GetCompanyDetails } from "../api/settings.api";
+import useAppStore from "@/stores/appStore";
+import { TokenPayload } from "@/types/auth.types";
 
 export const useGetCompanyDetails = () => {
-  const { companyId, tenantId } = useUserStore();
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const {accessToken,payload}=useAppStore();
+  const token = accessToken as string;
+  const { companyId, tenantId } = payload as TokenPayload;
+  
+
   const { setCompanyData, setLoading } = useCompanyStore();
 
   const fetchCompany = async () => {
     try {
+     
       setLoading(true);
-      const response = await fetch(
-        `https://api.myapptino.com/corecommerce/companys/${companyId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setCompanyData(data?.data);
+      const response = await GetCompanyDetails({companyId,tenantId,token})
+    
+      setCompanyData(response?.data);
       setLoading(false);
-      return data;
+      return response;
     } catch (error) {
       console.error("Error fetching company details", error);
       setLoading(false);

@@ -1,29 +1,31 @@
-// src/App.tsx
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { Suspense, useEffect } from 'react';
 
 import { AppProviders } from '@app/providers';
-import { ErrorFallback, LoadingFallback } from '@components/organisms';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 
-import { AppWithHeader } from './app/router/AppWithHeader';
-
-
+import AppRouter from './app/router/AppRouter';
+import { LoadingFallback } from './components';
+import useAppStore from './stores/appStore';
 
 function App() {
-  const queryClient = new QueryClient();
+  const { hasHydrated, isAppLoading, isAuthLoading, initializeAuthAction } =
+    useAppStore();
+
+  useEffect(() => {
+    initializeAuthAction();
+  }, [initializeAuthAction]);
+
+  if (!hasHydrated || isAppLoading || isAuthLoading) {
+    return <LoadingFallback />;
+  }
+
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <AppProviders>
-        <Toaster richColors expand />
-        <Suspense fallback={<LoadingFallback />}>
-          <QueryClientProvider client={queryClient}>
-            <AppWithHeader />
-          </QueryClientProvider>
-        </Suspense>
-      </AppProviders>
-    </ErrorBoundary>
+    <AppProviders>
+      <Suspense fallback={<LoadingFallback />}>
+        <AppRouter />
+      </Suspense>
+      <Toaster richColors expand />
+    </AppProviders>
   );
 }
 

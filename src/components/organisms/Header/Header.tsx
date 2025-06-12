@@ -40,25 +40,6 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            aria-label={
-              isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
-            }
-          >
-            {isDarkMode ? (
-              <span role="img" aria-label="Sun" className="text-lg">
-                🌞
-              </span>
-            ) : (
-              <span role="img" aria-label="Moon" className="text-lg">
-                🌙
-              </span>
-            )}
-          </Button> */}
-
           <Link to="/auth/login">
             <Button variant="outline" size="sm">
               {t('auth.login')}

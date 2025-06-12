@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
@@ -13,8 +13,7 @@ import {
 } from '@/components/molecules/ReactHookForm';
 import { FormCalendar } from '@/components/molecules/ReactHookForm/Calendar/Calendar';
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
-import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
-import { Button } from '@/components/ui/button';
+import { ShadCnButton } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -24,10 +23,10 @@ import {
 import { createTicket } from '@/features/auth/api/ticketapi';
 import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
-import { useSkillsMultiSelect } from '@/hooks/useSkillsMultiSelect';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
+import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 
 type FormData = {
   customer: string;
@@ -177,7 +176,7 @@ const SupportTicketsDialog = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Create Ticket</Button>
+      <ShadCnButton onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
       <div className="">
         <EditDialog
           open={open}
@@ -432,14 +431,14 @@ const SupportTicketsDialog = () => {
               />
             </div>
             <div className="flex justify-end gap-4 pt- ">
-              <Button
+              <ShadCnButton
                 type="button"
                 variant="outline"
                 onClick={handleDialogClose}
               >
                 Cancel
-              </Button>
-              <Button type="submit">Create Ticket</Button>
+              </ShadCnButton>
+              <ShadCnButton type="submit">Create Ticket</ShadCnButton>
             </div>
           </Form>
         </EditDialog>

@@ -3,8 +3,8 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ShadCnButton } from "@/components/ui/button";
 
 interface FormCalendarProps {
   value?: Date;
@@ -22,7 +22,7 @@ export const FormCalendar = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
+        <ShadCnButton
           variant={"outline"}
           className={cn(
             "w-full justify-start text-left font-normal border border-gray-300",
@@ -32,7 +32,7 @@ export const FormCalendar = ({
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {value ? format(value, "PPP") : <span>{placeholder}</span>}
-        </Button>
+        </ShadCnButton>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { ShadCnButton } from '@/components/ui/button';
 
 interface ErrorFallbackComponentProps {
   error: Error;
@@ -36,17 +36,17 @@ export function ErrorFallbackComponent({
               {t('errors.pageErrorDescription')}
             </p>
             <div className="flex gap-3">
-              <Button onClick={resetErrorBoundary}>
+              <ShadCnButton onClick={resetErrorBoundary}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 {t('common.retry')}
-              </Button>
-              <Button
+              </ShadCnButton>
+              <ShadCnButton
                 variant="outline"
                 onClick={() => (window.location.href = '/')}
               >
                 <Home className="h-4 w-4 mr-2" />
                 {t('navigation.home')}
-              </Button>
+              </ShadCnButton>
             </div>
             {import.meta.env.DEV && (
               <details className="mt-8 max-w-2xl">
@@ -71,10 +71,10 @@ export function ErrorFallbackComponent({
             <p className="text-sm text-muted-foreground mb-4">
               {t('errors.sectionErrorDescription')}
             </p>
-            <Button size="sm" onClick={resetErrorBoundary}>
+            <ShadCnButton size="sm" onClick={resetErrorBoundary}>
               <RefreshCw className="h-3 w-3 mr-2" />
               {t('common.retry')}
-            </Button>
+            </ShadCnButton>
           </div>
         );
 
@@ -86,9 +86,13 @@ export function ErrorFallbackComponent({
             <p className="text-sm text-muted-foreground mb-2">
               {t('errors.componentError')}
             </p>
-            <Button size="sm" variant="outline" onClick={resetErrorBoundary}>
+            <ShadCnButton
+              size="sm"
+              variant="outline"
+              onClick={resetErrorBoundary}
+            >
               {t('common.retry')}
-            </Button>
+            </ShadCnButton>
           </div>
         );
     }

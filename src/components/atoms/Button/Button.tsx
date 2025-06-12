@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react';
 
-import { Button as ShadCnButton } from '@/components/ui/button';
+import { ShadCnButton } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface ShadcnButtonProps {

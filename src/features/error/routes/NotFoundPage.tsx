@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button } from '@components/atoms/Button/Button';
+import Button from '@/components/atoms/Button/Button';
 
 const NotFoundPage = () => {
   const { t } = useTranslation();

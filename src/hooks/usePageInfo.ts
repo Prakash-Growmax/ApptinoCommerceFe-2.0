@@ -1,22 +1,42 @@
+import { useLocation } from 'react-router-dom';
 
-import { useLocation } from "react-router-dom";
-type RouteInfo = {
-    title: string;
-}
+import { routeConfig } from '@/app/router/routes.config';
+import { PageInfo, RouteConfig } from '@/types/router.types';
 
-type RouteMap = {
-    [key: string]: RouteInfo;
-}
+const findRouteInfo = (
+  routes: RouteConfig[],
+  pathname: string,
+  basePath = ''
+): PageInfo | null => {
+  for (const route of routes) {
+    const fullPath = basePath + route.path;
 
-export function usePageInfo(): RouteInfo {
-    const location = useLocation();
-    
-    const routeInfo: RouteMap = {
-        "/": { title: "Dashboard" },
-        "/supporttickets": { title: "Support Tickets" },
-        "/customers": { title: "Customers" },
-        "/settings": { title: "Settings" }
-    };
-    
-    return routeInfo[location.pathname] || { title: "Page Not Found" };
-}
+    // Check if current route matches exactly
+    if (pathname === fullPath || (route.index && pathname === basePath)) {
+      return {
+        title: route.meta?.title || 'Page',
+        description: route.meta?.description || '',
+        requiresAuth: route.meta?.requiresAuth || false,
+      };
+    }
+
+    // Check children routes
+    if (route.children) {
+      const childResult = findRouteInfo(
+        route.children,
+        pathname,
+        fullPath === '/' ? '' : fullPath
+      );
+      if (childResult) {
+        return childResult;
+      }
+    }
+  }
+
+  return null;
+};
+
+export const usePageInfo = (): PageInfo | null => {
+  const location = useLocation();
+  return findRouteInfo(routeConfig, location.pathname);
+};

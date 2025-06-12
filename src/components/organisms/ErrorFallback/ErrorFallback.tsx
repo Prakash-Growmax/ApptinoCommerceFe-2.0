@@ -1,7 +1,7 @@
 import { FallbackProps } from 'react-error-boundary';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/components/ui/button';
+import Button from '@/components/atoms/Button/Button';
 
 // Use shadcn/ui consistently
 

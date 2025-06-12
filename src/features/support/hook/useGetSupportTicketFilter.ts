@@ -1,106 +1,67 @@
-import useUserStore from "@/stores/useUserStore";
 import useSupportStore from "../store/useSupportStore";
 import { useQuery } from "@tanstack/react-query";
 import _ from "lodash";
-import { useEffect, useState } from "react";
+import { GetFetchSupportTicket, GetSupportFilter } from "../api/support.api";
+
+import { useEffect, useRef } from "react";
+import useAppStore from "@/stores/appStore";
+import { TokenPayload } from "@/types/auth.types";
 
 export const useGetSupportTicketFilters = () => {
-  const { userId, tenantId, companyId } = useUserStore();
-  const token = localStorage.getItem("accessToken");
-  const { page, rowPerPage, setLoading, setFilters, filters,setSupportData,setTotalCount} = useSupportStore();
-  const [fetchFilter,setFetchFilter]=useState(true)
-  // Query to get saved filters
+   const {accessToken,payload}=useAppStore();
+  const token = accessToken as string;
+  const {userId,companyId,tenantId } = payload as TokenPayload;
+  const {
+    page,
+    rowPerPage,
+    setLoading,
+    setFilters,
+    filters,
+    setSupportData,
+    setTotalCount,
+  } = useSupportStore();
+
+  const isInitialLoadDone = useRef(false);
+
   const filtersQuery = useQuery({
-    queryKey: ["filters", userId, tenantId, page, rowPerPage],
+    queryKey: ["filters", userId, tenantId],
     queryFn: async () => {
       setLoading(true);
-      const response = await fetch(
-        `https://api.myapptino.com/corecommerce/templates/get?domainName=dev3&propertyName=${userId}_filters`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setFilters(data[0]?.content || {});
-      setFetchFilter(false);
-      return data[0]?.content;
+      const response = await GetSupportFilter({ userId, tenantId, token });
+      setFilters(response[0]?.content || {});
+      isInitialLoadDone.current = true;
+      setLoading(false);
+      return response[0]?.content;
     },
     enabled: !!companyId && !!userId,
     refetchOnWindowFocus: false,
   });
- const fetchSupportTickets=async()=>{
-        let body = _.cloneDeep(filters);
 
-      if (body.buyerCompanyName) {
-        body.buyerCompanyName = _.map(filters.buyerCompanyName, "name");
-      }
+  const fetchSupportTickets = async () => {
+    setLoading(true);
+    const body = _.cloneDeep(filters);
+    if (body.buyerCompanyName) {
+      body.buyerCompanyName = _.map(filters.buyerCompanyName, "name");
+    }
+  
+    const response = await GetFetchSupportTicket({
+      tenantId,
+      page,
+      rowPerPage,
+      body,
+      token,
+    });
 
-      const response = await fetch(
-        `https://api.myapptino.com/support/service-support/filter?domainName=${tenantId}&page=${page}&size=${rowPerPage}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant": tenantId,
-            Authorization: `Bearer ${token}`,
-          },
-          body:body,
-        }
-      );
-       const data = await response.json();
-       setSupportData(data?.result)
-       setTotalCount(data?.count);
-      setLoading(false)
- }
- useEffect(()=>{
-  if(fetchFilter === false){
-     fetchSupportTickets();
-  }
- 
- },[filters,fetchFilter,page,rowPerPage])
-  // Query to fetch support tickets based on filters
-  // const fetchSupportTickets = useQuery({
-  //   queryKey: ["support-tickets", filters],
-  //   queryFn: async () => {
-  //     let body = _.cloneDeep(filters);
+    setSupportData(response?.result);
+    setTotalCount(response?.count);
+    setLoading(false);
+  };
 
-  //     if (body.buyerCompanyName) {
-  //       body.buyerCompanyName = _.map(filters.buyerCompanyName, "name");
-  //     }
-
-  //     const response = await fetch(
-  //       `https://api.myapptino.com/support/service-support/filter?domainName=${tenantId}&page=${page}&size=${rowPerPage}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "x-tenant": tenantId,
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body:body,
-  //       }
-  //     );
-      
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-
-  //     const data = await response.json();
-  //     console.log(data)
-  //   },
-  //   enabled: !!companyId && !!userId && !!filters,
-  //   refetchOnWindowFocus: false,
-  // });
+  useEffect(() => {
+    if (isInitialLoadDone.current) {
+      fetchSupportTickets();
+    }
+  }, [filters, page, rowPerPage]);
 
   return { filtersQuery, fetchSupportTickets };
 };
