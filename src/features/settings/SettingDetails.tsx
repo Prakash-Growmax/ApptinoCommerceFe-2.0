@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import useCompanyStore from "./store/useCompanyStore";
-import { Pencil } from "lucide-react";
+import { FormInput } from "@/components/molecules/ReactHookForm";
+import { useForm, FormProvider } from "react-hook-form";
+import { useEffect } from "react";
 
 // Configuration for fields
 const fields = [
@@ -23,6 +23,34 @@ const getValue = (obj: any, path: string) =>
 
 const SettingDetails = () => {
   const { companyData, loading } = useCompanyStore();
+
+  const methods = useForm({
+    defaultValues: {
+      name: "",
+      website: "",
+      taxId: "",
+      businessType: "",
+      accountType: "",
+      defaultCurrency: "",
+      subIndustry: "",
+      industryDescription: "",
+    },
+  });
+
+  useEffect(() => {
+    if (companyData) {
+      methods.reset({
+        name: getValue(companyData, "name") || "",
+        website: getValue(companyData, "website") || "",
+        taxId: getValue(companyData, "taxDetailsId.pan") || "",
+        businessType: getValue(companyData, "businessTypeId.name") || "",
+        accountType: getValue(companyData, "accountTypeId.name") || "",
+        defaultCurrency: getValue(companyData, "currencyId.currencyCode") || "",
+        subIndustry: getValue(companyData, "subIndustryId.industryId.name") || "",
+        industryDescription: getValue(companyData, "industryId.description") || "",
+      });
+    }
+  }, [companyData, methods]);
 
   return (
     <Card>
@@ -77,27 +105,21 @@ const SettingDetails = () => {
             )}
           </div>
 
-          {/* Input Fields */}
-          <div className="w-3/4 grid grid-cols-2 gap-2">
-            {fields.map(({ id, label, path }) => (
-              <div className="flex flex-col gap-1" key={id}>
-                {loading ? (
-                  <Skeleton className="h-4 w-[250px]" />
-                ) : (
-                  <>
-                    <Label htmlFor={id} className="ml-1">{label}</Label>
-                    <Input
-                      id={id}
-                      type="text"
-                      placeholder={label}
-                      value={getValue(companyData, path) || ""}
-                      readOnly
-                    />
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
+          {/* Input Fields with reduced column spacing */}
+          <FormProvider {...methods}>
+            <form className="w-3/4 grid grid-cols-2 gap-x-2 gap-y-0">
+              {fields.map(({ id, label,path }) => (
+                <FormInput
+                  key={id}
+                  name={id}
+                  label={label}
+                  placeholder={label}
+                  disabled={loading}
+                  value={getValue(companyData, path) || ""}
+                />
+              ))}
+            </form>
+          </FormProvider>
         </div>
       </CardContent>
     </Card>

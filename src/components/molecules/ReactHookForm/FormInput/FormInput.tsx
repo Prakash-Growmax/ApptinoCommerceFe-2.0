@@ -1,7 +1,5 @@
 import { forwardRef } from 'react';
-
 import { Input } from '@/components/ui/input';
-
 import { FormField } from '../FormField/FormField';
 
 interface FormInputProps {
@@ -14,11 +12,12 @@ interface FormInputProps {
   autoComplete?: string;
   className?: string;
   autoFocus?: boolean;
+  value?: string | number | boolean | null;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  rightElement?: React.ReactNode; // New prop for right-side content
+  rightElement?: React.ReactNode;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -32,6 +31,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       disabled,
       autoComplete,
       className,
+      value,
       autoFocus,
       onKeyDown,
       onBlur,
@@ -41,6 +41,10 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     },
     ref
   ) => {
+    // Convert `boolean | null` values to empty string
+    const safeValue =
+      value === null || typeof value === 'boolean' ? '' : value;
+
     return (
       <FormField
         name={name}
@@ -55,21 +59,24 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               ref={ref}
               type={type}
               placeholder={placeholder}
+              value={safeValue}
               autoComplete={autoComplete}
               disabled={disabled}
               aria-invalid={!!fieldState.error}
               aria-describedby={fieldState.error ? `${name}-error` : undefined}
-              className={`${fieldState.error ? 'border-red-500' : ''} ${rightElement ? 'pr-20' : ''}`}
+              className={`${fieldState.error ? 'border-red-500' : ''} ${
+                rightElement ? 'pr-20' : ''
+              }`}
               autoFocus={autoFocus}
               onKeyDown={onKeyDown}
-              onBlur={e => {
-                field.onBlur(); // Call React Hook Form's onBlur
-                onBlur?.(e); // Call custom onBlur if provided
+              onBlur={(e) => {
+                field.onBlur();
+                onBlur?.(e);
               }}
               onFocus={onFocus}
-              onChange={e => {
-                field.onChange(e); // RHF onChange
-                onChange?.(e); // Custom onChange
+              onChange={(e) => {
+                field.onChange(e);
+                onChange?.(e);
               }}
             />
             {rightElement && (
@@ -85,3 +92,4 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
 );
 
 FormInput.displayName = 'FormInput';
+
