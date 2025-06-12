@@ -1,4 +1,3 @@
-// src/app/router/routeGenerator.tsx
 import { JSX } from 'react';
 import { Route } from 'react-router-dom';
 
@@ -6,6 +5,7 @@ import { AuthLayout, MainLayout } from '@/components';
 import { RouteConfig } from '@/types/router.types';
 
 import { ProtectedRoute } from './protected-route';
+import { PublicOnlyRoute } from './public-route';
 
 const getLayoutComponent = (layout: string) => {
   switch (layout) {
@@ -24,7 +24,6 @@ export const generateRoutes = (routes: RouteConfig[]): JSX.Element[] => {
       ? getLayoutComponent(route.layout)
       : null;
 
-    // Handle routes with children (nested routes)
     if (route.children) {
       return (
         <Route
@@ -36,16 +35,14 @@ export const generateRoutes = (routes: RouteConfig[]): JSX.Element[] => {
             const element = childRoute.protected ? (
               <ProtectedRoute>{childRoute.element}</ProtectedRoute>
             ) : (
-              childRoute.element
+              <PublicOnlyRoute>{childRoute.element}</PublicOnlyRoute>
             );
 
-            // Create props object conditionally
             const routeProps: any = {
               key: childRoute.path || 'index',
               element: element,
             };
 
-            // Only add path if it's not an index route
             if (childRoute.index) {
               routeProps.index = true;
             } else if (childRoute.path) {
@@ -58,11 +55,11 @@ export const generateRoutes = (routes: RouteConfig[]): JSX.Element[] => {
       );
     }
 
-    // Handle single routes
     let element = route.element;
-
     if (route.protected) {
       element = <ProtectedRoute>{element}</ProtectedRoute>;
+    } else {
+      element = <PublicOnlyRoute>{element}</PublicOnlyRoute>;
     }
 
     if (LayoutComponent) {
@@ -73,13 +70,11 @@ export const generateRoutes = (routes: RouteConfig[]): JSX.Element[] => {
       );
     }
 
-    // Create props object conditionally for single routes
     const routeProps: any = {
       key: route.path,
       element: element,
     };
 
-    // Only add path if it's not an index route
     if (route.index) {
       routeProps.index = true;
     } else if (route.path) {

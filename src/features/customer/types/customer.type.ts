@@ -1,6 +1,6 @@
-export type CustomerData={
+export type CustomerData = {
   userId: number;
-  companyId:number;
+  companyId: number;
   tenantId: string;
   token: string;
-}
+};

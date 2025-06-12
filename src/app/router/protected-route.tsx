@@ -8,10 +8,10 @@ export const ProtectedRoute = ({
   children,
   redirectTo = '/auth/login',
 }: ProtectedRouteProps) => {
-  const { isAuthenticated, isAuthLoading } = useAppStore();
+  const { isAuthenticated, isAuthLoading, isAppLoading } = useAppStore();
   const location = useLocation();
 
-  if (isAuthLoading) {
+  if (isAuthLoading || isAppLoading) {
     return <LoadingFallback />;
   }
 

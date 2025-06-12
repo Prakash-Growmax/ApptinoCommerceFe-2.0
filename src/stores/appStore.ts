@@ -12,9 +12,10 @@ const useAppStore = create<AppStore>()(
       refreshToken: null,
       payload: null,
       isAuthenticated: false,
-      isAuthLoading: false,
-      isAppLoading: false,
+      isAuthLoading: true,
+      isAppLoading: true,
       isError: false,
+      hasHydrated: false,
 
       //Actions,
       loginAction: (
@@ -46,7 +47,7 @@ const useAppStore = create<AppStore>()(
       },
 
       setAppLoadingAction: (loading: boolean) => {
-        set({ isAuthLoading: loading });
+        set({ isAppLoading: loading });
       },
       setAuthLoadingAction: (loading: boolean) => {
         set({ isAuthLoading: loading });
@@ -54,6 +55,9 @@ const useAppStore = create<AppStore>()(
 
       setErrorAction: (error: boolean) => {
         set({ isError: error });
+      },
+      setHydrated: () => {
+        set({ hasHydrated: true });
       },
 
       getAuthHeaderAction: () => {
@@ -65,16 +69,33 @@ const useAppStore = create<AppStore>()(
       },
 
       initializeAuthAction: () => {
+        const state = get();
+
+        if (!state.hasHydrated) {
+          console.error('Store not hydrated yet, waiting...');
+          return;
+        }
+
         set({
           isAuthLoading: true,
           isAppLoading: true,
         });
         const { accessToken, refreshToken, payload } = get();
-        if (accessToken && payload) {
+        if (accessToken && payload && get().isTokenValidAction()) {
           set({
             accessToken,
             refreshToken,
             isAuthenticated: true,
+            isAuthLoading: false,
+            isAppLoading: false,
+            isError: false,
+          });
+        } else {
+          set({
+            accessToken: null,
+            refreshToken: null,
+            payload: null,
+            isAuthenticated: false,
             isAuthLoading: false,
             isAppLoading: false,
             isError: false,
@@ -104,6 +125,16 @@ const useAppStore = create<AppStore>()(
         refreshToken: state.refreshToken,
         payload: state.payload,
       }),
+      onRehydrateStorage: () => {
+        return (state, error) => {
+          if (error) {
+            console.error('An error happened during hydration', error);
+          } else if (state) {
+            state.setHydrated();
+            state.initializeAuthAction();
+          }
+        };
+      },
     }
   )
 );

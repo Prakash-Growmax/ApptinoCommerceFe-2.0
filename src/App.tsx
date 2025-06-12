@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Suspense, useEffect } from 'react';
 
 import { AppProviders } from '@app/providers';
@@ -9,13 +8,16 @@ import { LoadingFallback } from './components';
 import useAppStore from './stores/appStore';
 
 function App() {
-  const { initializeAuthAction, isAuthenticated, isAuthLoading } =
+  const { hasHydrated, isAppLoading, isAuthLoading, initializeAuthAction } =
     useAppStore();
-  console.log('🚀 ~ App ~ isAuthenticated:', isAuthenticated, isAuthLoading);
 
   useEffect(() => {
     initializeAuthAction();
   }, [initializeAuthAction]);
+
+  if (!hasHydrated || isAppLoading || isAuthLoading) {
+    return <LoadingFallback />;
+  }
 
   return (
     <AppProviders>

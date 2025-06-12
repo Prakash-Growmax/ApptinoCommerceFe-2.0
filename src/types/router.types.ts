@@ -9,6 +9,7 @@ export interface RouteConfig {
   path: string;
   element?: ReactNode;
   protected?: boolean;
+  publicOnly?: boolean;
   layout?: 'main' | 'auth' | 'minimal';
   children?: RouteConfig[];
   index?: boolean;

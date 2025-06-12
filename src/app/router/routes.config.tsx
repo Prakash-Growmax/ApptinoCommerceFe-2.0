@@ -80,6 +80,7 @@ export const routeConfig: RouteConfig[] = [
       {
         path: 'login',
         element: <Login />,
+        publicOnly: true,
         meta: {
           title: 'Login',
           description: 'User authentication',
