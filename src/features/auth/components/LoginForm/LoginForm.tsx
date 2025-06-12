@@ -25,6 +25,7 @@ export function LoginForm({
 }: React.ComponentProps<'div'>) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { loginAction } = useAppStore();
 
   const [hasPassword, setHasPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,8 +43,6 @@ export function LoginForm({
   const { watch, setError, clearErrors, setValue } = form;
   const UserName = watch('UserName');
   const Password = watch('Password');
-
-  const { loginAction } = useAppStore();
 
   const handleCheckUser = async () => {
     if (!UserName) return;

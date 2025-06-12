@@ -1,10 +1,12 @@
-import { apiPost } from '@lib/api/client';
+import { apiPost } from '@/lib/api/authClient';
 
 import {
   CheckUserNameRequestType,
   CheckUserNameResponseType,
   LoginRequestSchemaType,
   LoginResponseSchemaType,
+  RefreshTokenRequestSchemaType,
+  RefreshTokenResponseSchemaType,
 } from '../schemas/auth.schemas';
 
 // Fixed: consistent PascalCase naming
@@ -12,7 +14,7 @@ export const checkUserName = async (
   body: CheckUserNameRequestType
 ): Promise<CheckUserNameResponseType> => {
   const response = await apiPost<CheckUserNameResponseType>({
-    url: '/auth/auth/CheckUserName',
+    url: '/CheckUserName',
     data: body,
   });
   return response;
@@ -23,7 +25,7 @@ export const login = async (
   body: LoginRequestSchemaType
 ): Promise<LoginResponseSchemaType> => {
   const response = await apiPost<LoginResponseSchemaType>({
-    url: '/auth/auth/loginNew',
+    url: '/loginNew',
     data: body,
     config: {
       headers: {
@@ -34,36 +36,12 @@ export const login = async (
   return response;
 };
 
-// Add other auth API functions that are referenced in your queries
-export const getCurrentUser = async () => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    throw new Error('No auth token found');
-  }
-  if (token) {
-    return true;
-  }
-};
-export const getTenantIdFromToken = () => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) return null;
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.tenantId || payload.tid; // 'tid' is used in Azure AD tokens
-  } catch (e) {
-    console.error('Invalid token', e);
-    return null;
-  }
-};
-
-export const getUsers = async (filters?: {
-  search?: string;
-  limit?: number;
-}) => {
-  // Implement this function based on your API
-  const response = await apiPost({
-    url: '/users',
-    data: filters,
+export const getRefreshToken = async (
+  body: RefreshTokenRequestSchemaType
+): Promise<RefreshTokenResponseSchemaType> => {
+  const response = await apiPost<RefreshTokenResponseSchemaType>({
+    url: '/refreshToken',
+    data: body,
   });
   return response;
 };

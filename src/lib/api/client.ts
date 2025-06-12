@@ -1,7 +1,10 @@
 import { getEnvironmentVariables } from '@config/environment';
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { getRefreshToken } from '@/features/auth/api/authApi';
+import useAppStore from '@/stores/appStore';
 import {
   ApiClientOptions,
   ApiError,
@@ -9,6 +12,8 @@ import {
 } from '@/types/lib/api.types';
 
 const { API_URL } = getEnvironmentVariables();
+
+let refreshPromise: Promise<any> | null = null;
 
 /**
  * Creates a configured Axios instance for API requests
@@ -24,14 +29,54 @@ export const createApiClient = (
     },
   });
 
-  client.interceptors.request.use(
-    config => {
-      const token = localStorage.getItem('auth_token');
+  const {
+    accessToken,
+    refreshToken,
+    isTokenValidAction,
+    refreshTokensAction,
+    logoutAction,
+  } = useAppStore.getState();
 
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+  client.interceptors.request.use(
+    async config => {
+      // If no tokens available, proceed without auth
+      if (!accessToken || !refreshToken) {
+        return config;
       }
 
+      const isValid = isTokenValidAction();
+      let bearerToken = accessToken;
+
+      if (!isValid) {
+        try {
+          if (refreshPromise) {
+            await refreshPromise;
+            bearerToken = useAppStore.getState().accessToken || accessToken;
+          } else {
+            refreshPromise = getRefreshToken({ accessToken, refreshToken });
+            const res = await refreshPromise;
+            if (res?.tokens) {
+              refreshTokensAction(
+                res.tokens.accessToken,
+                res.tokens.refreshToken
+              );
+              bearerToken = res.tokens.accessToken;
+            } else {
+              toast.error('Authentication failed!');
+            }
+          }
+        } catch (error) {
+          const { setErrorAction } = useAppStore.getState();
+          setErrorAction(true);
+          toast.error('Authentication failed!');
+        } finally {
+          refreshPromise = null;
+        }
+      }
+
+      if (config.headers && bearerToken) {
+        config.headers.Authorization = `Bearer ${bearerToken}`;
+      }
       return config;
     },
     error => Promise.reject(error)
@@ -43,13 +88,7 @@ export const createApiClient = (
       const status = error.response?.status || 500;
       const responseData = error.response?.data;
       if (status === 401) {
-        localStorage.removeItem('auth_token');
-
-        const isRefreshTokenRequest =
-          error.config?.url?.includes('refresh-token');
-        if (!isRefreshTokenRequest) {
-          window.location.href = '/auth/login';
-        }
+        logoutAction();
       }
 
       let errorMessage = 'An unexpected error occurred';
@@ -234,5 +273,3 @@ export const apiDelete = async <T = void>({
     } as ApiError;
   }
 };
-
-

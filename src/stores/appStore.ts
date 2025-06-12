@@ -106,7 +106,8 @@ const useAppStore = create<AppStore>()(
       isTokenValidAction: () => {
         const { payload } = get();
         if (!payload?.exp) return false;
-        return Date.now() < payload.exp * 1000;
+        const bufferSeconds = 5;
+        return Date.now() < (payload.exp - bufferSeconds) * 1000;
       },
       refreshTokensAction: (
         newAccessToken: string,

@@ -81,6 +81,18 @@ export const LoginResponseSchema = z.object({
   }),
 });
 
+export const RefreshTokenRequestSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+});
+
+export const RefreshTokenResponseSchema = z.object({
+  tokens: z.object({
+    accessToken: z.string(),
+    refreshToken: z.string(),
+  }),
+});
+
 export type CheckUserNameRequestType = z.infer<typeof CheckUserNameSchema>;
 
 export type CheckUserNameResponseType = z.infer<
@@ -91,3 +103,9 @@ export type LoginRequestSchemaType = z.infer<typeof LoginRequestSchema>;
 export type LoginSchemaType = z.infer<typeof LoginRequestSchema>;
 
 export type LoginResponseSchemaType = z.infer<typeof LoginResponseSchema>;
+export type RefreshTokenRequestSchemaType = z.infer<
+  typeof RefreshTokenRequestSchema
+>;
+export type RefreshTokenResponseSchemaType = z.infer<
+  typeof RefreshTokenResponseSchema
+>;

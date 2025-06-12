@@ -12,10 +12,12 @@ export interface ApiErrorResponse {
 }
 
 export interface ApiClientOptions {
-  baseURL?: string | undefined;
+  baseURL?: string;
   timeout?: number;
   headers?: Record<string, string>;
 }
+
+export interface AuthClientOptions extends ApiClientOptions {}
 
 export interface ApiResponse<T = unknown> {
   data: T;
