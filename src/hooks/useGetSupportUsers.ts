@@ -1,57 +1,21 @@
-// import { SupportElastic } from "@/features/support/api/SupportElastic"; // You should create this like AccountElastic
-// import { ElasticSearchServices } from "@/features/support/api/ElasticSearchServices"; // Adjust path as needed
-// import useSupportStore from "@/stores/useSupportStore";
-// import useUserStore from "@/stores/useUserStore";
-// import { useQuery } from "@tanstack/react-query";
-
-// export const useGetSupportUsers = ({ filters }) => {
-//   const { setData, setLoading } = useSupportStore();
-//   const { tenantId } = useUserStore();
-
-//   const fetchSupportUsers = async () => {
-//     setLoading(true);
-
-//     // Build the ElasticSearch query using filters
-//     const elasticData = SupportElastic.BuildSupportQuery(filters);
-
-//     // Fetch the support users using the Elastic service
-//     const data = await ElasticSearchServices.SupportGet(elasticData, tenantId);
-
-//     // Format the response
-//     const formattedResponse = ElasticSearchServices.FormatResults(data);
-
-//     setData(formattedResponse);
-//     setLoading(false);
-//     return formattedResponse;
-//   };
-
-//   const query = useQuery({
-//     queryKey: ["supportUsers", filters],
-//     queryFn: fetchSupportUsers,
-//     enabled: !!filters && Object.keys(filters).length > 0, // run only when filters exist
-//   });
-
-//   return query;
-// };
-
-
-import { ElasticSearchServices } from "@/features/customer/api/ElasticSearchServices";
+import useAppStore from "@/stores/appStore";
 import useSupportStore from "@/stores/useSupportStore";
-import useUserStore from "@/stores/useUserStore";
+import { TokenPayload } from "@/types/auth.types";
+import { ElasticSearchService } from "@/utils/Services/ElasticSearchServices";
 import { useQuery } from "@tanstack/react-query";
 import { map } from "lodash";
-import { useState } from "react";
 
 export const useGetSupportFilters = () => {
   const { setSupportData, setSupportLoading } = useSupportStore();
 
-  const { tenantId } = useUserStore();
+    const {payload}=useAppStore();
+  const {tenantId} = payload as TokenPayload;
 
   const getSupportData = async (searchValue: string ) => {
     try {
       setSupportLoading(true);
-      const data = await ElasticSearchServices.CustomerSearch(searchValue, tenantId, true);
-      const resData = ElasticSearchServices.FormatResults(data);
+      const data = await ElasticSearchService.CustomerSearch(searchValue, tenantId, true);
+      const resData = ElasticSearchService.FormatResults(data);
        const updatedResData = map(resData, (e) => {
         e["id"] = parseInt(e.companyID);
         e["name"] = e.companyName;

@@ -1,8 +1,7 @@
-import { Separator } from '@/components/ui/separator';
-
-import CustomerFilter from './CustomerFilter';
-import CustomerLanding from './CustomerLanding';
-import useSideBarStore from '@/stores/sidebarStore';
+import useSideBarStore from "@/stores/sidebarStore";
+import CustomerFilter from "./CustomerFilter";
+import { Separator } from "@/components/ui/separator";
+import CustomerLanding from "./CustomerLanding";
 
 const Customers = () => {
       const {sideOpen} = useSideBarStore();

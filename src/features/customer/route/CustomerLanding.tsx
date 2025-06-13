@@ -1,15 +1,11 @@
-import useUserStore from "@/stores/useUserStore";
-import { useEffect, useState } from "react";
-import { useGetCustomersFilters } from "@/hooks/useGetCustomersFilters";
-import { useGetCustomers } from "@/hooks/useGetCustomers";
-import { ColumnDef } from "@tanstack/react-table";
-import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
+import { useState } from "react";
+import { useFetchCustomersWithFilters } from "../hook/useGetCustomersDetails";
 import useAccountsStore from "@/stores/useAccountStore";
-import { Badge } from "@/components/ui/badge";
+import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useGetCompanyDetails } from "../settings/hook/useGetCompanyDetaiLs";
-import { useFetchCustomersWithFilters } from "./hook/useGetCustomersDetails";
 import useSideBarStore from "@/stores/sidebarStore";
+import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
 
 const CustomerLanding = () => {
   const [pagination, setPagination] = useState({

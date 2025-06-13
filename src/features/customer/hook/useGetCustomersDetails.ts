@@ -8,6 +8,7 @@ import { AccountElastic } from "../api/AccountElastics";
 import { ElasticSearchServices } from "../api/ElasticSearchServices";
 import useAppStore from "@/stores/appStore";
 import { TokenPayload } from "@/types/auth.types";
+import { ElasticSearchService } from "@/utils/Services/ElasticSearchServices";
 
 export const useFetchCustomersWithFilters = () => {
    const {accessToken,payload}=useAppStore();
@@ -15,6 +16,7 @@ export const useFetchCustomersWithFilters = () => {
   const {userId,companyId,tenantId } = payload as TokenPayload;
 
   const {
+    searchText,
     setFilters,
     setData,
     setLoading,
@@ -23,7 +25,7 @@ export const useFetchCustomersWithFilters = () => {
     rowPerPage,
     filters,
   } = useAccountsStore();
-
+  console.log(searchText.length)
   // Memoized query key for filters
   const filtersQueryKey = useMemo(
     () => ["filters", userId, tenantId, companyId, page, rowPerPage],
@@ -80,10 +82,12 @@ export const useFetchCustomersWithFilters = () => {
   const customersQuery = useQuery({
     queryKey: ["customers", filters],
     queryFn: async () => {
+      console.log("ajitha")
       setLoading(true)
       const elasticData = AccountElastic.BuildCustomerquery(filters);
       const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);
-      const customerResponse = ElasticSearchServices.FormatResults(data);
+      
+      const customerResponse = ElasticSearchService.FormatResults(data);
 
       setData(customerResponse);
       setTotalCount(data?.hits?.total || 0);

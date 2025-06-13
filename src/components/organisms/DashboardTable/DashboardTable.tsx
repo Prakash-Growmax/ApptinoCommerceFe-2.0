@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   ColumnDef,
@@ -26,7 +27,7 @@ type TableProps<T> = {
   data: T[];
   columns: ColumnDef<T, any>[];
   loading: boolean;
-  totalDataCount: number; // 👈 total number of items (from API or source)
+  totalDataCount: number;
   pagination: TablePagination;
   setPagination: React.Dispatch<React.SetStateAction<TablePagination>>;
   setPage: (page: number | ((prev: number) => number)) => void;
@@ -36,7 +37,7 @@ type TableProps<T> = {
   page: number;
   rowPerPage: number;
   setRowPerPage: (rowPerPage: number | string) => void;
-
+  onRowClick?: (row: T) => void;
 };
 
 const DashboardTable = <T,>({
@@ -53,7 +54,7 @@ const DashboardTable = <T,>({
   page,
   rowPerPage,
   setRowPerPage,
-  
+  onRowClick,
 }: TableProps<T>) => {
   const pageCount = Math.ceil(totalDataCount / rowPerPage);
 
@@ -64,6 +65,7 @@ const DashboardTable = <T,>({
     manualPagination: true,
     pageCount,
   });
+
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPage(0);
     setRowPerPage(e.target.value);
@@ -107,7 +109,11 @@ const DashboardTable = <T,>({
             ))
           ) : table.getRowModel().rows.length > 0 ? (
             table.getRowModel().rows.map(row => (
-              <TableRow key={row.id} className="hover:bg-muted/20">
+              <TableRow 
+                key={row.id} 
+                className="hover:bg-muted/20 cursor-pointer"
+                onClick={() => onRowClick?.(row.original)}
+              >
                 {row.getVisibleCells().map(cell => (
                   <TableCell key={cell.id} className="px-3 py-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -126,51 +132,6 @@ const DashboardTable = <T,>({
             </TableRow>
           )}
         </TableBody>
-        {/* <TableFooter>
-          <TableRow>
-            <TableCell colSpan={columns.length} className="px-3 py-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">
-                    Page {page + 1} of {pageCount}
-                  </span>
-                  <label className="text-sm text-muted-foreground">
-                    Rows per page:{" "}
-                    <select
-                      className="border rounded px-2 py-1 ml-1"
-                      value={rowPerPage}
-                      onChange={handlePageSizeChange}
-                    >
-                      { pageOptions.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handlePrevious}
-                    disabled={page === 0}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleNext}
-                    disabled={page >= pageCount - 1}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableFooter> */}
       </Table>
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">

@@ -11,14 +11,15 @@ import {
 import NotFoundPage from '@/features/error/routes/NotFoundPage';
 import { RouteConfig } from '@/types/router.types';
 
+
 const DashboardPages = lazy(
   () => import('@/features/dashboard/routes/DashboardPages')
 );
 const Support = lazy(() => import('@/features/support/Support'));
-const Customers = lazy(() => import('@/features/customer/Customer'));
+const Customers = lazy(() => import('@/features/customer/route/Customer'));
 const Settings = lazy(() => import('@/features/settings/Settings'));
 const Login = lazy(() => import('@/features/auth/routes/LoginPage'));
-
+const SupportDetails = lazy(()=>import('@/features/support/routes/SupportDetails'))
 export const routeConfig: RouteConfig[] = [
   {
     path: '/',
@@ -48,6 +49,13 @@ export const routeConfig: RouteConfig[] = [
     },
     icon: Headset,
     showInSidebar: true,
+  },
+  {
+    path:`/supporttickets/servicedetails/1`,
+    layout:`main`,
+    protected: true,
+    element:<SupportDetails/>
+
   },
   {
     path: '/customers',

@@ -22,24 +22,7 @@ export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
       setLoading(true);
 
        const response = await GetBranchDetails({userId,companyId,page,rowPerPage,searchString,tenantId,token})
-      // const response = await fetch(
-      //   `https://api.myapptino.com/corecommerce/branches/readBranchwithPagination/${userId}?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=${searchString}`,
-      //   {
-      //     method: 'GET',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       'x-tenant': tenantId,
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
-     
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // }
-
-      // const data = await response.json();
-      // console.log(data)
+   
       setBranchData(response?.data?.branchResponse || []);
       setTotalCount(response?.data?.totalCount || 0);
       setLoading(false);

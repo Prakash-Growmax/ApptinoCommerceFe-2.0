@@ -1,23 +1,15 @@
-import { RotateCw, Search, X } from 'lucide-react';
-
-import { ShadCnButton } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import useAccountsStore from '@/stores/useAccountStore';
-import useUserStore from '@/stores/useUserStore';
-
-import { AccountElastic } from './api/AccountElastics';
-import { ElasticSearchServices } from './api/ElasticSearchServices';
-import useSideBarStore from '@/stores/sidebarStore';
-import useAppStore from '@/stores/appStore';
-import { TokenPayload } from '@/types/auth.types';
+import useAppStore from "@/stores/appStore";
+import useAccountsStore from "@/stores/useAccountStore";
+import { TokenPayload } from "@/types/auth.types";
+import { AccountElastic } from "../api/AccountElastics";
+import { ElasticSearchService } from "@/utils/Services/ElasticSearchServices";
+import { ElasticSearchServices } from "../api/ElasticSearchServices";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { RotateCw, Search, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ShadCnButton } from "@/components/ui/button";
+import useSideBarStore from "@/stores/sidebarStore";
 
 const CustomerFilter = () => {
   const {
@@ -48,7 +40,7 @@ const CustomerFilter = () => {
       searchText
     );
     const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);
-    const customerResponse = ElasticSearchServices.FormatResults(data);
+    const customerResponse = ElasticSearchService.FormatResults(data);
     setData(customerResponse);
     setLoading(false);
     return customerResponse;
@@ -61,6 +53,7 @@ const CustomerFilter = () => {
   };
 
   const handleApplyFilters = () => {
+    console.log("ajitha jeeva")
     const updated = {
       ...filters,
       offset: 0,
