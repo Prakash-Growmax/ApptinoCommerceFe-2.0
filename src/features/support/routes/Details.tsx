@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Mail, MapPin, Phone } from "lucide-react"
+import TimelineItem from "./timeline";
 
 function InfoRow({ label, value }: { label: string; value: string | React.ReactNode }) {
   return (
@@ -55,7 +56,7 @@ function Details() {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-sm">
+      {/* <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Entitlement Information</CardTitle>
         </CardHeader>
@@ -66,7 +67,41 @@ function Details() {
           <InfoRow label="Is Chargeable" value="No" />
           <InfoRow label="Special Terms" value="24/7 support included" />
         </CardContent>
-      </Card>
+      </Card> */}
+
+      <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Activity Timeline</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <TimelineItem
+          title="Technician Check-in"
+          date="Today, 10:05 AM"
+          description="Mike Johnson has arrived on site"
+          isActive
+        />
+        <TimelineItem
+          title="Visit Scheduled"
+          date="Yesterday, 4:32 PM"
+          description="Follow-up visit scheduled with Mike Johnson"
+        />
+        <TimelineItem
+          title="Initial Visit Completed"
+          date="May 1, 2025, 4:45 PM"
+          description="Sarah Williams completed the initial diagnosis"
+        />
+        <TimelineItem
+          title="Ticket Created"
+          date="May 1, 2025, 9:24 AM"
+          description="Ticket created by James Wilson (Customer)"
+        />
+        <TimelineItem
+          title="Customer Contract Verified"
+          date="May 1, 2025, 9:30 AM"
+          description="Service entitlement confirmed under PMC"
+        />
+      </CardContent>
+    </Card>
     </div>
   )
 }
