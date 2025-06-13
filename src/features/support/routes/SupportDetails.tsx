@@ -1,11 +1,11 @@
-import Details from "./Details";
+import SupportCustomerCard from '../components/SupportCustomerCard/SupportCustomerCard';
 
-const SupportDetails=()=>{
- return(
+const SupportDetails = () => {
+  return (
     <div>
-        Support Details
-        <Details/>
+      Support Details
+      <SupportCustomerCard />
     </div>
- )
-}
+  );
+};
 export default SupportDetails;

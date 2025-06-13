@@ -1,17 +1,33 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, MapPin, Phone } from "lucide-react"
+import { Mail, MapPin, Phone } from 'lucide-react';
 
-function InfoRow({ label, value }: { label: string; value: string | React.ReactNode }) {
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { useSupportTimeline } from '../../hook/useGetSupportTimeline';
+
+function InfoRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | React.ReactNode;
+}) {
   return (
     <div className="space-y-1">
-      <div className="text-xs font-medium text-muted-foreground uppercase">{label}</div>
+      <div className="text-xs font-medium text-muted-foreground uppercase">
+        {label}
+      </div>
       <div className="text-sm text-black">{value}</div>
     </div>
-  )
+  );
 }
 
+function SupportCustomerCard() {
+  const { data, isLoading, error, refetch } = useSupportTimeline(
+    'dev3',
+    'ST0071'
+  );
+  console.log('🚀 ~ SupportCustomerCard ~ data:', isLoading, data);
 
-function Details() {
   return (
     <div className="space-y-6">
       <Card className="w-full max-w-sm">
@@ -54,21 +70,8 @@ function Details() {
           />
         </CardContent>
       </Card>
-
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Entitlement Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <InfoRow label="Service Plan" value="Premium Plan" />
-          <InfoRow label="Valid Period" value="Jan 1, 2024 - Dec 31, 2024" />
-          <InfoRow label="Visits Allowed" value="5" />
-          <InfoRow label="Is Chargeable" value="No" />
-          <InfoRow label="Special Terms" value="24/7 support included" />
-        </CardContent>
-      </Card>
     </div>
-  )
+  );
 }
 
-export default Details
+export default SupportCustomerCard;
