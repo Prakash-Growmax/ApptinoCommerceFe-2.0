@@ -2,7 +2,7 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useSupportTimeline } from '../../hook/useGetSupportTimeline';
+import { useGetSupportTicketFieldServices } from '../../hook/useGetSupportTicketFieldServices';
 
 function InfoRow({
   label,
@@ -22,10 +22,14 @@ function InfoRow({
 }
 
 function SupportCustomerCard() {
-  const { data, isLoading, error, refetch } = useSupportTimeline(
+  const { data, isLoading, error, refetch } = useGetSupportTicketFieldServices(
     'dev3',
     'ST0071'
   );
+  // const { data, isLoading, error, refetch } = useGetSupportTicketDetails(
+  //   'dev3',
+  //   'ST0071'
+  // );
   console.log('🚀 ~ SupportCustomerCard ~ data:', isLoading, data);
 
   return (

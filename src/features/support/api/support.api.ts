@@ -44,6 +44,37 @@ export const GetFetchSupportTicket = async ({
   return response;
 };
 
+//Get Support Ticket Details
+export const getSupportTicketDetails = async (
+  domainName: string,
+  ticketIdentifier: string
+) => {
+  const response = await apiGet({
+    url: '/support/service-support/get',
+    params: {
+      domainName,
+      ticketIdentifier,
+    },
+  });
+  return response;
+};
+
+//Get Support Ticket Field Services
+export const getSupportTicketFieldServices = async (
+  domainName: string,
+  ticketIdentifier: string
+) => {
+  const response = await apiGet({
+    url: 'support/service-support/fieldService/getAllFieldServices',
+    params: {
+      domainName,
+      ticketIdentifier,
+    },
+  });
+  return response;
+};
+
+//Get Support Ticket Timeline
 export const getSupportTimeline = async (
   domainName: string,
   ticketIdentifier: string
