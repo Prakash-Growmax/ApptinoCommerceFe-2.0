@@ -51,10 +51,14 @@ export const routeConfig: RouteConfig[] = [
     showInSidebar: true,
   },
   {
-    path:`/supporttickets/servicedetails/1`,
+    path:`/supporttickets/servicedetails/:id`,
     layout:`main`,
     protected: true,
-    element:<SupportDetails/>
+    element:<SupportDetails/>,
+     meta: {
+      title: 'ServiceDetails',
+      description: ' support tickets details',
+    },
 
   },
   {

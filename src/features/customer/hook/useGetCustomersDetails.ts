@@ -25,7 +25,7 @@ export const useFetchCustomersWithFilters = () => {
     rowPerPage,
     filters,
   } = useAccountsStore();
-  console.log(searchText.length)
+ 
   // Memoized query key for filters
   const filtersQueryKey = useMemo(
     () => ["filters", userId, tenantId, companyId, page, rowPerPage],

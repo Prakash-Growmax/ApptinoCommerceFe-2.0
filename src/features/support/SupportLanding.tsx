@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetSupportFilters } from "@/hooks/useGetSupportUsers";
+
 import { useGetSupportTicketFilters } from "./hook/useGetSupportTicketFilter";
 import useSupportStore from "./store/useSupportStore";
 import { ColumnDef } from "@tanstack/react-table";
@@ -29,7 +29,7 @@ export default function SupportLandingPage() {
 
   const handleRowClick = (row: any) => {
    
-    navigate(`/supporttickets/servicedetails/1`);
+    navigate(`/supporttickets/servicedetails/${row?.ticketIdentifier}`);
   };
 
   const handlePrevious = () => {
