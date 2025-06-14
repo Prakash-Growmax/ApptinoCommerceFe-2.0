@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   ColumnDef,
   flexRender,
@@ -76,10 +77,7 @@ const DashboardTable = <T,>({
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => (
-                <TableHead
-                  key={header.id}
-                  className="text-left px-3 py-2 text-muted-foreground font-medium"
-                >
+                <TableHead key={header.id} className="text-left px-3 py-2">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -107,8 +105,8 @@ const DashboardTable = <T,>({
             ))
           ) : table.getRowModel().rows.length > 0 ? (
             table.getRowModel().rows.map(row => (
-              <TableRow 
-                key={row.id} 
+              <TableRow
+                key={row.id}
                 className="hover:bg-muted/20 cursor-pointer"
                 onClick={() => onRowClick?.(row.original)}
               >
