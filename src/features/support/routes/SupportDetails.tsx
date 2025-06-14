@@ -1,11 +1,11 @@
 import { FormProvider, useForm } from "react-hook-form";
-import SupportCustomerCard from "../components/SupportCustomerCard/SupportCustomerCard";
 import ServiceDetails from "./ServiceDetails";
 import { useGetSupportTicketFieldServices } from "../hook/useGetSupportTicketFieldServices";
 import { useGetSupportTicketDetails } from "../hook/useGetSupportTicketDetails";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import SupportCustomerCard from "../components/SupportCustomerCard/SupportCustomerCard";
 
 
 

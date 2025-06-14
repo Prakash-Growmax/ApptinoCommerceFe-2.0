@@ -56,3 +56,6 @@ function SupportCustomerCard() {
     </Card>
   );
 }
+
+
+export default SupportCustomerCard;
