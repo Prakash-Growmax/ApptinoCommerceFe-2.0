@@ -88,3 +88,18 @@ export const getSupportTimeline = async (
   });
   return response;
 };
+export const getSupportTicketStatus=async(tenantId:string,token:string)=>{
+ 
+    const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+const response = await apiGet({
+  url:`/corecommerce/templates/get?domainName=${tenantId}&propertyName=${"ticketSettings"}`,
+  config:{
+    headers
+  }
+})
+return response
+}

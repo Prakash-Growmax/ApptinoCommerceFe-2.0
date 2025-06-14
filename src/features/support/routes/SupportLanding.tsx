@@ -9,6 +9,7 @@ import useSideBarStore from '@/stores/sidebarStore';
 import SupportTickets from '../SupportTickets';
 import { useGetSupportTicketFilters } from '../hook/useGetSupportTicketFilter';
 import useSupportStore from '../store/useSupportStore';
+import SupportFilters from '../components/SupportFilters';
 
 export default function SupportLanding() {
   const navigate = useNavigate();
@@ -186,7 +187,7 @@ export default function SupportLanding() {
         sideOpen ? 'lg:pl-4' : 'lg:pl-4'
       }`}
     >
-      <SupportTickets />
+       <SupportFilters/>
       <div
         className={`w-full ${
           sideOpen
