@@ -1,4 +1,3 @@
-import { BreadcrumbNavigation } from '@/components/molecules/Breadcrumbs/Breadcrumbs';
 import { AppSidebar } from '@/components/molecules/Sidebar/AppSideBar';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -33,10 +32,7 @@ export function AppHeader({ children }: AppHeaderProps) {
                 </h1>
               </div>
             </header>
-            <main className="flex-1 p-4 overflow-y-auto">
-              <BreadcrumbNavigation />
-              {children}
-            </main>
+            <main className="flex-1 p-4 overflow-y-auto">{children}</main>
           </div>
         </SidebarInset>
       </SidebarProvider>

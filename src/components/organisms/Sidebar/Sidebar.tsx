@@ -40,12 +40,6 @@ export const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
           <NavItem
-            to="/dashboard"
-            icon="📊"
-            label={t('navigation.dashboard')}
-            isCollapsed={isCollapsed}
-          />
-          <NavItem
             to="/profile"
             icon="👤"
             label={t('navigation.profile')}

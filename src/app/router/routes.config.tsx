@@ -1,12 +1,7 @@
 import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
-import {
-  Headset,
-  LayoutDashboard,
-  Settings as SettingsIcon,
-  Users,
-} from 'lucide-react';
+import { Headset, Settings as SettingsIcon, Users } from 'lucide-react';
 
 import NotFoundPage from '@/features/error/routes/NotFoundPage';
 import SupportLanding from '@/features/support/routes/SupportLanding';
@@ -25,20 +20,20 @@ export const routeConfig: RouteConfig[] = [
   {
     path: '/',
     layout: 'main',
-    element: <Navigate to="/dashboard" />,
+    element: <Navigate to="/supporttickets" />,
   },
-  {
-    path: '/dashboard',
-    layout: 'main',
-    protected: true,
-    element: <DashboardPages />,
-    meta: {
-      title: 'Dashboard',
-      description: 'Main dashboard page',
-    },
-    icon: LayoutDashboard,
-    showInSidebar: true,
-  },
+  // {
+  //   path: '/dashboard',
+  //   layout: 'main',
+  //   protected: true,
+  //   element: <DashboardPages />,
+  //   meta: {
+  //     title: 'Dashboard',
+  //     description: 'Main dashboard page',
+  //   },
+  //   icon: LayoutDashboard,
+  //   showInSidebar: true,
+  // },
   {
     path: '/supporttickets',
     layout: 'main',
