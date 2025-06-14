@@ -69,6 +69,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               }`}
               autoFocus={autoFocus}
               onKeyDown={onKeyDown}
+              
               onBlur={(e) => {
                 field.onBlur();
                 onBlur?.(e);

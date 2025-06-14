@@ -10,6 +10,8 @@ const findRouteInfo = (
 ): PageInfo | null => {
   for (const route of routes) {
     const fullPath = basePath + route.path;
+    console.log(pathname === fullPath);
+    console.log(route.index && pathname === basePath)
 
     // Check if current route matches exactly
     if (pathname === fullPath || (route.index && pathname === basePath)) {
