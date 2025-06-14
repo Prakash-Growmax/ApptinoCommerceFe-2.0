@@ -149,7 +149,7 @@ export default function SupportLandingPage() {
       ),
     },
     {
-      accessorKey: "buyerContactPerson",
+      accessorKey: "uyerContactPerson",
       header: "Contact Person",
       cell: ({ row }) => (
         <div className="text-sm font-medium">{row.original?.buyerContactPerson}</div>

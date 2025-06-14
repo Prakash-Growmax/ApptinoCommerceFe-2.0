@@ -66,9 +66,9 @@ const SupportTicketsDialog = () => {
   useGetSupportFilters();
   const { supportData } = useSupportStore();
   const supportOptions = supportData?.map(item => ({
-    value: item.id.toString(), // or item.companyID
+    value: item.id.toString(), 
     label: item.companyName,
-    disabled: !item.isActivated, // optional logic to disable inactive ones
+    disabled: !item.isActivated, 
   }));
   const methods = useForm<FormData>({
     defaultValues: {
@@ -164,7 +164,7 @@ const SupportTicketsDialog = () => {
     }
 
     try {
-      const response = await createTicket(payload, token, tenantId);
+      const response = await createTicket({body: payload, token, tenantId});
       alert('Ticket created successfully!');
       setOpen(false);
       reset();
