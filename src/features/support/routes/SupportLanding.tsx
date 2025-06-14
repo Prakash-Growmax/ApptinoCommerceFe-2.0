@@ -41,6 +41,7 @@ export default function SupportLanding() {
   const handleNext = () => {
     setPage(prev => prev + 1);
   };
+  console.log('Adfas');
 
   const Columns: ColumnDef<any>[] = [
     {
