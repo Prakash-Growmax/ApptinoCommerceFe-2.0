@@ -10,13 +10,16 @@ interface FormTextareaProps {
   disabled?: boolean;
   rows?: number;
   className?: string;
+   value?: string | number | boolean | null;
 }
 
 export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
   (
-    { name, label, placeholder, description, disabled, rows = 4, className },
+    { name, label, placeholder, description, disabled, rows = 4, className,value },
     ref
   ) => {
+     const safeValue =
+      value === null || typeof value === 'boolean' ? '' : value;
     return (
       <FormField
         name={name}
@@ -36,6 +39,7 @@ export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
                 ? 'border-destructive focus-visible:ring-destructive'
                 : ''
             }`}
+            value={safeValue}
             aria-invalid={!!fieldState.error}
             aria-describedby={fieldState.error ? `${name}-error` : undefined}
           />

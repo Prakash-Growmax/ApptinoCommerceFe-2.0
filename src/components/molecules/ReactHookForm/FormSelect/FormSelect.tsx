@@ -9,14 +9,16 @@ interface FormSelectProps {
   description?: string;
   disabled?: boolean;
   options: Array<{ value: string; label: string; disabled?: boolean }>;
+
   className?: string;
 }
 
 export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
   (
-    { name, label, placeholder, description, disabled, options, className },
+    { name, label, placeholder, description, disabled, options, className,value },
     ref
   ) => {
+   
     return (
       <FormField
         name={name}
@@ -35,7 +37,7 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
               ? 'border-destructive focus-visible:ring-destructive'
               : ''
             }`}
-
+          
             
             aria-invalid={!!fieldState.error}
             aria-describedby={fieldState.error ? `${name}-error` : undefined}
