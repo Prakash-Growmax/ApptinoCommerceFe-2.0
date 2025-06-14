@@ -9,17 +9,18 @@ import {
 } from 'lucide-react';
 
 import NotFoundPage from '@/features/error/routes/NotFoundPage';
+import SupportLanding from '@/features/support/routes/SupportLanding';
 import { RouteConfig } from '@/types/router.types';
-
 
 const DashboardPages = lazy(
   () => import('@/features/dashboard/routes/DashboardPages')
 );
-const Support = lazy(() => import('@/features/support/Support'));
 const Customers = lazy(() => import('@/features/customer/route/Customer'));
 const Settings = lazy(() => import('@/features/settings/Settings'));
 const Login = lazy(() => import('@/features/auth/routes/LoginPage'));
-const SupportDetails = lazy(()=>import('@/features/support/routes/SupportDetails'))
+const SupportDetails = lazy(
+  () => import('@/features/support/routes/SupportDetails')
+);
 export const routeConfig: RouteConfig[] = [
   {
     path: '/',
@@ -42,7 +43,7 @@ export const routeConfig: RouteConfig[] = [
     path: '/supporttickets',
     layout: 'main',
     protected: true,
-    element: <Support />,
+    element: <SupportLanding />,
     meta: {
       title: 'Support Tickets',
       description: 'Manage support tickets',
@@ -51,15 +52,14 @@ export const routeConfig: RouteConfig[] = [
     showInSidebar: true,
   },
   {
-    path:`/supporttickets/servicedetails/:id`,
-    layout:`main`,
+    path: `/supporttickets/servicedetails/:id`,
+    layout: `main`,
     protected: true,
-    element:<SupportDetails/>,
-     meta: {
+    element: <SupportDetails />,
+    meta: {
       title: 'ServiceDetails',
       description: ' support tickets details',
     },
-
   },
   {
     path: '/customers',
