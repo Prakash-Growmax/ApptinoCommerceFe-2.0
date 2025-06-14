@@ -3,28 +3,34 @@ interface TimelineItemProps {
   date: string
   description: string
   isActive?: boolean
+  isLast?: boolean
 }
 
-function TimelineItem({ title, date, description, isActive }: TimelineItemProps) {
+function TimelineItem({ title, date, description, isActive = false, isLast = false }: TimelineItemProps) {
   return (
-    <div className="flex items-start gap-4 relative pl-4">
+    <div className="relative pl-8 pb-6">
+      {/* Line */}
+      {!isLast && (
+        <span className="absolute top-0 left-1.5 h-full w-px bg-gray-300" />
+      )}
+
       {/* Dot */}
-      <div
-        className={`w-3 h-3 rounded-full mt-1 ${
-          isActive ? "bg-black" : "bg-muted"
-        } absolute left-0`}
+      <span
+        className={`absolute left-0 top-0 w-3 h-3 rounded-full ${
+          isActive ? "bg-black" : "bg-gray-300"
+        }`}
       />
+
       {/* Content */}
-      <div className="space-y-0.5">
-        <div className="flex">
-            
-        <div className="text-sm font-medium text-foreground">{title}</div>
-        <div className="text-xs text-muted-foreground">{date}</div>
+      <div className="-mt-6">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-900">{title}</span>
+          <span className="text-xs text-gray-500">{date}</span>
         </div>
-        <div className="text-sm text-gray-900">{description}</div>
+        <p className="text-sm text-gray-700">{description}</p>
       </div>
     </div>
   )
 }
 
-export default TimelineItem
+export default TimelineItem;

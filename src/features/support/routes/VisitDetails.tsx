@@ -23,21 +23,32 @@ const VisitDetails = ({ fieldService }) => {
             <Badge variant="outline">{fieldService.status}</Badge>
           </div>
           
-          <ShadCnButton variant="default" className="w-full sm:w-auto h-[30px] text-sm">
-            + Add Service Visit
-          </ShadCnButton>
+      
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FormInput
+        <CardContent>
+     
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+               <FormInput
             name="title"
             label="Title"
             placeholder="Title"
             value={fieldService.title}
             className="text-gray-700"
           />
+               <FormSelect
+            name="Service Representative"
+            label="Service Representative"
+            className="text-gray-700"
+            options={[
+              { value: fieldService?.ownerUsername, label: fieldService?.ownerUsername }
+            ]}
+          />
+          </div>
+
+        {/* Appointment dates - Single row with 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             name="Appointment Date From"
             label="Appointment Date From"
@@ -58,7 +69,15 @@ const VisitDetails = ({ fieldService }) => {
           </FormField>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Status and Category - Single row with 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+             <FormInput
+            name="Category"
+            label="Category"
+            className="text-gray-700"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
           <FormSelect
             name="Status"
             label="Status"
@@ -67,22 +86,10 @@ const VisitDetails = ({ fieldService }) => {
               { value: fieldService?.status, label: fieldService?.status }
             ]}
           />
-          <FormInput
-            name="Category"
-            label="Category"
-            className="text-gray-700"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          <FormSelect
-            name="Service Representative"
-            label="Service Representative"
-            className="text-gray-700"
-            options={[
-              { value: fieldService?.ownerUsername, label: fieldService?.ownerUsername }
-            ]}
-          />
+       
         </div>
+
+     
 
         <div className="w-full">
           <FormTextarea
@@ -93,45 +100,55 @@ const VisitDetails = ({ fieldService }) => {
           />
         </div>
 
-  <TooltipProvider>
-  {fieldService?.attachments?.map((attachment) => {
-    const formatted = formatDateTime(attachment.uploadedDateTime);
-    return (
-      <Tooltip key={attachment.identifier}>
-        <TooltipTrigger asChild>
-          <a
-            href={attachment.attachmentUrl}
-            download
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-start sm:items-center space-x-3 text-sm text-gray-700 bg-gray-100 rounded px-4 py-2 w-full shadow-sm cursor-pointer"
-          >
-            <svg
-              className="w-5 h-5 text-gray-500 mt-1 sm:mt-0"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V7.414A2 2 0 0017.414 6L13 1.586A2 2 0 0011.586 1H4z" />
-            </svg>
-            <div>
-              <div className="text-blue-600 font-medium">
-                {attachment.fileName}
+        {fieldService?.attachments && fieldService.attachments.length > 0 && (
+          <div className="space-y-3">
+            <TooltipProvider>
+              <div className="space-y-2">
+                {fieldService?.attachments?.map((attachment) => {
+                  const formatted = formatDateTime(attachment.uploadedDateTime);
+                  return (
+                    <Tooltip key={attachment.identifier}>
+                      <TooltipTrigger asChild>
+                        <a
+                          href={attachment.attachmentUrl}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start space-x-3 p-3 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg shadow-sm cursor-pointer transition-colors duration-200"
+                        >
+                          <svg
+                            className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V7.414A2 2 0 0017.414 6L13 1.586A2 2 0 0011.586 1H4z" />
+                          </svg>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-blue-600 font-medium truncate">
+                              {attachment.fileName}
+                            </div>
+                            <div className="text-gray-500 text-xs mt-1">
+                              <span className="block sm:inline">
+                                Attached by {attachment.attachedByUsername}
+                              </span>
+                              <span className="hidden sm:inline"> · </span>
+                              <span className="block sm:inline text-gray-400">
+                                {formatted}
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Click to download attachment</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
               </div>
-              <div className="text-gray-500 text-xs">
-                Attached by {attachment.attachedByUsername} · {formatted}
-              </div>
-            </div>
-          </a>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Click to download attachment</p>
-        </TooltipContent>
-      </Tooltip>
-    );
-  })}
-</TooltipProvider>
-
-
+            </TooltipProvider>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
