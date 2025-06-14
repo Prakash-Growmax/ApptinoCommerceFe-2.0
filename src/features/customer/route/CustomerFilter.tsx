@@ -53,7 +53,7 @@ const CustomerFilter = () => {
   };
 
   const handleApplyFilters = () => {
-    console.log("ajitha jeeva")
+ 
     const updated = {
       ...filters,
       offset: 0,

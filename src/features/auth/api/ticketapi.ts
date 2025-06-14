@@ -1,56 +1,35 @@
 
-
     import {
-    CreateTicketRequestType,
-    CreateTicketResponseType,
-    } from './tickettype';
-    import { apiPost } from '@/lib/api/ticket';
+  CreateTicketRequestType,
+  CreateTicketResponseType,
+} from './tickettype';
+import { apiPost } from '@/lib/api/ticket';
 
-    export const createTicket = async (
-    body: CreateTicketRequestType,
-    token: string,
-    tenantId: string
-    
-    ): Promise<CreateTicketResponseType> => {
-    return apiPost<CreateTicketResponseType>({
-        url: '/support/service-support/fieldService/createWithSupportTicket?domainName=dev3',
-        data: body,
-        token,
-        tenantId,
-    });
-    };
+export const createTicket = async ({
+  body,
+  token,
+  tenantId,
+}: {
+  body: CreateTicketRequestType;
+  token: string;
+  tenantId: string;
+}): Promise<CreateTicketResponseType> => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`, // ✅ Fix formatting
+  };
 
-//     import {
-//   CreateTicketRequestType,
-//   CreateTicketResponseType,
-// } from './tickettype';
-// import { apiPost } from '@/lib/api/ticket';
+  const response = await apiPost<CreateTicketResponseType>({
+    url: '/support/service-support/fieldService/createWithSupportTicket?domainName=dev3',
+    data: body,
+    config: {
+      headers,
+    },
+  });
 
-// export const createTicket = async ({
-//   body,
-//   token,
-//   tenantId,
-// }: {
-//   body: CreateTicketRequestType;
-//   token: string;
-//   tenantId: string;
-// }): Promise<CreateTicketResponseType> => {
-//   const headers = {
-//     'Content-Type': 'application/json',
-//     'x-tenant': tenantId,
-//     Authorization: `Bearer ${token}`, // ✅ Fix formatting
-//   };
-
-//   const response = await apiPost<CreateTicketResponseType>({
-//     url: '/support/service-support/fieldService/createWithSupportTicket?domainName=dev3',
-//     data: body,
-//     config: {
-//       headers,
-//     },
-//   });
-
-//   return response;
-// };
+  return response;
+};
 
 
 
