@@ -2,6 +2,7 @@ import { UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import { getSupportTimeline } from '../api/support.api';
 
+
 export const useSupportTimeline = (
   domainName: string,
   ticketIdentifier: string,

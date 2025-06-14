@@ -1,9 +1,9 @@
-import { Mail, MapPin, Phone } from 'lucide-react';
+
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
 import { useGetSupportTicketFieldServices } from '../../hook/useGetSupportTicketFieldServices';
 import { useFormContext } from 'react-hook-form';
+import { Mail, Phone } from 'lucide-react';
 
 function InfoRow({
   label,
@@ -56,5 +56,6 @@ function SupportCustomerCard() {
     </Card>
   );
 }
+
 
 export default SupportCustomerCard;
