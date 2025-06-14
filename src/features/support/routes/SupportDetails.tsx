@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import SupportCustomerCard from "../components/SupportCustomerCard/SupportCustomerCard";
+import { useSupportTimeline } from "../hook/useGetSupportTimeline";
+import SupportTimeline from "../components/SupportTimeline/SupportTimeline";
 
 
 
@@ -26,6 +28,7 @@ const SupportDetails = () => {
     error: ticketDetailsError,
     refetch: refetchTicketDetails,
   } = useGetSupportTicketDetails('dev3', id);
+    const { data:ticketTimelineData, isLoading:isTicketTimelineLoadinf, error:ticketTimelineError } = useSupportTimeline("dev3", id);
 
   const isLoading = isFieldServicesLoading || isTicketDetailsLoading;
   const error = fieldServicesError || ticketDetailsError;
@@ -43,9 +46,10 @@ const SupportDetails = () => {
       methods.reset({
         fieldServicesData,
         supportTicketData: ticketDetailsData,
+        ticketTimelineData
       });
     }
-  }, [fieldServicesData, ticketDetailsData]);
+  }, [fieldServicesData, ticketDetailsData,ticketTimelineData]);
   
   if (isLoading) {
     return <div className="flex justify-center">
@@ -66,8 +70,9 @@ const SupportDetails = () => {
         <div className="w-full lg:w-2/3">
           <ServiceDetails />
         </div>
-        <div className="w-full lg:w-1/3">
+        <div className="flex flex-col gap-4 w-full lg:w-1/3">
           <SupportCustomerCard/>
+          <SupportTimeline/>
         </div>
       </div>
     </FormProvider>

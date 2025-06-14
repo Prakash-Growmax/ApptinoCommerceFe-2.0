@@ -55,6 +55,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TimelineItem from "../../routes/timeline";
+import { useFormContext } from "react-hook-form";
 
 type Change = {
   attributeName: string;
@@ -69,18 +70,18 @@ type TimelineItemType = {
   updatedDateTime: string;
 };
 
-export default function SupportTimeline({ data }: { data: TimelineItemType[] }) {
-  if (!data || data.length === 0) {
-    // return <p className="text-sm text-muted-foreground">No timeline data available.</p>;
-  }
+export default function SupportTimeline() {
+const { watch } = useFormContext();
+  const ticketTimelineData = watch("ticketTimelineData") ?? [];
+  console.log(ticketTimelineData);
   return (
     <div>
-      <Card className="w-full max-w-md">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Activity Timeline</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {data?.map((entry, index) => {
+        <CardContent className="space-y-6 mt-8">
+          {ticketTimelineData?.map((entry, index) => {
             const change = entry.changes?.[0];
             return (
               <TimelineItem
