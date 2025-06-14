@@ -1,8 +1,9 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { Button } from "@components/atoms/Button/Button";
-import { FeatureCard } from "../components/FeatureCard";
+import { Button } from '@components/atoms/Button/Button';
+
+import { FeatureCard } from '../components/FeatureCard';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -10,39 +11,39 @@ const HomePage = () => {
   // Features to display
   const features = [
     {
-      title: "Modern React",
+      title: 'Modern React',
       description:
-        "Built with React 18, TypeScript, and the latest web standards.",
-      icon: "🚀",
+        'Built with React 18, TypeScript, and the latest web standards.',
+      icon: '🚀',
     },
     {
-      title: "Performant",
+      title: 'Performant',
       description:
-        "Optimized for speed and user experience with code splitting and lazy loading.",
-      icon: "⚡",
+        'Optimized for speed and user experience with code splitting and lazy loading.',
+      icon: '⚡',
     },
     {
-      title: "Scalable",
+      title: 'Scalable',
       description:
-        "Feature-based architecture designed for large-scale applications.",
-      icon: "📊",
+        'Feature-based architecture designed for large-scale applications.',
+      icon: '📊',
     },
     {
-      title: "International",
+      title: 'International',
       description:
-        "Comprehensive i18n solution built-in for global applications.",
-      icon: "🌎",
+        'Comprehensive i18n solution built-in for global applications.',
+      icon: '🌎',
     },
     {
-      title: "Quality First",
+      title: 'Quality First',
       description:
-        "Integrated testing and code quality tools for reliable applications.",
-      icon: "✅",
+        'Integrated testing and code quality tools for reliable applications.',
+      icon: '✅',
     },
     {
-      title: "Developer Experience",
-      description: "Streamlined developer workflow with modern tooling.",
-      icon: "👨‍💻",
+      title: 'Developer Experience',
+      description: 'Streamlined developer workflow with modern tooling.',
+      icon: '👨‍💻',
     },
   ];
 
@@ -51,30 +52,23 @@ const HomePage = () => {
       {/* Hero Section */}
       <section className="pb-16 pt-8 text-center">
         <h1 className="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl">
-          {t("app.title")}
+          {t('app.title')}
         </h1>
 
         <p className="mx-auto mb-8 max-w-2xl text-xl text-muted-foreground">
-          {t("app.description")}
+          {t('app.description')}
         </p>
 
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Link to="/auth/register">
-            <Button size="lg">{t("auth.getStarted")}</Button>
-          </Link>
-
-          <Link to="/dashboard">
-            <Button size="lg" variant="outline">
-              {t("navigation.viewDemo")}
-            </Button>
+            <Button size="lg">{t('auth.getStarted')}</Button>
           </Link>
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-16">
         <h2 className="mb-12 text-center text-3xl font-bold">
-          {t("home.features")}
+          {t('home.features')}
         </h2>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -91,14 +85,14 @@ const HomePage = () => {
 
       {/* CTA Section */}
       <section className="rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 p-8 py-16 text-center">
-        <h2 className="mb-6 text-3xl font-bold">{t("home.readyToStart")}</h2>
+        <h2 className="mb-6 text-3xl font-bold">{t('home.readyToStart')}</h2>
 
         <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
-          {t("home.ctaDescription")}
+          {t('home.ctaDescription')}
         </p>
 
         <Link to="/auth/register">
-          <Button size="lg">{t("auth.createAccount")}</Button>
+          <Button size="lg">{t('auth.createAccount')}</Button>
         </Link>
       </section>
     </div>

@@ -1,11 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShadCnButton } from "@/components/ui/button";
-import VisitDetails from "./VisitDetails";
-import { useFormContext } from "react-hook-form";
+import { useFormContext } from 'react-hook-form';
+
+import { ShadCnButton } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import VisitDetails from './VisitDetails';
 
 const ServiceVisits = () => {
   const { watch } = useFormContext();
-  const fieldServicesData = watch("fieldServicesData") ?? [];
+  const fieldServicesData = watch('fieldServicesData') ?? [];
 
   return (
     <div className="w-full">
@@ -28,5 +30,4 @@ const ServiceVisits = () => {
     </div>
   );
 };
-
 export default ServiceVisits;

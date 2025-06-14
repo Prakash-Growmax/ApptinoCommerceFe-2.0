@@ -1,3 +1,11 @@
+
+type SupportFilterType = {
+  status?: string;
+  category?: string;
+  priority?: string;
+  ticketIdentifier?: string;
+  // Add other filter keys as needed
+};
 export type SupportType={
   supportData: any[];
   setSupportData: ( supportData: any[]) => void;
@@ -25,4 +33,23 @@ export type SupportInfo={
   page?:number;
   rowPerPage?:number;
   body?:any[];
+}
+export type SupportTicketFilter = {
+  status: string[];
+  setStatus: (status: string[]) => void;
+  category: string[];
+  setCategory: (category: string[]) => void;
+  
+};
+export type SupportTicketType={
+    ticketId:string | number;
+  setTicketId:(ticketId:string | number)=>void;
+  searchText:string;
+  setSearchText:(searchText:string)=>void;
+  priority:string
+  setPriority:(priority:string)=>void;
+  supportStatus:string;
+  setSupportStatus:(supportStatus:string)=>void;
+  supportCategory:string;
+  setSupportCategory:(supportCategory:string)=>void;
 }

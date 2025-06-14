@@ -25,12 +25,6 @@ export const Header = () => {
               {t('navigation.home')}
             </Link>
             <Link
-              to="/dashboard"
-              className="text-sm font-medium hover:text-primary"
-            >
-              {t('navigation.dashboard')}
-            </Link>
-            <Link
               to="/profile"
               className="text-sm font-medium hover:text-primary"
             >
