@@ -39,16 +39,27 @@ const SupportFilters = () => {
     if (!isDialogOpen) reset();
   }, [isDialogOpen, reset]);
   const [filters, setFilters] = useState({});
-  const { page, rowPerPage, setSupportData, setTotalCount } = useSupportStore();
+const {
+    page,
+    rowPerPage,
+    setSupportData,
+    setTotalCount,
+    setLoading
+  } = useSupportStore();
 
-  const handleChange = (key: keyof typeof filters, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: [value],
-    }));
-  };
+const handleChange = (key: keyof typeof filters, value: string) => {
+  setFilters(prev => ({
+    ...prev,
+    [key]: [value],
+  }));
+};
+
+  
+
+
 
   const handleApplyFilter = async () => {
+    setLoading(true)
     const body = _.cloneDeep(filters);
     const response = await GetFetchSupportTicket({
       tenantId,
@@ -59,6 +70,7 @@ const SupportFilters = () => {
     });
     setSupportData(response?.result);
     setTotalCount(response?.count);
+    setLoading(false)
   };
 
   return (
