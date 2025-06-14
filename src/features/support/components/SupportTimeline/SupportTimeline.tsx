@@ -99,3 +99,4 @@ export default function SupportTimeline({ data }: { data: TimelineItemType[] }) 
     </div>
   );
 }
+
