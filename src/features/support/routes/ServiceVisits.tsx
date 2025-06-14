@@ -9,22 +9,18 @@ const ServiceVisits = () => {
   const fieldServicesData = watch('fieldServicesData') ?? [];
 
   return (
-    <>
-      <div className="flex justify-start">
-        <div className="w-full lg:w-[700px]">
-          <Card>
-            <CardHeader>
-              <CardTitle>Service Visits</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {fieldServicesData?.map((fieldService, index) => (
-                <VisitDetails fieldService={fieldService} />
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </>
+    <div className="w-full">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Service Visits</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {fieldServicesData?.map((fieldService, index) => (
+            <VisitDetails key={index} fieldService={fieldService} />
+          ))}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 export default ServiceVisits;
