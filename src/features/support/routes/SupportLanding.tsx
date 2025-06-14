@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
 
 import DashboardTable from '@/components/organisms/DashboardTable/DashboardTable';
+import { TableCellText } from '@/components/ui/table-typography';
 import useSideBarStore from '@/stores/sidebarStore';
 
 import SupportTickets from '../SupportTickets';
@@ -48,16 +49,14 @@ export default function SupportLanding() {
       accessorKey: 'title',
       header: 'Subject',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">{row.original?.title}</div>
+        <TableCellText variant="primary">{row.original?.title}</TableCellText>
       ),
     },
     {
       accessorKey: 'ticketIdentifier',
       header: 'Ticket Id',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">
-          {row.original?.ticketIdentifier}
-        </div>
+        <TableCellText variant="primary">{row.original?.title}</TableCellText>
       ),
     },
     {
@@ -73,7 +72,7 @@ export default function SupportLanding() {
             })
           : '--';
 
-        return <div className="text-sm font-medium">{formattedDate}</div>;
+        return <TableCellText variant="primary">{formattedDate}</TableCellText>;
       },
     },
     {
@@ -89,14 +88,18 @@ export default function SupportLanding() {
             })
           : '--';
 
-        return <div className="text-sm font-medium">{formattedDueDate}</div>;
+        return (
+          <TableCellText variant="primary">{formattedDueDate}</TableCellText>
+        );
       },
     },
     {
       accessorKey: 'category',
       header: 'Category',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">{row.original?.category}</div>
+        <TableCellText variant="primary">
+          {row.original?.category}
+        </TableCellText>
       ),
     },
     {
@@ -146,18 +149,18 @@ export default function SupportLanding() {
       accessorKey: 'buyerCompanyName',
       header: 'Company Name',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">
+        <TableCellText variant="primary">
           {row.original?.buyerCompanyName}
-        </div>
+        </TableCellText>
       ),
     },
     {
       accessorKey: 'buyerContactPerson',
       header: 'Contact Person',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">
+        <TableCellText variant="primary">
           {row.original?.buyerContactPerson}
-        </div>
+        </TableCellText>
       ),
     },
     {
@@ -165,10 +168,10 @@ export default function SupportLanding() {
       header: 'Contact Details',
       cell: ({ row }) => {
         return (
-          <div className="text-sm leading-5">
+          <TableCellText variant="primary">
             <div> {row?.original?.buyerEmail}</div>
             <div>{row?.original?.buyerContactNumber}</div>
-          </div>
+          </TableCellText>
         );
       },
     },
@@ -176,7 +179,9 @@ export default function SupportLanding() {
       accessorKey: 'priority',
       header: 'Priority',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">{row?.original?.priority}</div>
+        <TableCellText variant="primary">
+          <div> {row?.original?.buyerEmail}</div>
+        </TableCellText>
       ),
     },
   ];
