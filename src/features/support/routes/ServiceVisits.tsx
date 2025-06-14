@@ -3,33 +3,23 @@ import { Label } from "@/components/ui/label";
 import VisitDetails from "./VisitDetails";
 import { useFormContext } from "react-hook-form";
 
-const ServiceVisits=()=>{
-   const { watch } = useFormContext();
-   const fieldServicesData = watch("fieldServicesData") ?? [];
-   
-    return(
-      <>
-         
-                <div className="flex justify-start">
-      <div className="w-full lg:w-[700px]">
+const ServiceVisits = () => {
+  const { watch } = useFormContext();
+  const fieldServicesData = watch("fieldServicesData") ?? [];
+  
+  return (
+    <div className="w-full">
       <Card>
         <CardHeader>
-            <CardTitle>Service Visits</CardTitle>
+          <CardTitle className="text-lg">Service Visits</CardTitle>
         </CardHeader>
-        <CardContent>
-            {fieldServicesData?.map((fieldService, index) => (
-          <VisitDetails fieldService={fieldService}/>
-             ))}
+        <CardContent className="space-y-4">
+          {fieldServicesData?.map((fieldService, index) => (
+            <VisitDetails key={index} fieldService={fieldService}/>
+          ))}
         </CardContent>
       </Card>
-      </div>
-      </div>
-          
-    
-      
-      </>
-   
-    )
-
-}
+    </div>
+  );
+};
 export default ServiceVisits;

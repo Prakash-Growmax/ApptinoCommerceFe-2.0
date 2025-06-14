@@ -3,12 +3,10 @@ import ServiceIssueDetails from "./SeviceIssueDetails";
 
 
 const ServiceDetails = () => {
-
   return(
-    <div className="flex flex-col gap-2">
-        <ServiceIssueDetails/>
-      
-        <ServiceVisits/>
+    <div className="flex flex-col gap-4">
+      <ServiceIssueDetails/>
+      <ServiceVisits/>
     </div>
   )
 };

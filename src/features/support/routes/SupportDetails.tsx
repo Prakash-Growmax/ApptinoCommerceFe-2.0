@@ -35,7 +35,7 @@ const SupportDetails = () => {
       fieldServicesData: null,
       supportTicketData: null,
     },
-       mode: "onChange",
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -62,9 +62,13 @@ const SupportDetails = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="flex w-full gap-8">
-        <ServiceDetails />
-        <SupportCustomerCard/>
+      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 p-4">
+        <div className="w-full lg:w-2/3">
+          <ServiceDetails />
+        </div>
+        <div className="w-full lg:w-1/3">
+          <SupportCustomerCard/>
+        </div>
       </div>
     </FormProvider>
   );
