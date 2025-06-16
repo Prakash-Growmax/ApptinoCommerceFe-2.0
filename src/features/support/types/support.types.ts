@@ -39,6 +39,8 @@ export type SupportTicketFilter = {
   setStatus: (status: string[]) => void;
   category: string[];
   setCategory: (category: string[]) => void;
+  fieldUser:any[];
+  setFieldUser:(fieldUser:any[])=>void;
   
 };
 export type SupportTicketType={
@@ -57,3 +59,7 @@ export type CreateFiledService={
   open:boolean;
   setOpen:(open:boolean)=>void;
 }
+export type UpdateType = {
+  updated: boolean;
+  setUpdated: (updated: boolean) => void;
+};

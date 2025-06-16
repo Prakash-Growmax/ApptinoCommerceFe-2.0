@@ -56,7 +56,7 @@ export default function SupportLanding() {
       accessorKey: 'ticketIdentifier',
       header: 'Ticket Id',
       cell: ({ row }) => (
-        <TableCellText variant="primary">{row.original?.title}</TableCellText>
+        <TableCellText variant="primary">{row.original?.ticketIdentifier}</TableCellText>
       ),
     },
     {

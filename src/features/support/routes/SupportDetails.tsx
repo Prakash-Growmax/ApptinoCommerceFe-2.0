@@ -14,7 +14,6 @@ import TicketHeader from './Serviceheader';
 
 const SupportDetails = () => {
   const { id } = useParams();
-
   const {
     data: fieldServicesData,
     isLoading: isFieldServicesLoading,

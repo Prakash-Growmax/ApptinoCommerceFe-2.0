@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 interface EditDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface EditDialogProps {
   fullwidth?: boolean;
   ShadCnButtonField?: string;
   showMobileAppBar?: boolean;
+  loading:boolean;
 }
 
 const EditDialog = ({
@@ -38,9 +40,10 @@ const EditDialog = ({
   primaryBtnText = "Save",
   hideDialogActions = false,
   ShadCnButtonField,
+  loading=false,
 }: EditDialogProps) => {
   const isMobile = useMediaQuery("(max-width:318px)");
-  console.log(open)
+
   return (
     <Dialog open={open} onOpenChange={(v) => !v && closeDialog()}>
       <DialogContent
@@ -87,7 +90,10 @@ const EditDialog = ({
                   disabled={ShadCnButtonDisabled || isSubmitting}
                   className={cn('text-base font-semibold', ShadCnButtonField)}
                 >
-                  {isSubmitting ? "Saving..." : primaryBtnText}
+                  {loading ?    <Loader2
+            className="h-4 w-4 animate-spin"
+            data-testid="loading-spinner"
+          /> : primaryBtnText}
                 </ShadCnButton>
               </div>
             </DialogFooter>
