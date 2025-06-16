@@ -53,3 +53,7 @@ export type SupportTicketType={
   supportCategory:string;
   setSupportCategory:(supportCategory:string)=>void;
 }
+export type CreateFiledService={
+  open:boolean;
+  setOpen:(open:boolean)=>void;
+}
