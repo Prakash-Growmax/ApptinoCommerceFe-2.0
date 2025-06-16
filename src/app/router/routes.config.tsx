@@ -49,8 +49,8 @@ export const routeConfig: RouteConfig[] = [
     protected: true,
     element: <SupportDetails />,
     meta: {
-      title: 'ServiceDetails',
-      description: ' support tickets details',
+      title: 'Support Ticket Detail',
+      description: 'support tickets details',
     },
   },
   {
