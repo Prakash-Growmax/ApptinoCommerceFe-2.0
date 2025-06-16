@@ -21,7 +21,7 @@ export const createTicket = async ({
   };
 
   const response = await apiPost<CreateTicketResponseType>({
-    url: '/support/service-support/fieldService/createWithSupportTicket?domainName=dev3',
+    url: `/support/service-support/fieldService/createWithSupportTicket?domainName=${tenantId}`,
     data: body,
     config: {
       headers,

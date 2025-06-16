@@ -16,6 +16,8 @@ import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
 
 type FormData = {
   customer: string;
@@ -42,7 +44,9 @@ type FormData = {
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
-
+    const { accessToken, payload } = useAppStore();
+  const token = accessToken as string;
+  const {tenantId ,companyId,userId,displayName,companyName} = payload as TokenPayload;
   useGetSupportFilters();
   const { supportData } = useSupportStore();
   const supportOptions = supportData?.map(item => ({
@@ -77,8 +81,8 @@ const SupportTicketsDialog = () => {
     methods.reset();
   };
 
-  const { companyId, tenantId, userId } = useUserStore();
-  const username = 'Sudhakar Varatharajan';
+ 
+
 
   const onSubmit = async (data: FormData) => {
     const payload: CreateTicketRequestType = {
@@ -101,19 +105,19 @@ const SupportTicketsDialog = () => {
         updatedDateTime: new Date().toISOString(),
         createdDateTime: new Date().toISOString(),
         updatedByUserId: userId,
-        updatedByUsername: username,
+        updatedByUsername:displayName,
         createdByUserId: userId,
-        createdByUserName: username,
+        createdByUserName:displayName,
         createdByCompanyId: companyId,
-        createdByCompanyName: 'Growmax.io',
+        createdByCompanyName:companyName,
         resolution: '',
-        domainName: 'dev3',
+        domainName:tenantId,
       },
       fieldServiceRequestDTO: {
         title: 'New Field Service',
         ticketIdentifier: null,
         ownerUserId: userId,
-        ownerUsername: username,
+        ownerUsername:displayName,
         status: 'Open',
         location: data.address,
         appointmentFromDateTime: new Date().toISOString(),
@@ -123,20 +127,16 @@ const SupportTicketsDialog = () => {
         createdDateTime: new Date().toISOString(),
         updatedDateTime: new Date().toISOString(),
         createdByUserId: userId,
-        createdByUsername: username,
+        createdByUsername:displayName,
         updatedByUserId: userId,
-        updatedByUsername: username,
+        updatedByUsername:displayName,
         attachments: [],
       },
     };
 
   
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      alert('Token missing');
-      return;
-    }
+ 
 
     try {
       const response = await createTicket({ body: payload, token, tenantId });
@@ -158,7 +158,7 @@ const SupportTicketsDialog = () => {
           title="Create New Ticket"
           closeDialog={handleDialogClose}
           handleSubmit={methods.handleSubmit(onSubmit)}
-          hideDialogActions={true}
+          primaryBtnText='Create Ticket'
         >
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
             <div className="bg-white  rounded-lg">
@@ -401,7 +401,7 @@ const SupportTicketsDialog = () => {
                 // }}
               />
             </div>
-            <div className="flex justify-end gap-4 pt- ">
+            {/* <div className="flex justify-end gap-4 pt- ">
               <ShadCnButton
                 type="button"
                 variant="outline"
@@ -410,7 +410,7 @@ const SupportTicketsDialog = () => {
                 Cancel
               </ShadCnButton>
               <ShadCnButton type="submit">Create Ticket</ShadCnButton>
-            </div>
+            </div> */}
           </Form>
         </EditDialog>
       </div>

@@ -23,8 +23,11 @@ const { watch } = useFormContext();
   const ticketTimelineData: TimelineItemType[] = [...rawticketTimelineData].sort(
     (a, b) => new Date(b.updatedDateTime).getTime() - new Date(a.updatedDateTime).getTime()
   );
+  console.log(Boolean(ticketTimelineData.length));
   return (
-    <div>
+    <>
+    {Boolean(ticketTimelineData.length) && (
+        <div>
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Activity Timeline</CardTitle>
@@ -47,6 +50,10 @@ const { watch } = useFormContext();
         </CardContent>
       </Card>
     </div>
+    )}
+    
+    </>
+  
   );
 }
 
