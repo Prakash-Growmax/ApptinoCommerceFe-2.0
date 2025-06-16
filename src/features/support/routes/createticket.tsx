@@ -130,7 +130,7 @@ const SupportTicketsDialog = () => {
       },
     };
 
-    console.log('Submitting payload:', JSON.stringify(payload, null, 2));
+  
 
     const token = localStorage.getItem('accessToken');
     if (!token) {

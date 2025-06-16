@@ -82,7 +82,7 @@ export const useFetchCustomersWithFilters = () => {
   const customersQuery = useQuery({
     queryKey: ["customers", filters],
     queryFn: async () => {
-      console.log("ajitha")
+    
       setLoading(true)
       const elasticData = AccountElastic.BuildCustomerquery(filters);
       const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);

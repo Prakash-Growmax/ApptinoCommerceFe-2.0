@@ -18,7 +18,7 @@ type TimelineItemType = {
 export default function SupportTimeline() {
 const { watch } = useFormContext();
   const rawticketTimelineData = watch("ticketTimelineData") ?? [];
-  // console.log(ticketTimelineData);
+
 
   const ticketTimelineData: TimelineItemType[] = [...rawticketTimelineData].sort(
     (a, b) => new Date(b.updatedDateTime).getTime() - new Date(a.updatedDateTime).getTime()
