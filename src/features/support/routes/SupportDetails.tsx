@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import SupportCustomerCard from "../components/SupportCustomerCard/SupportCustomerCard";
 import { useSupportTimeline } from "../hook/useGetSupportTimeline";
 import SupportTimeline from "../components/SupportTimeline/SupportTimeline";
+import TicketHeader from "./Serviceheader";
 
 
 
@@ -66,6 +67,7 @@ const SupportDetails = () => {
 
   return (
     <FormProvider {...methods}>
+        <TicketHeader/>
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 p-4">
         <div className="w-full lg:w-2/3">
           <ServiceDetails />
