@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import { format } from 'date-fns';
 import { CalendarIcon, Search, X } from 'lucide-react';
 
@@ -21,12 +22,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import useSideBarStore from '@/stores/sidebarStore';
 
-import { useSkillsMultiSelect } from '../../hooks/useSkillsMultiSelect';
 import { useSupportTicketStore } from '../../stores/useSupportTicketStore';
 import SupportTicketsdialog from './routes/createticket';
 import { SearchTypes } from './searchtype';
-import useSideBarStore from '@/stores/sidebarStore';
 
 type FormData = {
   contactPerson: string;
@@ -46,19 +46,8 @@ const SupportTickets = ({
   const [filterDate, setFilterDate] = useState<Date | undefined>(undefined);
   const [technician, setTechnician] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [skillsOpen, setSkillsOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>();
-
-  const onSubmit = () => {
-    setIsDialogOpen(false);
-    reset();
-  };
+  const { reset } = useForm<FormData>();
 
   useEffect(() => {
     if (!isDialogOpen) {
@@ -81,14 +70,14 @@ const SupportTickets = ({
     handleSearchClear();
   };
 
-  const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const { sideOpen } = useSideBarStore();
 
   return (
     <div
       className={`w-full ${
-        sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
+        sideOpen
+          ? 'lg:max-w-[calc(100vw-20rem)]'
+          : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-4 shadow-md rounded-md p-4">
@@ -210,7 +199,6 @@ const SupportTickets = ({
               setIsDialogOpen(open);
               if (!open) {
                 reset();
-                setSkillsOpen(false);
               }
             }}
           >

@@ -1,32 +1,21 @@
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
 import EditDialog from '@/components/molecules/EditDialog/EditDialog';
 import {
   FormInput,
-  FormRadioGroup,
   FormSelect,
   FormTextarea,
 } from '@/components/molecules/ReactHookForm';
 import { FormCalendar } from '@/components/molecules/ReactHookForm/Calendar/Calendar';
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
+import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 import { ShadCnButton } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { createTicket } from '@/features/auth/api/ticketapi';
 import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
-import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
-import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 
 type FormData = {
   customer: string;
@@ -47,28 +36,19 @@ type FormData = {
   showLabel?: boolean;
   address: string;
   resolutionDueDate?: Date;
-  fromdate:Date;
-  todate:Date;
+  fromdate: Date;
+  todate: Date;
 };
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
 
-  // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
-  // const [skillsOpen, setSkillsOpen] = useState(false);
-  // const dropdownRef = useRef(null);
-
-  // const handleSelect = (skill: string) => {
-  //   toggleSkill(skill);
-  //   setSkillsOpen(false);
-  // };
-
   useGetSupportFilters();
   const { supportData } = useSupportStore();
   const supportOptions = supportData?.map(item => ({
-    value: item.id.toString(), 
+    value: item.id.toString(),
     label: item.companyName,
-    disabled: !item.isActivated, 
+    disabled: !item.isActivated,
   }));
   const methods = useForm<FormData>({
     defaultValues: {
@@ -86,16 +66,11 @@ const SupportTicketsDialog = () => {
       subject: '',
       problemDescription: '',
       address: '',
-       fromdate: new Date(),
-       todate: new Date(),
-      // attachments: '',
-      // showLabel: '',
-      // resolutionDueDate: '',
+      fromdate: new Date(),
+      todate: new Date(),
     },
-    // mode: "onSubmit",
   });
-  const { register, watch, setValue, handleSubmit, reset, control } = methods;
-  const attachments = watch('attachments');
+  const { reset } = methods;
 
   const handleDialogClose = () => {
     setOpen(false);
@@ -164,7 +139,7 @@ const SupportTicketsDialog = () => {
     }
 
     try {
-      const response = await createTicket({body: payload, token, tenantId});
+      const response = await createTicket({ body: payload, token, tenantId });
       alert('Ticket created successfully!');
       setOpen(false);
       reset();
@@ -297,19 +272,18 @@ const SupportTicketsDialog = () => {
                   ]}
                   disabled={false}
                 />
-                <FormField 
-                  name="resolutionDueDate" 
+                <FormField
+                  name="resolutionDueDate"
                   label=" Resolution Due Date"
-                  className='md:w-[320px]'
-                  >
-                    {({ field }) => (
-                      <FormCalendar
-                        value={field.value}
-                        onChange={field.onChange}
-                        
-                      />
-                    )}
-                  </FormField>
+                  className="md:w-[320px]"
+                >
+                  {({ field }) => (
+                    <FormCalendar
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                </FormField>
               </div>
             </div>
 
@@ -360,24 +334,23 @@ const SupportTicketsDialog = () => {
 
               <div className="md:flex  gap-10 mb-5">
                 <div>
-                  <FormField 
-                  name="fromdate" 
-                  label="From Date"
-                  className='md:w-[320px]'
+                  <FormField
+                    name="fromdate"
+                    label="From Date"
+                    className="md:w-[320px]"
                   >
                     {({ field }) => (
                       <FormCalendar
                         value={field.value}
                         onChange={field.onChange}
-                        
                       />
                     )}
                   </FormField>
                 </div>
-                <FormField 
-                name="todate" 
-                label="To Date"
-                className='md:w-[330px] '
+                <FormField
+                  name="todate"
+                  label="To Date"
+                  className="md:w-[330px] "
                 >
                   {({ field }) => (
                     <FormCalendar
@@ -387,8 +360,6 @@ const SupportTicketsDialog = () => {
                   )}
                 </FormField>
               </div>
-
-             
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 w-[full]  ">
                 <FormSelect

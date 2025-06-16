@@ -7,9 +7,6 @@ import NotFoundPage from '@/features/error/routes/NotFoundPage';
 import SupportLanding from '@/features/support/routes/SupportLanding';
 import { RouteConfig } from '@/types/router.types';
 
-const DashboardPages = lazy(
-  () => import('@/features/dashboard/routes/DashboardPages')
-);
 const Customers = lazy(() => import('@/features/customer/route/Customer'));
 const Settings = lazy(() => import('@/features/settings/Settings'));
 const Login = lazy(() => import('@/features/auth/routes/LoginPage'));

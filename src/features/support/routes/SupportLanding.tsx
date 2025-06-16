@@ -7,10 +7,9 @@ import DashboardTable from '@/components/organisms/DashboardTable/DashboardTable
 import { TableCellText } from '@/components/ui/table-typography';
 import useSideBarStore from '@/stores/sidebarStore';
 
-import SupportTickets from '../SupportTickets';
+import SupportFilters from '../components/SupportFilters';
 import { useGetSupportTicketFilters } from '../hook/useGetSupportTicketFilter';
 import useSupportStore from '../store/useSupportStore';
-import SupportFilters from '../components/SupportFilters';
 
 export default function SupportLanding() {
   const navigate = useNavigate();
@@ -193,7 +192,7 @@ export default function SupportLanding() {
         sideOpen ? 'lg:pl-4' : 'lg:pl-4'
       }`}
     >
-       <SupportFilters/>
+      <SupportFilters />
       <div
         className={`w-full ${
           sideOpen
