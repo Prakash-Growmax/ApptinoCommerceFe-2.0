@@ -1,38 +1,66 @@
-// import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader } from "@/components/ui/card";
+  import { TicketInfo } from "./ticketinfo";
+  import { useFormContext } from "react-hook-form";
+
+  export default function TicketHeader() {
+    const { watch } = useFormContext();
+      const supportTicketData = watch("supportTicketData") ?? [];
+
+      const {ticketIdentifier, createdDateTime} =supportTicketData
+      
+    return (
+      <div className="p-3">
+          <Card>
+              <CardHeader>
+
+          <TicketInfo ticketId={ticketIdentifier} createdAt={createdDateTime} />
+              </CardHeader>
+          </Card>
+      </div>
+    );
+  }
 
 
 
-// function Serviceheader(){
 
-//     return(
-//         <div>
-//            <Card>
-//             <CardHeader>
-                 
-//         <CardTitle>#TCKT-001234</CardTitle>
-//         <CardTitle>C</CardTitle>
-//             </CardHeader>
-        
-//            </Card>
-//         </div>
-//     )
 
+
+
+
+
+
+
+
+
+
+
+
+//   import { Card, CardHeader } from "@/components/ui/card";
+// import { TicketInfo } from "./ticketinfo";
+// import { useFormContext } from "react-hook-form";
+// import { format } from "date-fns";
+
+// export default function TicketHeader() {
+//   const { watch } = useFormContext();
+//   const supportTicketData = watch("supportTicketData");
+
+//   // Destructure values safely
+//   const ticketId = supportTicketData?.ticketIdentifier || "N/A";
+//   const createdAtRaw = supportTicketData?.createdDateTime;
+
+//   // Format date to something like: "Jun 13, 2025 05:17 PM"
+//   const formattedCreatedAt = createdAtRaw
+//     ? format(new Date(createdAtRaw), "MMM dd, yyyy  hh:mm a")
+//     : "Unknown Date";
+
+//   return (
+//     <div className="p-3">
+//       <Card>
+//         <CardHeader>
+//           <TicketInfo ticketId={ticketId} createdAt={formattedCreatedAt} />
+//         </CardHeader>
+//       </Card>
+//     </div>
+//   );
 // }
 
-// export default Serviceheader
-
-    import { Card, CardHeader } from "@/components/ui/card";
-import { TicketInfo } from "./ticketinfo";
-
-export default function TicketHeader() {
-  return (
-    <div className="p-3">
-        <Card>
-            <CardHeader>
-
-         <TicketInfo ticketId="TCKT-001234" createdAt="Oct 03, 1999  09:24 AM" />
-            </CardHeader>
-        </Card>
-    </div>
-  );
-}

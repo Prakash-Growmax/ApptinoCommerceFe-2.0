@@ -1,5 +1,3 @@
-
-
 type ApiPostArgs<T> = {
   url: string;
   data?: unknown;
@@ -37,59 +35,33 @@ export const apiPost = async <T>({
 };
 
 
-// import axios, { AxiosRequestConfig } from 'axios';
 
-// export interface ApiError {
-//   message: string;
-//   status: number;
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// type ApiPostArgs<T> = {
+//   url: string;
+//   data?: unknown;
+//   token?: string;
+//   tenantId?: string;
+// };
 
 // export const apiPost = async <T>({
 //   url,
 //   data,
 //   token,
 //   tenantId,
-//   config = {},
-// }: {
-//   url: string;
-//   data?: unknown;
-//   token?: string;
-//   tenantId?: string;
-//   config?: AxiosRequestConfig;
-// }): Promise<T> => {
-//   try {
-//     const headers: Record<string, string> = {
-//       'Content-Type': 'application/json',
-//       ...(token && { Authorization: `Bearer ${token}` }),
-//       ...(tenantId && { 'x-tenant': tenantId }),
-//       ...(config.headers || {}),
-//     };
-
-//     const response = await axios.post(`https://api.myapptino.com${url}`, data, {
-//       ...config,
-//       headers,
-//     });
-
-//     return response.data as T;
-//   } catch (error: any) {
-//     if (axios.isAxiosError(error)) {
-//       throw {
-//         message: error.response?.data?.message || 'API call failed',
-//         status: error.response?.status || 500,
-//       } satisfies ApiError;
-//     }
-
-//     throw {
-//       message: error.message || 'Unexpected error',
-//       status: 500,
-//     } satisfies ApiError;
-//   }
-// };
-
-
-
-
-// export const apiPostt = async <T>({ url, data, token, tenantId }: ApiPostArgs<T>): Promise<T> => {
+// }: ApiPostArgs<T>): Promise<T> => {
 //   const headers: Record<string, string> = {
 //     'Content-Type': 'application/json',
 //   };
@@ -111,3 +83,6 @@ export const apiPost = async <T>({
 
 //   return result as T;
 // };
+
+
+

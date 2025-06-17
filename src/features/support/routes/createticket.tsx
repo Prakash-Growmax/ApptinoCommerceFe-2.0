@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { format } from 'date-fns';
@@ -13,6 +13,7 @@ import {
 } from '@/components/molecules/ReactHookForm';
 import { FormCalendar } from '@/components/molecules/ReactHookForm/Calendar/Calendar';
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
+import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 import { ShadCnButton } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -26,7 +27,6 @@ import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
-import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 
 type FormData = {
   customer: string;
@@ -47,8 +47,8 @@ type FormData = {
   showLabel?: boolean;
   address: string;
   resolutionDueDate?: Date;
-  fromdate:Date;
-  todate:Date;
+  fromdate: Date;
+  todate: Date;
 };
 
 const SupportTicketsDialog = () => {
@@ -66,9 +66,9 @@ const SupportTicketsDialog = () => {
   useGetSupportFilters();
   const { supportData } = useSupportStore();
   const supportOptions = supportData?.map(item => ({
-    value: item.id.toString(), 
+    value: item.id.toString(),
     label: item.companyName,
-    disabled: !item.isActivated, 
+    disabled: !item.isActivated,
   }));
   const methods = useForm<FormData>({
     defaultValues: {
@@ -86,8 +86,8 @@ const SupportTicketsDialog = () => {
       subject: '',
       problemDescription: '',
       address: '',
-       fromdate: new Date(),
-       todate: new Date(),
+      fromdate: new Date(),
+      todate: new Date(),
       // attachments: '',
       // showLabel: '',
       // resolutionDueDate: '',
@@ -104,6 +104,30 @@ const SupportTicketsDialog = () => {
 
   const { companyId, tenantId, userId } = useUserStore();
   const username = 'Sudhakar Varatharajan';
+
+  const handleCustomerChange = (selectedCustomerId: string) => {
+    const selectedCustomer = supportData?.find(
+      item => item.id.toString() === selectedCustomerId
+    );
+
+    console.log('Selected Customer:', selectedCustomer);
+
+    if (selectedCustomer) {
+      setValue('customerBranchName', selectedCustomer.branchName || '');
+      setValue('contactPerson', selectedCustomer.contactPerson || '');
+      setValue('email', selectedCustomer.defaultEmail || '');
+      setValue('phone', selectedCustomer.mobileNumber || '');
+    }
+  };
+
+  useEffect(() => {
+    const sub = watch((value, { name }) => {
+      if (name === 'customer' && value.customer) {
+        handleCustomerChange(value.customer);
+      }
+    });
+    return () => sub.unsubscribe();
+  }, [watch, supportData]);
 
   const onSubmit = async (data: FormData) => {
     const payload: CreateTicketRequestType = {
@@ -157,19 +181,20 @@ const SupportTicketsDialog = () => {
 
     console.log('Submitting payload:', JSON.stringify(payload, null, 2));
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      alert('Token missing');
-      return;
-    }
+    // const token = localStorage.getItem('accessToken');
+    // if (!token) {
+    //   alert('Token missing');
+    //   return;
+    // }
 
     try {
-      const response = await createTicket({body: payload, token, tenantId});
+      const response = await createTicket({ body: payload, tenantId });
       alert('Ticket created successfully!');
       setOpen(false);
       reset();
     } catch (error) {
       alert('Ticket creation failed');
+      console.error('API Error:', error);
       // console.error(error);
     }
   };
@@ -186,19 +211,29 @@ const SupportTicketsDialog = () => {
           hideDialogActions={true}
         >
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
+            {/* <Form form={methods} onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4"> */}
+
             <div className="bg-white  rounded-lg">
               <h3 className="font-semibold md:text-lg mb-2">
                 Customer Information
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4  ">
-                <FormSelect
+                <Controller
+                  control={control}
                   name="customer"
-                  label="Select Customer"
-                  className="text-gray-700  "
-                  placeholder="Select customer"
-                  options={supportOptions}
-                  disabled={false}
+                  render={({ field }) => (
+                    <FormSelect
+                      {...field}
+                      label="Select Customer"
+                      placeholder="Select Customer"
+                      options={supportOptions}
+                      onValueChange={value => {
+                        field.onChange(value);
+                        handleCustomerChange(value);
+                      }}
+                    />
+                  )}
                 />
                 <FormInput
                   name="customerBranchName"
@@ -206,6 +241,7 @@ const SupportTicketsDialog = () => {
                   placeholder="Customer branch name"
                   className="text-gray-700 md:w-[330px]"
                   autoComplete="contactPerson"
+
                   // rules={{ required: 'Contact person is required' }}
                 />
                 <FormInput
@@ -214,6 +250,7 @@ const SupportTicketsDialog = () => {
                   placeholder="Select contact person"
                   className="text-gray-700 md:w-[320px]"
                   autoComplete="contactPerson"
+
                   // rules={{ required: 'Contact person is required' }}
                 />
 
@@ -297,19 +334,18 @@ const SupportTicketsDialog = () => {
                   ]}
                   disabled={false}
                 />
-                <FormField 
-                  name="resolutionDueDate" 
+                <FormField
+                  name="resolutionDueDate"
                   label=" Resolution Due Date"
-                  className='md:w-[320px]'
-                  >
-                    {({ field }) => (
-                      <FormCalendar
-                        value={field.value}
-                        onChange={field.onChange}
-                        
-                      />
-                    )}
-                  </FormField>
+                  className="md:w-[320px]"
+                >
+                  {({ field }) => (
+                    <FormCalendar
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                </FormField>
               </div>
             </div>
 
@@ -360,24 +396,23 @@ const SupportTicketsDialog = () => {
 
               <div className="md:flex  gap-10 mb-5">
                 <div>
-                  <FormField 
-                  name="fromdate" 
-                  label="From Date"
-                  className='md:w-[320px]'
+                  <FormField
+                    name="fromdate"
+                    label="From Date"
+                    className="md:w-[320px]"
                   >
                     {({ field }) => (
                       <FormCalendar
                         value={field.value}
                         onChange={field.onChange}
-                        
                       />
                     )}
                   </FormField>
                 </div>
-                <FormField 
-                name="todate" 
-                label="To Date"
-                className='md:w-[330px] '
+                <FormField
+                  name="todate"
+                  label="To Date"
+                  className="md:w-[330px] "
                 >
                   {({ field }) => (
                     <FormCalendar
@@ -387,8 +422,6 @@ const SupportTicketsDialog = () => {
                   )}
                 </FormField>
               </div>
-
-             
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 w-[full]  ">
                 <FormSelect
@@ -430,7 +463,7 @@ const SupportTicketsDialog = () => {
                 // }}
               />
             </div>
-            <div className="flex justify-end gap-4 pt- ">
+            <div className="flex justify-end gap-4  ">
               <ShadCnButton
                 type="button"
                 variant="outline"

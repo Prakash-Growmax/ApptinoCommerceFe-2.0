@@ -1,5 +1,108 @@
-import { ReactNode } from 'react';
+// import { ReactNode } from 'react';
 
+// import { useMediaQuery } from 'usehooks-ts';
+
+// import { ShadCnButton } from '@/components/ui/button';
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+// } from '@/components/ui/dialog';
+// import { cn } from '@/lib/utils';
+
+// interface EditDialogProps {
+//   open: boolean;
+//   title?: string;
+//   onClose?: () => void;
+//   closeDialog: () => void;
+//   children: ReactNode;
+//   handleSubmit: () => void;
+//   isSubmitting?: boolean;
+//   ShadCnButtonDisabled?: boolean;
+//   primaryBtnText?: string;
+//   maxwidth?: string;
+//   hideDialogActions?: boolean;
+//   fullwidth?: boolean;
+//   ShadCnButtonField?: string;
+//   showMobileAppBar?: boolean;
+// }
+// const EditDialog = ({
+// open,
+// title,
+// closeDialog,
+// children,
+// handleSubmit,
+// isSubmitting = false,
+// buttonDisabled = false,
+// primaryBtnText = "Save",
+// hideDialogActions = false,
+//   ButtonField,
+
+
+// }:EditDialogProps) =>{
+//      const isMobile = useMediaQuery("(max-width:318px)");
+//      return(
+//           <Dialog open={open} onOpenChange={(v) => !v && closeDialog()} >
+//       <DialogContent
+//         className={cn(
+//           "max-h-[90vh]  overflow-y-auto md:max-w-3xl  ",
+//           isMobile && "w-full h-full  max-w-full m-0 rounded-none p-0  overflow-x-hidden"
+//         )}
+//       >
+      
+//         <div className="flex flex-col w-full gap-2 -mt-2 ">
+//               {title && (
+//             <DialogHeader className="mb-4 text-left ">
+//               <DialogTitle className="lg:text-lg font-semibold md:mt-5  ">{title}</DialogTitle>
+//             </DialogHeader>
+//           )}
+//           <hr className="border-t border-gray-300 -mt-4" />
+//         </div>
+
+//         <div className="mb-4">{children}</div>
+//         {!hideDialogActions && (
+//           <DialogFooter
+//             className={
+//               isMobile
+//                 ? 'fixed bottom-0 left-0 right-0 bg-white p-4 shadow'
+//                 : ''
+//             }
+//           >
+//             <div
+//               className={cn(
+//                 'flex w-full gap-2',
+//                 isMobile ? 'flex-col' : 'justify-end'
+//               )}
+//             >
+//               <ShadCnButton
+//                 variant="outline"
+//                 onClick={closeDialog}
+//                 className={cn('text-base', ShadCnButtonField)}
+//               >
+//                 Cancel
+//               </ShadCnButton>
+//               <ShadCnButton
+//                 onClick={handleSubmit}
+//                 disabled={ShadCnButtonDisabled || isSubmitting}
+//                 className={cn('text-base font-semibold', ShadCnButtonField)}
+//               >
+//                 {' '}
+//                 Create Ticket
+//                 {/* {isSubmitting ? "Saving..." : primaryBtnText} */}
+//               </ShadCnButton>
+//             </div>
+//           </DialogFooter>
+//         )}
+//       </DialogContent>
+//     </Dialog>
+//   );
+// };
+// export default EditDialog;
+
+
+import { ReactNode } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 
 import { ShadCnButton } from '@/components/ui/button';
@@ -15,60 +118,65 @@ import { cn } from '@/lib/utils';
 interface EditDialogProps {
   open: boolean;
   title?: string;
-  onClose?: () => void;
   closeDialog: () => void;
   children: ReactNode;
   handleSubmit: () => void;
   isSubmitting?: boolean;
   ShadCnButtonDisabled?: boolean;
   primaryBtnText?: string;
-  maxwidth?: string;
   hideDialogActions?: boolean;
-  fullwidth?: boolean;
   ShadCnButtonField?: string;
-  showMobileAppBar?: boolean;
 }
+
 const EditDialog = ({
-open,
-title,
-closeDialog,
-children,
-handleSubmit,
-isSubmitting = false,
-buttonDisabled = false,
-primaryBtnText = "Save",
-hideDialogActions = false,
-  ButtonField,
+  open,
+  title,
+  closeDialog,
+  children,
+  handleSubmit,
+  isSubmitting = false,
+  ShadCnButtonDisabled = false,
+  primaryBtnText = "Save",
+  hideDialogActions = false,
+  ShadCnButtonField = "",
+}: EditDialogProps) => {
+  const isMobile = useMediaQuery("(max-width:318px)");
 
-
-}:EditDialogProps) =>{
-     const isMobile = useMediaQuery("(max-width:318px)");
-     return(
-          <Dialog open={open} onOpenChange={(v) => !v && closeDialog()} >
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && closeDialog()}>
       <DialogContent
         className={cn(
-          "max-h-[90vh]  overflow-y-auto md:max-w-3xl  ",
-          isMobile && "w-full h-full  max-w-full m-0 rounded-none p-0  overflow-x-hidden"
+          // Important flex column & fixed max height
+          "flex flex-col max-h-[90vh] md:max-w-3xl",
+          isMobile && "w-full h-full max-w-full m-0 rounded-none p-0 overflow-x-hidden"
         )}
+        // style={{ minHeight: '300px', maxHeight: '90vh' }} // optional, to ensure min size
       >
-      
-        <div className="flex flex-col w-full gap-2 -mt-2 ">
-              {title && (
-            <DialogHeader className="mb-4 text-left ">
-              <DialogTitle className="lg:text-lg font-semibold md:mt-5  ">{title}</DialogTitle>
-            </DialogHeader>
-          )}
-          <hr className="border-t border-gray-300 -mt-4" />
+        {/* Header */}
+        {title && (
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle className="lg:text-lg font-semibold ">{title}</DialogTitle>
+            <hr className="border-t border-gray-300 " />
+          </DialogHeader>
+        )}
+
+        {/* Scrollable content area */}
+         <div className={cn(
+          'flex-1 overflow-y-auto px-6 py-4',
+          isMobile && 'pb-28' // padding bottom to avoid content under sticky footer
+        )}>
+          {children}
         </div>
 
-        <div className="mb-4">{children}</div>
+        {/* Footer fixed at bottom */}
         {!hideDialogActions && (
-          <DialogFooter
-            className={
+          <div
+            className={cn(
+              'px-6 py-4 border-t border-gray-200 bg-white',
               isMobile
-                ? 'fixed bottom-0 left-0 right-0 bg-white p-4 shadow'
-                : ''
-            }
+                ? 'fixed bottom-0 left-0 right-0 z-20 shadow-md'
+                : 'flex-shrink-0'
+            )}
           >
             <div
               className={cn(
@@ -83,20 +191,20 @@ hideDialogActions = false,
               >
                 Cancel
               </ShadCnButton>
+
               <ShadCnButton
                 onClick={handleSubmit}
                 disabled={ShadCnButtonDisabled || isSubmitting}
                 className={cn('text-base font-semibold', ShadCnButtonField)}
               >
-                {' '}
-                Create Ticket
-                {/* {isSubmitting ? "Saving..." : primaryBtnText} */}
+                {isSubmitting ? 'Saving...' : primaryBtnText}
               </ShadCnButton>
             </div>
-          </DialogFooter>
+          </div>
         )}
       </DialogContent>
     </Dialog>
   );
 };
+
 export default EditDialog;
