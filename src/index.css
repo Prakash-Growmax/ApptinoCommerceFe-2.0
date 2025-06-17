@@ -142,3 +142,47 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+@layer utilities {
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    background-color: rgb(var(--color-muted));
+  }
+
+  @keyframes shimmer-loading {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  @keyframes loading-progress {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}

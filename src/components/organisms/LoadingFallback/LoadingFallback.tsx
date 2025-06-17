@@ -4,9 +4,12 @@ export const LoadingFallback = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex min-h-[50vh] flex-col items-center justify-center">
-      <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-      <p className="mt-4 text-lg font-medium text-muted-foreground">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-background">
+      {/* Simple spinner */}
+      <div className="h-10 w-10 animate-spin rounded-full border-3 border-muted-foreground/20 border-t-primary"></div>
+      
+      {/* Loading text */}
+      <p className="mt-4 text-sm text-muted-foreground">
         {t('common.loading')}
       </p>
     </div>

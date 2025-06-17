@@ -145,13 +145,7 @@ const CustomerLanding = () => {
   };
   const { sideOpen } = useSideBarStore();
   return (
-    <div
-      className={`w-full ${
-        sideOpen
-          ? 'lg:max-w-[calc(100vw-20rem)]'
-          : 'lg:max-w-[calc(100vw-5rem)]'
-      }`}
-    >
+    <div className="w-full overflow-hidden">
       <DashboardTable
         data={data}
         columns={columns}
@@ -166,6 +160,7 @@ const CustomerLanding = () => {
         setRowPerPage={setRowPerPage}
         handlePrevious={handlePrevious}
         handleNext={handleNext}
+        tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
       />
     </div>
   );

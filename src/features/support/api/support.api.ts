@@ -7,12 +7,10 @@ import { SupportInfo } from '../types/support.types';
 export const GetSupportFilter = async ({
   userId,
   tenantId,
-  token,
 }: SupportInfo): Promise<ParsedPropertyList> => {
   const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
   };
   const response = await apiGet<ParsedPropertyList>({
     url: `/corecommerce/templates/get?domainName=dev3&propertyName=${userId}_filters`,
@@ -27,12 +25,10 @@ export const GetFetchSupportTicket = async ({
   page,
   rowPerPage,
   body,
-  token,
 }: SupportInfo): Promise<SupportTicketResponse> => {
   const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
   };
   const response = await apiPost<SupportTicketResponse>({
     url: `/support/service-support/filter?domainName=${tenantId}&page=${page}&size=${rowPerPage}`,
@@ -88,18 +84,20 @@ export const getSupportTimeline = async (
   });
   return response;
 };
-export const getSupportTicketStatus=async(tenantId:string,token:string)=>{
- 
-    const headers = {
+export const getSupportTicketStatus = async (
+  tenantId: string,
+  token: string
+) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
-const response = await apiGet({
-  url:`/corecommerce/templates/get?domainName=${tenantId}&propertyName=${"ticketSettings"}`,
-  config:{
-    headers
-  }
-})
-return response
-}
+  const response = await apiGet({
+    url: `/corecommerce/templates/get?domainName=${tenantId}&propertyName=${'ticketSettings'}`,
+    config: {
+      headers,
+    },
+  });
+  return response;
+};

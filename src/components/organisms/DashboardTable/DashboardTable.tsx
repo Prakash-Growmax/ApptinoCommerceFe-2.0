@@ -37,6 +37,7 @@ type TableProps<T> = {
   rowPerPage: number;
   setRowPerPage: (rowPerPage: number | string) => void;
   onRowClick?: (row: T) => void;
+  tableHeight?: string;
 };
 
 const DashboardTable = <T,>({
@@ -54,6 +55,7 @@ const DashboardTable = <T,>({
   rowPerPage,
   setRowPerPage,
   onRowClick,
+  tableHeight = 'h-[calc(100vh-250px)]',
 }: TableProps<T>) => {
   const pageCount = Math.ceil(totalDataCount / rowPerPage);
 
@@ -71,65 +73,73 @@ const DashboardTable = <T,>({
   };
 
   return (
-    <div className="rounded-md border shadow-sm overflow-hidden">
-      <Table>
-        <TableHeader className="bg-muted/50">
-          {table.getHeaderGroups().map(headerGroup => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <TableHead key={header.id} className="text-left px-3 py-2">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+    <div
+      className={`rounded-md border shadow-sm overflow-hidden flex flex-col ${tableHeight} w-full`}
+    >
+      <div className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        {/* Loading overlay - covers table content for both initial load and filter changes */}
+        {loading && (
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-30 flex items-center justify-center">
+            <div className="bg-background border shadow-lg rounded-lg p-6 flex flex-col items-center gap-4">
+              <div className="flex gap-1">
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+              </div>
+              <p className="text-sm text-muted-foreground">Loading...</p>
+            </div>
+          </div>
+        )}
+        <Table className="min-w-full">
+          <TableHeader className="bg-muted/50 sticky top-0 z-10">
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableHead key={header.id} className="text-left px-3 py-2">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  className="hover:bg-muted/20 cursor-pointer animate-in fade-in slide-in-from-bottom-1"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                  onClick={() => onRowClick?.(row.original)}
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id} className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {loading ? (
-            [...Array(pagination.pageSize)].map((_, rowIndex) => (
-              <TableRow key={`skeleton-${rowIndex}`}>
-                {columns.map((_, colIndex) => (
-                  <TableCell
-                    key={`skeleton-cell-${colIndex}`}
-                    className="px-3 py-2"
-                  >
-                    <div className="h-4 bg-muted rounded animate-pulse w-full" />
-                  </TableCell>
-                ))}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center py-4 text-xs sm:text-sm text-muted-foreground"
+                >
+                  No data available
+                </TableCell>
               </TableRow>
-            ))
-          ) : table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map(row => (
-              <TableRow
-                key={row.id}
-                className="hover:bg-muted/20 cursor-pointer"
-                onClick={() => onRowClick?.(row.original)}
-              >
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id} className="px-3 py-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="text-center py-4 text-sm text-muted-foreground"
-              >
-                No data available
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex items-center justify-between p-4">
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-between p-4 border-t bg-background">
         <div className="flex items-center gap-3">
           <span className=" text-xs lg:text-sm text-muted-foreground">
             Page {page + 1} of {pageCount}
