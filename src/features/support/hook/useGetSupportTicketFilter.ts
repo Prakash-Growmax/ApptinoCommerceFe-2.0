@@ -1,16 +1,16 @@
-import useSupportStore from "../store/useSupportStore";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import _ from "lodash";
 import { GetFetchSupportTicket, GetSupportFilter } from "../api/support.api";
-
-import { useEffect, useRef } from "react";
 import useAppStore from "@/stores/appStore";
 import { TokenPayload } from "@/types/auth.types";
+import useSupportStore from "../store/useSupportStore";
 
 export const useGetSupportTicketFilters = () => {
-   const {accessToken,payload}=useAppStore();
+  const location = useLocation();
+  const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
-  const {userId,companyId,tenantId } = payload as TokenPayload;
+  const { userId, companyId, tenantId } = payload as TokenPayload;
   const {
     page,
     rowPerPage,
@@ -22,46 +22,76 @@ export const useGetSupportTicketFilters = () => {
   } = useSupportStore();
 
   const isInitialLoadDone = useRef(false);
+  const isFetching = useRef(false);
 
-  const filtersQuery = useQuery({
-    queryKey: ["filters", userId, tenantId],
-    queryFn: async () => {
-      setLoading(true);
+  const fetchFilters = async () => {
+    if (isFetching.current) return;
+    isFetching.current = true;
+    
+    setLoading(true);
+    try {
       const response = await GetSupportFilter({ userId, tenantId, token });
       setFilters(response[0]?.content || {});
       isInitialLoadDone.current = true;
-      setLoading(false);
       return response[0]?.content;
-    },
-    enabled: !!companyId && !!userId,
-    refetchOnWindowFocus: false,
-  });
-
-  const fetchSupportTickets = async () => {
-    setLoading(true);
-    const body = _.cloneDeep(filters);
-    if (body.buyerCompanyName) {
-      body.buyerCompanyName = _.map(filters.buyerCompanyName, "name");
+    } finally {
+      setLoading(false);
+      isFetching.current = false;
     }
-  
-    const response = await GetFetchSupportTicket({
-      tenantId,
-      page,
-      rowPerPage,
-      body,
-      token,
-    });
-
-    setSupportData(response?.result);
-    setTotalCount(response?.count);
-    setLoading(false);
   };
 
+  const fetchTickets = async () => {
+    if (!isInitialLoadDone.current || isFetching.current) return;
+    isFetching.current = true;
+    
+    setLoading(true);
+    try {
+      const body = _.cloneDeep(filters);
+      if (body.buyerCompanyName) {
+        body.buyerCompanyName = _.map(filters.buyerCompanyName, "name");
+      }
+      
+      const response = await GetFetchSupportTicket({
+        tenantId,
+        page,
+        rowPerPage,
+        body,
+        token,
+      });
+
+      setSupportData(response?.result);
+      setTotalCount(response?.count);
+      return response;
+    } finally {
+      setLoading(false);
+      isFetching.current = false;
+    }
+  };
+
+  // Initial load and route change handler
+  useEffect(() => {
+    const loadData = async () => {
+      await fetchFilters();
+      await fetchTickets();
+    };
+
+    loadData();
+  }, [location.key]); // Trigger on route changes
+
+  // Handle filters/pagination changes
   useEffect(() => {
     if (isInitialLoadDone.current) {
-      fetchSupportTickets();
+      fetchTickets();
     }
   }, [filters, page, rowPerPage]);
 
-  return { filtersQuery, fetchSupportTickets };
+  return {
+    fetchFilters,
+    fetchTickets,
+    refetchAll: async () => {
+      await fetchFilters();
+      await fetchTickets();
+    },
+    isInitialLoadDone: isInitialLoadDone.current
+  };
 };

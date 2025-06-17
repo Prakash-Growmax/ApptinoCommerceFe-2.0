@@ -1,15 +1,15 @@
 import useAppStore from "@/stores/appStore";
 import { TokenPayload } from "@/types/auth.types";
 import { useQuery } from "@tanstack/react-query";
-import { getSupportTicketStatus } from "../api/support.api";
+import { getSupportFieldServiceRep, getSupportTicketStatus } from "../api/support.api";
 import { useSupportTicketFilterStore } from "../store/useSupportTicketFilterStore";
 import _ from "lodash";
 
 export const useGetSupportFilterSettings = () => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
-  const {tenantId } = payload as TokenPayload;
-  const {setStatus,setCategory}=useSupportTicketFilterStore();
+  const {tenantId ,companyId} = payload as TokenPayload;
+  const {setStatus,setCategory,setFieldUser}=useSupportTicketFilterStore();
 
   const filtersQuery = useQuery({
     queryKey: ["status", tenantId],
@@ -28,5 +28,19 @@ export const useGetSupportFilterSettings = () => {
     refetchOnWindowFocus: false,
   });
 
-  return filtersQuery;
+    const fetchServiceRep = useQuery({
+    queryKey: ["seviceRep", tenantId,companyId],
+    queryFn: async () => {
+      const response = await getSupportFieldServiceRep(
+        tenantId,
+        token,
+        companyId
+      );
+     setFieldUser(_.filter(response.data, "isActive"))
+    },
+    enabled: !!tenantId && !!companyId,
+    refetchOnWindowFocus: false,
+  });
+
+  return {filtersQuery,fetchServiceRep};
 };

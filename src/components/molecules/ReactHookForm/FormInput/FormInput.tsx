@@ -1,5 +1,7 @@
 import { forwardRef } from 'react';
+
 import { Input } from '@/components/ui/input';
+
 import { FormField } from '../FormField/FormField';
 
 interface FormInputProps {
@@ -42,8 +44,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     ref
   ) => {
     // Convert `boolean | null` values to empty string
-    const safeValue =
-      value === null || typeof value === 'boolean' ? '' : value;
+    const safeValue = value === null || typeof value === 'boolean' ? '' : value;
 
     return (
       <FormField
@@ -54,7 +55,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       >
         {({ field, fieldState }) => (
           <div className="relative">
-            <Input
+            {/* <Input
               {...field}
               ref={ref}
               type={type}
@@ -79,7 +80,32 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                 field.onChange(e);
                 onChange?.(e);
               }}
+            /> */}
+            <Input
+              {...field}
+              ref={ref}
+              type={type}
+              placeholder={placeholder}
+              autoComplete={autoComplete}
+              disabled={disabled}
+              aria-invalid={!!fieldState.error}
+              aria-describedby={fieldState.error ? `${name}-error` : undefined}
+              className={`${fieldState.error ? 'border-red-500' : ''} ${
+                rightElement ? 'pr-20' : ''
+              }`}
+              autoFocus={autoFocus}
+              onKeyDown={onKeyDown}
+              onBlur={e => {
+                field.onBlur();
+                onBlur?.(e);
+              }}
+              onFocus={onFocus}
+              onChange={e => {
+                field.onChange(e);
+                onChange?.(e);
+              }}
             />
+
             {rightElement && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-auto">
                 {rightElement}
@@ -93,4 +119,3 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
 );
 
 FormInput.displayName = 'FormInput';
-

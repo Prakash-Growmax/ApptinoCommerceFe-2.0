@@ -1,9 +1,13 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+// import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 
 import EditDialog from '@/components/molecules/EditDialog/EditDialog';
 import {
   FormInput,
+  FormRadioGroup,
   FormSelect,
   FormTextarea,
 } from '@/components/molecules/ReactHookForm';
@@ -11,11 +15,20 @@ import { FormCalendar } from '@/components/molecules/ReactHookForm/Calendar/Cale
 import { Form } from '@/components/molecules/ReactHookForm/Form/Form';
 import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 import { ShadCnButton } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { createTicket } from '@/features/auth/api/ticketapi';
 import { CreateTicketRequestType } from '@/features/auth/api/tickettype';
 import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
+import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
 
 type FormData = {
   customer: string;
@@ -42,6 +55,18 @@ type FormData = {
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
+    const { accessToken, payload } = useAppStore();
+  const token = accessToken as string;
+  const {tenantId ,companyId,displayName,companyName,userId} = payload as TokenPayload;
+
+  // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
+  // const [skillsOpen, setSkillsOpen] = useState(false);
+  // const dropdownRef = useRef(null);
+
+  // const handleSelect = (skill: string) => {
+  //   toggleSkill(skill);
+  //   setSkillsOpen(false);
+  // };
 
   useGetSupportFilters();
   const { supportData } = useSupportStore();
@@ -68,17 +93,46 @@ const SupportTicketsDialog = () => {
       address: '',
       fromdate: new Date(),
       todate: new Date(),
+      // attachments: '',
+      // showLabel: '',
+      // resolutionDueDate: '',
     },
+    // mode: "onSubmit",
   });
-  const { reset } = methods;
+  const { register, watch, setValue, handleSubmit, reset, control } = methods;
+  const attachments = watch('attachments');
 
   const handleDialogClose = () => {
     setOpen(false);
     methods.reset();
   };
 
-  const { companyId, tenantId, userId } = useUserStore();
-  const username = 'Sudhakar Varatharajan';
+  // const { companyId, tenantId, userId } = useUserStore();
+  // const username = 'Sudhakar Varatharajan';
+
+  const handleCustomerChange = (selectedCustomerId: string) => {
+    const selectedCustomer = supportData?.find(
+      item => item.id.toString() === selectedCustomerId
+    );
+
+    console.log('Selected Customer:', selectedCustomer);
+
+    if (selectedCustomer) {
+      setValue('customerBranchName', selectedCustomer.branchName || '');
+      setValue('contactPerson', selectedCustomer.contactPerson || '');
+      setValue('email', selectedCustomer.defaultEmail || '');
+      setValue('phone', selectedCustomer.mobileNumber || '');
+    }
+  };
+
+  useEffect(() => {
+    const sub = watch((value, { name }) => {
+      if (name === 'customer' && value.customer) {
+        handleCustomerChange(value.customer);
+      }
+    });
+    return () => sub.unsubscribe();
+  }, [watch, supportData]);
 
   const onSubmit = async (data: FormData) => {
     const payload: CreateTicketRequestType = {
@@ -101,19 +155,19 @@ const SupportTicketsDialog = () => {
         updatedDateTime: new Date().toISOString(),
         createdDateTime: new Date().toISOString(),
         updatedByUserId: userId,
-        updatedByUsername: username,
+        updatedByUsername:displayName,
         createdByUserId: userId,
-        createdByUserName: username,
+        createdByUserName:displayName,
         createdByCompanyId: companyId,
-        createdByCompanyName: 'Growmax.io',
+        createdByCompanyName:companyName,
         resolution: '',
-        domainName: 'dev3',
+        domainName:tenantId,
       },
       fieldServiceRequestDTO: {
         title: 'New Field Service',
         ticketIdentifier: null,
         ownerUserId: userId,
-        ownerUsername: username,
+        ownerUsername:displayName,
         status: 'Open',
         location: data.address,
         appointmentFromDateTime: new Date().toISOString(),
@@ -123,28 +177,29 @@ const SupportTicketsDialog = () => {
         createdDateTime: new Date().toISOString(),
         updatedDateTime: new Date().toISOString(),
         createdByUserId: userId,
-        createdByUsername: username,
+        createdByUsername:displayName,
         updatedByUserId: userId,
-        updatedByUsername: username,
+        updatedByUsername:displayName,
         attachments: [],
       },
     };
 
     console.log('Submitting payload:', JSON.stringify(payload, null, 2));
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      alert('Token missing');
-      return;
-    }
+    // const token = localStorage.getItem('accessToken');
+    // if (!token) {
+    //   alert('Token missing');
+    //   return;
+    // }
 
     try {
-      const response = await createTicket({ body: payload, token, tenantId });
+      const response = await createTicket({ body: payload, tenantId });
       alert('Ticket created successfully!');
       setOpen(false);
       reset();
     } catch (error) {
       alert('Ticket creation failed');
+      console.error('API Error:', error);
       // console.error(error);
     }
   };
@@ -158,22 +213,32 @@ const SupportTicketsDialog = () => {
           title="Create New Ticket"
           closeDialog={handleDialogClose}
           handleSubmit={methods.handleSubmit(onSubmit)}
-          hideDialogActions={true}
+          hideDialogActions={false}
         >
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
+            {/* <Form form={methods} onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4"> */}
+
             <div className="bg-white  rounded-lg">
               <h3 className="font-semibold md:text-lg mb-2">
                 Customer Information
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4  ">
-                <FormSelect
+                <Controller
+                  control={control}
                   name="customer"
-                  label="Select Customer"
-                  className="text-gray-700  "
-                  placeholder="Select customer"
-                  options={supportOptions}
-                  disabled={false}
+                  render={({ field }) => (
+                    <FormSelect
+                      {...field}
+                      label="Select Customer"
+                      placeholder="Select Customer"
+                      options={supportOptions}
+                      onValueChange={value => {
+                        field.onChange(value);
+                        handleCustomerChange(value);
+                      }}
+                    />
+                  )}
                 />
                 <FormInput
                   name="customerBranchName"
@@ -181,6 +246,7 @@ const SupportTicketsDialog = () => {
                   placeholder="Customer branch name"
                   className="text-gray-700 md:w-[330px]"
                   autoComplete="contactPerson"
+
                   // rules={{ required: 'Contact person is required' }}
                 />
                 <FormInput
@@ -189,6 +255,7 @@ const SupportTicketsDialog = () => {
                   placeholder="Select contact person"
                   className="text-gray-700 md:w-[320px]"
                   autoComplete="contactPerson"
+
                   // rules={{ required: 'Contact person is required' }}
                 />
 
@@ -401,7 +468,7 @@ const SupportTicketsDialog = () => {
                 // }}
               />
             </div>
-            <div className="flex justify-end gap-4 pt- ">
+            {/* <div className="flex justify-end gap-4  ">
               <ShadCnButton
                 type="button"
                 variant="outline"
@@ -410,7 +477,7 @@ const SupportTicketsDialog = () => {
                 Cancel
               </ShadCnButton>
               <ShadCnButton type="submit">Create Ticket</ShadCnButton>
-            </div>
+            </div> */}
           </Form>
         </EditDialog>
       </div>

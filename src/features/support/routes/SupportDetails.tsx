@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { Loader2 } from 'lucide-react';
+import { LoadingFallback } from '@/components/organisms/LoadingFallback/LoadingFallback';
 
 import SupportCustomerCard from '../components/SupportCustomerCard/SupportCustomerCard';
 import SupportTimeline from '../components/SupportTimeline/SupportTimeline';
@@ -14,7 +14,6 @@ import TicketHeader from './Serviceheader';
 
 const SupportDetails = () => {
   const { id } = useParams();
-
   const {
     data: fieldServicesData,
     isLoading: isFieldServicesLoading,
@@ -55,14 +54,7 @@ const SupportDetails = () => {
   }, [fieldServicesData, ticketDetailsData, ticketTimelineData]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center">
-        <Loader2
-          className="h-20 w-20 animate-spin"
-          data-testid="loading-spinner"
-        />
-      </div>
-    );
+    return <LoadingFallback />;
   }
 
   if (error) {

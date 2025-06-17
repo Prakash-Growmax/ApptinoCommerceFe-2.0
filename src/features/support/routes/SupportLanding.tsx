@@ -174,7 +174,9 @@ export default function SupportLanding() {
         const phone = row?.original?.buyerContactNumber;
         return (
           <TableCellText variant="primary">
-            <div className="truncate max-w-32 sm:max-w-none">{email || '--'}</div>
+            <div className="truncate max-w-32 sm:max-w-none">
+              {email || '--'}
+            </div>
             <div>{phone || '--'}</div>
           </TableCellText>
         );
@@ -192,11 +194,13 @@ export default function SupportLanding() {
   ];
 
   return (
-    <div className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ${
-      sideOpen
-        ? 'lg:max-w-[calc(100vw-20rem)]'
-        : 'lg:max-w-[calc(100vw-5rem)]'
-    }`}>
+    <div
+      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ${
+        sideOpen
+          ? 'lg:max-w-[calc(100vw-20rem)]'
+          : 'lg:max-w-[calc(100vw-5rem)]'
+      }`}
+    >
       <SupportFilters />
       <div className="w-full overflow-hidden">
         <DashboardTable
