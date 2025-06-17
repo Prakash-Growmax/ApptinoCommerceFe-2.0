@@ -27,6 +27,8 @@ import { useGetSupportFilters } from '@/hooks/useGetSupportUsers';
 import { cn } from '@/lib/utils';
 import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
 
 type FormData = {
   customer: string;
@@ -53,6 +55,9 @@ type FormData = {
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
+    const { accessToken, payload } = useAppStore();
+  const token = accessToken as string;
+  const {tenantId ,companyId,displayName,companyName,userId} = payload as TokenPayload;
 
   // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
   // const [skillsOpen, setSkillsOpen] = useState(false);
@@ -102,8 +107,8 @@ const SupportTicketsDialog = () => {
     methods.reset();
   };
 
-  const { companyId, tenantId, userId } = useUserStore();
-  const username = 'Sudhakar Varatharajan';
+  // const { companyId, tenantId, userId } = useUserStore();
+  // const username = 'Sudhakar Varatharajan';
 
   const handleCustomerChange = (selectedCustomerId: string) => {
     const selectedCustomer = supportData?.find(
@@ -150,19 +155,19 @@ const SupportTicketsDialog = () => {
         updatedDateTime: new Date().toISOString(),
         createdDateTime: new Date().toISOString(),
         updatedByUserId: userId,
-        updatedByUsername: username,
+        updatedByUsername:displayName,
         createdByUserId: userId,
-        createdByUserName: username,
+        createdByUserName:displayName,
         createdByCompanyId: companyId,
-        createdByCompanyName: 'Growmax.io',
+        createdByCompanyName:companyName,
         resolution: '',
-        domainName: 'dev3',
+        domainName:tenantId,
       },
       fieldServiceRequestDTO: {
         title: 'New Field Service',
         ticketIdentifier: null,
         ownerUserId: userId,
-        ownerUsername: username,
+        ownerUsername:displayName,
         status: 'Open',
         location: data.address,
         appointmentFromDateTime: new Date().toISOString(),
@@ -172,9 +177,9 @@ const SupportTicketsDialog = () => {
         createdDateTime: new Date().toISOString(),
         updatedDateTime: new Date().toISOString(),
         createdByUserId: userId,
-        createdByUsername: username,
+        createdByUsername:displayName,
         updatedByUserId: userId,
-        updatedByUsername: username,
+        updatedByUsername:displayName,
         attachments: [],
       },
     };
@@ -208,7 +213,7 @@ const SupportTicketsDialog = () => {
           title="Create New Ticket"
           closeDialog={handleDialogClose}
           handleSubmit={methods.handleSubmit(onSubmit)}
-          hideDialogActions={true}
+          hideDialogActions={false}
         >
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
             {/* <Form form={methods} onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4"> */}
@@ -463,7 +468,7 @@ const SupportTicketsDialog = () => {
                 // }}
               />
             </div>
-            <div className="flex justify-end gap-4  ">
+            {/* <div className="flex justify-end gap-4  ">
               <ShadCnButton
                 type="button"
                 variant="outline"
@@ -472,7 +477,7 @@ const SupportTicketsDialog = () => {
                 Cancel
               </ShadCnButton>
               <ShadCnButton type="submit">Create Ticket</ShadCnButton>
-            </div>
+            </div> */}
           </Form>
         </EditDialog>
       </div>
