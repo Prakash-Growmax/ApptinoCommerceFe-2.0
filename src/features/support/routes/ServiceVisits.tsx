@@ -7,7 +7,7 @@ import { Wrench } from 'lucide-react';
 import { useState } from 'react';
 import CreateFieldService from '../components/CreateFieldService';
 
-const ServiceVisits = () => {
+const ServiceVisits = ({refetchFieldData}) => {
   const { watch } = useFormContext();
   const fieldServicesData = watch('fieldServicesData') ?? [];
   const [open, setOpen] = useState(false);
@@ -25,7 +25,7 @@ const ServiceVisits = () => {
     };
     return formatDate.toLocaleString("en-GB", options);
   };
-
+   
   return (
     <div className="w-full">
       <Card className="border border-gray-200 shadow-sm">
@@ -86,7 +86,7 @@ const ServiceVisits = () => {
         </CardContent>
       </Card>
 
-      <CreateFieldService open={open} setOpen={setOpen} />
+      <CreateFieldService open={open} setOpen={setOpen} refetchFieldData={refetchFieldData}/>
     </div>
   );
 };

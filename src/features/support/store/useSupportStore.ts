@@ -29,7 +29,7 @@ const useSupportStore = create<SupportType>((set) => ({
     })),
 
   rowPerPage: 20,
-  setRowPerPage: (rowPerPage) => set({ rowPerPage }),
+  setRowPerPage: (rowPerPage) => set({ rowPerPage: typeof rowPerPage === 'string' ? parseInt(rowPerPage) : rowPerPage }),
 }));
 
 

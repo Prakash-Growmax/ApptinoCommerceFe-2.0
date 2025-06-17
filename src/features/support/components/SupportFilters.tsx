@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import _ from 'lodash';
+import { X } from 'lucide-react';
 
 import { ShadCnButton } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -38,52 +39,104 @@ const SupportFilters = () => {
   useEffect(() => {
     if (!isDialogOpen) reset();
   }, [isDialogOpen, reset]);
+
   const [filters, setFilters] = useState({});
-const {
-    page,
-    rowPerPage,
-    setSupportData,
-    setTotalCount,
-    setLoading
-  } = useSupportStore();
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedPriority, setSelectedPriority] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [ticketIdentifier, setTicketIdentifier] = useState('');
 
-const handleChange = (key: keyof typeof filters, value: string) => {
-  setFilters(prev => ({
-    ...prev,
-    [key]: [value],
-  }));
-};
+  const { page, rowPerPage, setSupportData, setTotalCount, setLoading } =
+    useSupportStore();
 
-  
+  const handleChange = (key: keyof typeof filters, value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: [value],
+    }));
 
-
+    // Update individual state for controlled components
+    switch (key) {
+      case 'status':
+        setSelectedStatus(value);
+        break;
+      case 'priority':
+        setSelectedPriority(value);
+        break;
+      case 'category':
+        setSelectedCategory(value);
+        break;
+      case 'ticketIdentifier':
+        setTicketIdentifier(value);
+        break;
+    }
+  };
 
   const handleApplyFilter = async () => {
-    setLoading(true)
-    const body = _.cloneDeep(filters);
-    const response = await GetFetchSupportTicket({
-      tenantId,
-      page,
-      rowPerPage,
-      body,
-      token,
-    });
-    setSupportData(response?.result);
-    setTotalCount(response?.count);
-    setLoading(false)
+    try {
+      setLoading(true);
+      const body = _.cloneDeep(filters);
+      const response = await GetFetchSupportTicket({
+        tenantId,
+        page,
+        rowPerPage,
+        body,
+        token,
+      });
+      setSupportData(response?.result || []);
+      setTotalCount(response?.count || 0);
+    } catch (error) {
+      console.error('Error applying filters:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleClearFilters = async () => {
+    try {
+      setLoading(true);
+      // Clear all filter states
+      setFilters({});
+      setSelectedStatus('');
+      setSelectedPriority('');
+      setSelectedCategory('');
+      setTicketIdentifier('');
+
+      // Fetch data without filters
+      const response = await GetFetchSupportTicket({
+        tenantId,
+        page,
+        rowPerPage,
+        body: {},
+        token,
+      });
+      setSupportData(response?.result || []);
+      setTotalCount(response?.count || 0);
+    } catch (error) {
+      console.error('Error clearing filters:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Check if any filters are applied
+  const hasActiveFilters =
+    selectedStatus || selectedPriority || selectedCategory || ticketIdentifier;
 
   return (
     <Card
-      className={`flex flex-row justify-between p-4  ${
+      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
-      <div className="flex flex-1 gap-2">
-        <Select onValueChange={value => handleChange('status', value)}>
-          <SelectTrigger id="status">
+      <div className="flex flex-1 gap-2 flex-wrap">
+        <Select
+          value={selectedStatus}
+          onValueChange={value => handleChange('status', value)}
+        >
+          <SelectTrigger id="status" className="min-w-24 sm:min-w-32">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -95,8 +148,11 @@ const handleChange = (key: keyof typeof filters, value: string) => {
           </SelectContent>
         </Select>
 
-        <Select onValueChange={value => handleChange('priority', value)}>
-          <SelectTrigger id="priority">
+        <Select
+          value={selectedPriority}
+          onValueChange={value => handleChange('priority', value)}
+        >
+          <SelectTrigger id="priority" className="min-w-24 sm:min-w-32">
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
           <SelectContent>
@@ -106,8 +162,11 @@ const handleChange = (key: keyof typeof filters, value: string) => {
           </SelectContent>
         </Select>
 
-        <Select onValueChange={value => handleChange('category', value)}>
-          <SelectTrigger id="category">
+        <Select
+          value={selectedCategory}
+          onValueChange={value => handleChange('category', value)}
+        >
+          <SelectTrigger id="category" className="min-w-24 sm:min-w-32">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -119,18 +178,41 @@ const handleChange = (key: keyof typeof filters, value: string) => {
           </SelectContent>
         </Select>
 
-        <div className="flex flex-end">
+        <div className="flex min-w-32 sm:min-w-40">
           <Input
             type="text"
-            placeholder="Ticket Identifier"
+            placeholder="Ticket ID"
+            value={ticketIdentifier}
             onChange={e => handleChange('ticketIdentifier', e.target.value)}
+            className="w-full"
           />
         </div>
-        <ShadCnButton type="button" onClick={handleApplyFilter}>
-          Apply Filters
-        </ShadCnButton>
+
+        <div className="flex gap-2 w-full sm:w-auto">
+          <ShadCnButton
+            type="button"
+            onClick={handleApplyFilter}
+            className="flex-1 sm:flex-none"
+          >
+            <span className="sm:hidden">Apply</span>
+            <span className="hidden sm:inline">Apply Filters</span>
+          </ShadCnButton>
+
+          {hasActiveFilters && (
+            <ShadCnButton
+              type="button"
+              variant="outline"
+              onClick={handleClearFilters}
+              className="flex items-center gap-1 flex-1 sm:flex-none"
+            >
+              <X className="h-4 w-4" />
+              <span className="sm:hidden">Clear</span>
+              <span className="hidden sm:inline">Clear</span>
+            </ShadCnButton>
+          )}
+        </div>
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-center sm:justify-end">
         <Dialog
           open={isDialogOpen}
           onOpenChange={open => {

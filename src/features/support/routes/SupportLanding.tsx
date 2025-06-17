@@ -42,26 +42,29 @@ export default function SupportLanding() {
   const handleNext = () => {
     setPage(prev => prev + 1);
   };
-  
 
   const Columns: ColumnDef<any>[] = [
     {
       accessorKey: 'title',
       header: 'Subject',
       cell: ({ row }) => (
-        <TableCellText variant="primary">{row.original?.title}</TableCellText>
+        <TableCellText variant="primary">
+          {row.original?.title || '--'}
+        </TableCellText>
       ),
     },
     {
       accessorKey: 'ticketIdentifier',
       header: 'Ticket Id',
       cell: ({ row }) => (
-        <TableCellText variant="primary">{row.original?.ticketIdentifier}</TableCellText>
+        <TableCellText variant="primary">
+          {row.original?.ticketIdentifier || '--'}
+        </TableCellText>
       ),
     },
     {
       accessorKey: 'createdDateTime',
-      header: 'Created Date',
+      header: 'Created',
       cell: ({ row }) => {
         const dateStr = row?.original?.createdDateTime;
         const formattedDate = dateStr
@@ -98,7 +101,7 @@ export default function SupportLanding() {
       header: 'Category',
       cell: ({ row }) => (
         <TableCellText variant="primary">
-          {row.original?.category}
+          {row.original?.category || '--'}
         </TableCellText>
       ),
     },
@@ -147,30 +150,34 @@ export default function SupportLanding() {
     },
     {
       accessorKey: 'buyerCompanyName',
-      header: 'Company Name',
+      header: 'Company',
       cell: ({ row }) => (
         <TableCellText variant="primary">
-          {row.original?.buyerCompanyName}
+          {row.original?.buyerCompanyName || '--'}
         </TableCellText>
       ),
     },
     {
       accessorKey: 'buyerContactPerson',
-      header: 'Contact Person',
+      header: 'Contact',
       cell: ({ row }) => (
         <TableCellText variant="primary">
-          {row.original?.buyerContactPerson}
+          {row.original?.buyerContactPerson || '--'}
         </TableCellText>
       ),
     },
     {
       id: 'buyerEmail',
-      header: 'Contact Details',
+      header: 'Contact Info',
       cell: ({ row }) => {
+        const email = row?.original?.buyerEmail;
+        const phone = row?.original?.buyerContactNumber;
         return (
           <TableCellText variant="primary">
-            <div> {row?.original?.buyerEmail}</div>
-            <div>{row?.original?.buyerContactNumber}</div>
+            <div className="truncate max-w-32 sm:max-w-none">
+              {email || '--'}
+            </div>
+            <div>{phone || '--'}</div>
           </TableCellText>
         );
       },
@@ -180,7 +187,7 @@ export default function SupportLanding() {
       header: 'Priority',
       cell: ({ row }) => (
         <TableCellText variant="primary">
-          <div> {row?.original?.buyerEmail}</div>
+          {row?.original?.priority || '--'}
         </TableCellText>
       ),
     },
@@ -188,18 +195,14 @@ export default function SupportLanding() {
 
   return (
     <div
-      className={`flex flex-col gap-4 p-4 transition-all duration-300 ${
-        sideOpen ? 'lg:pl-4' : 'lg:pl-0'
+      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ${
+        sideOpen
+          ? 'lg:max-w-[calc(100vw-20rem)]'
+          : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
       <SupportFilters />
-      <div
-        className={`w-full ${
-          sideOpen
-            ? 'lg:max-w-[calc(100vw-20rem)]'
-            : 'lg:max-w-[calc(100vw-5rem)]'
-        }`}
-      >
+      <div className="w-full overflow-hidden">
         <DashboardTable
           data={supportData}
           columns={Columns}
@@ -208,13 +211,14 @@ export default function SupportLanding() {
           setPagination={setPagination}
           totalDataCount={totalCount}
           setPage={setPage}
-          pageOptions={[5, 10, 20]}
+          pageOptions={[10, 20, 50, 100]}
           handlePrevious={handlePrevious}
           handleNext={handleNext}
           page={page}
           rowPerPage={rowPerPage}
           setRowPerPage={setRowPerPage}
           onRowClick={handleRowClick}
+          tableHeight={`${sideOpen ? 'h-[calc(100vh-180px)]' : 'h-[calc(100vh-180px)]'} sm:h-[calc(100vh-200px)]`}
         />
       </div>
     </div>

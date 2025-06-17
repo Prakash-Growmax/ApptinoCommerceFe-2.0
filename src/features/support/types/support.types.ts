@@ -24,7 +24,7 @@ export type SupportType={
   setPage: (page: number | ((prev: number) => number)) => void;
 
   rowPerPage: number;
-  setRowPerPage: (rowPerPage: number) => void;
+  setRowPerPage: (rowPerPage: number | string) => void;
 }
 export type SupportInfo={
   userId:number,

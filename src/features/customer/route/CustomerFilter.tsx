@@ -1,15 +1,23 @@
-import useAppStore from "@/stores/appStore";
-import useAccountsStore from "@/stores/useAccountStore";
-import { TokenPayload } from "@/types/auth.types";
-import { AccountElastic } from "../api/AccountElastics";
-import { ElasticSearchService } from "@/utils/Services/ElasticSearchServices";
-import { ElasticSearchServices } from "../api/ElasticSearchServices";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { RotateCw, Search, X } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShadCnButton } from "@/components/ui/button";
-import useSideBarStore from "@/stores/sidebarStore";
+import { Search, X } from 'lucide-react';
+
+import { ShadCnButton } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import useAppStore from '@/stores/appStore';
+import useSideBarStore from '@/stores/sidebarStore';
+import useAccountsStore from '@/stores/useAccountStore';
+import { TokenPayload } from '@/types/auth.types';
+import { ElasticSearchService } from '@/utils/Services/ElasticSearchServices';
+
+import { AccountElastic } from '../api/AccountElastics';
+import { ElasticSearchServices } from '../api/ElasticSearchServices';
 
 const CustomerFilter = () => {
   const {
@@ -22,9 +30,9 @@ const CustomerFilter = () => {
     statuss,
     setStatus,
   } = useAccountsStore();
-    const {payload}=useAppStore();
+  const { payload } = useAppStore();
 
-  const {tenantId} = payload as TokenPayload;
+  const { tenantId } = payload as TokenPayload;
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -34,26 +42,30 @@ const CustomerFilter = () => {
     setSearchText('');
   };
 
-  const fetchCustomers = async (filterParams, searchText = '') => {
-    const elasticData = AccountElastic.BuildCustomerquery(
-      filterParams,
-      searchText
-    );
-    const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);
-    const customerResponse = ElasticSearchService.FormatResults(data);
-    setData(customerResponse);
-    setLoading(false);
-    return customerResponse;
+  const fetchCustomers = async (filterParams: any, searchText = '') => {
+    try {
+      const elasticData = AccountElastic.BuildCustomerquery(
+        filterParams,
+        searchText
+      );
+      const data = await ElasticSearchServices.CustomerGet(elasticData, tenantId);
+      const customerResponse = ElasticSearchService.FormatResults(data);
+      setData(customerResponse);
+      return customerResponse;
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
   };
-
- 
 
   const handleStatusChange = (value: string) => {
     setStatus(value); // Only update status; no fetch
   };
 
   const handleApplyFilters = () => {
- 
+    setLoading(true);
     const updated = {
       ...filters,
       offset: 0,
@@ -62,45 +74,58 @@ const CustomerFilter = () => {
       status: statuss ? [statuss] : [],
     };
     setFilters(updated);
-    setLoading(true);
     fetchCustomers(updated, searchText);
   };
-   const {sideOpen} = useSideBarStore();
-  return (
-       <div className={`flex items-end gap-4 w-full shadow-md rounded-md flex-wrap p-4 ${
-      sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
-    }`}>
-      {/* Search Input */}
-      <div className="relative">
-        <Label htmlFor="status" className="mb-2 ml-1">
-          Customer search
-        </Label>
-        <Input
-          type="text"
-          value={searchText}
-          onChange={e => handleSearch(e.target.value)}
-          placeholder="Search Customer"
-          className=" w-[250px] lg:w-[250px] border-gray-300"
-        />
-        <div className="absolute inset-y-0 right-2 flex items-center">
-          {searchText ? (
-            <div onClick={handleSearchClear}>
-              <X size={16} color="black" className="mt-6" />
-            </div>
-          ) : (
-            <Search color="black" size={16} strokeWidth={2} className="mt-6" />
-          )}
-        </div>
-      </div>
 
-      {/* Company Status */}
-      
-      <div className="flex flex-col">
-        <Label htmlFor="status" className="mb-2 ml-1">
-          Company Status
-        </Label>
+  const handleClearFilters = () => {
+    setSearchText('');
+    setStatus('');
+    setLoading(true);
+    const clearedFilters = {
+      offset: 0,
+      limit: 20,
+      isActivated: '',
+      status: [],
+    };
+    setFilters(clearedFilters);
+    fetchCustomers(clearedFilters, '');
+  };
+
+  // Check if any filters are applied
+  const hasActiveFilters = searchText || statuss;
+  const { sideOpen } = useSideBarStore();
+  return (
+    <Card
+      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full ${
+        sideOpen
+          ? 'lg:max-w-[calc(100vw-20rem)]'
+          : 'lg:max-w-[calc(100vw-5rem)]'
+      }`}
+    >
+      <div className="flex flex-1 gap-2 flex-wrap">
+        {/* Search Input */}
+        <div className="relative min-w-48 sm:min-w-64">
+          <Input
+            type="text"
+            value={searchText}
+            onChange={e => handleSearch(e.target.value)}
+            placeholder="Search Customer"
+            className="w-full pr-8"
+          />
+          <div className="absolute inset-y-0 right-2 flex items-center">
+            {searchText ? (
+              <div onClick={handleSearchClear} className="cursor-pointer">
+                <X size={16} className="text-gray-400 hover:text-gray-600" />
+              </div>
+            ) : (
+              <Search size={16} className="text-gray-400" />
+            )}
+          </div>
+        </div>
+
+        {/* Company Status */}
         <Select onValueChange={handleStatusChange} value={statuss}>
-          <SelectTrigger id="status" className="w-[100px] lg:w-[120px] border-gray-300">
+          <SelectTrigger className="min-w-24 sm:min-w-32">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -108,28 +133,33 @@ const CustomerFilter = () => {
             <SelectItem value="Deactivated">Deactivated</SelectItem>
           </SelectContent>
         </Select>
-      </div>
 
-      {/* Apply Filters Button */}
-      <div className="flex flex-col">
-        <ShadCnButton type="button" onClick={handleApplyFilters} className='w-[100px] lg:w-[120px] -ml-4 lg:-ml-0'>
-          Apply Filters
-        </ShadCnButton>
-      </div>
+        {/* Action Buttons */}
+        <div className="flex gap-2 w-full sm:w-auto">
+          <ShadCnButton
+            type="button"
+            onClick={handleApplyFilters}
+            className="flex-1 sm:flex-none"
+          >
+            <span className="sm:hidden">Apply</span>
+            <span className="hidden sm:inline">Apply Filters</span>
+          </ShadCnButton>
 
-      {/* Create + Refresh */}
-      <div className="flex flex-1 justify-end items-center space-x-2">
-        {/* <Button type="button" variant="outline">
-          Create Customer
-        </Button> */}
-        <div
-          onClick={handleApplyFilters}
-          className="cursor-pointer hover:rotate-90 transition-transform"
-        >
-          <RotateCw className=" w-8 h-8 text-gray-600" />
+          {hasActiveFilters && (
+            <ShadCnButton
+              type="button"
+              variant="outline"
+              onClick={handleClearFilters}
+              className="flex items-center gap-1 flex-1 sm:flex-none"
+            >
+              <X className="h-4 w-4" />
+              <span className="sm:hidden">Clear</span>
+              <span className="hidden sm:inline">Clear</span>
+            </ShadCnButton>
+          )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

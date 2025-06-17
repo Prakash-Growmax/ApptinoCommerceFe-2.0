@@ -13,13 +13,14 @@ import useSideBarStore from '@/stores/sidebarStore';
 import useAccountsStore from '@/stores/useAccountStore';
 
 import { useFetchCustomersWithFilters } from '../hook/useGetCustomersDetails';
+import { useNavigate } from 'react-router-dom';
 
 const CustomerLanding = () => {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5, // You can change this as needed
   });
-
+const navigate = useNavigate();
   const {
     data,
     loading,
@@ -136,6 +137,10 @@ const CustomerLanding = () => {
   //   pagination.pageIndex * pagination.pageSize,
   //   (pagination.pageIndex + 1) * pagination.pageSize
   // );
+    const handleRowClick = (row: any) => {
+      console.log(row);
+    navigate(`/customers/customerdetails/${row?.companyID}`);
+  };
   const handlePrevious = () => {
     setPage(prev => prev - 1);
   };
@@ -145,13 +150,7 @@ const CustomerLanding = () => {
   };
   const { sideOpen } = useSideBarStore();
   return (
-    <div
-      className={`w-full ${
-        sideOpen
-          ? 'lg:max-w-[calc(100vw-20rem)]'
-          : 'lg:max-w-[calc(100vw-5rem)]'
-      }`}
-    >
+    <div className="w-full overflow-hidden">
       <DashboardTable
         data={data}
         columns={columns}
@@ -166,6 +165,8 @@ const CustomerLanding = () => {
         setRowPerPage={setRowPerPage}
         handlePrevious={handlePrevious}
         handleNext={handleNext}
+        tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
+        onRowClick={handleRowClick}
       />
     </div>
   );

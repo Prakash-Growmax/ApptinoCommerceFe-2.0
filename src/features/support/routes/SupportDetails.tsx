@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { Loader2 } from 'lucide-react';
+import { LoadingFallback } from '@/components/organisms/LoadingFallback/LoadingFallback';
 
 import SupportCustomerCard from '../components/SupportCustomerCard/SupportCustomerCard';
 import SupportTimeline from '../components/SupportTimeline/SupportTimeline';
@@ -11,6 +11,7 @@ import { useGetSupportTicketFieldServices } from '../hook/useGetSupportTicketFie
 import { useSupportTimeline } from '../hook/useGetSupportTimeline';
 import ServiceDetails from './ServiceDetails';
 import TicketHeader from './Serviceheader';
+import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
 
 const SupportDetails = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const SupportDetails = () => {
     data: fieldServicesData,
     isLoading: isFieldServicesLoading,
     error: fieldServicesError,
+    refetch:refetchFieldData
   } = useGetSupportTicketFieldServices('dev3', id);
 
   const {
@@ -42,7 +44,7 @@ const SupportDetails = () => {
     },
     mode: 'onChange',
   });
-
+ useGetSupportFilterSettings();
   useEffect(() => {
     if (fieldServicesData && ticketDetailsData) {
       methods.reset({
@@ -54,14 +56,7 @@ const SupportDetails = () => {
   }, [fieldServicesData, ticketDetailsData, ticketTimelineData]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center">
-        <Loader2
-          className="h-20 w-20 animate-spin"
-          data-testid="loading-spinner"
-        />
-      </div>
-    );
+    return <LoadingFallback />;
   }
 
   if (error) {
@@ -73,7 +68,7 @@ const SupportDetails = () => {
       <TicketHeader />
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 p-4">
         <div className="w-full lg:w-2/3">
-          <ServiceDetails />
+          <ServiceDetails refetchFieldData={refetchFieldData}/>
         </div>
         <div className="flex flex-col gap-4 w-full lg:w-1/3">
           <SupportCustomerCard />

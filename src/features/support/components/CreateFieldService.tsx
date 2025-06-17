@@ -28,15 +28,16 @@ import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStor
 type CreateFieldServiceProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  refetchFieldData?: () => void; 
 };
 
-const CreateFieldService = ({ open, setOpen }: CreateFieldServiceProps) => {
+const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServiceProps) => {
   const handleClose = () => setOpen(false);
   const { id } = useParams();
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
-  const { tenantId, companyId, userId, displayName } = payload as TokenPayload;
-  useGetSupportFilterSettings();
+  const {tenantId ,companyId,userId,displayName }= payload as TokenPayload;
+  // useGetSupportFilterSettings();
 
   const methods = useForm({
     defaultValues: {
@@ -80,50 +81,70 @@ const CreateFieldService = ({ open, setOpen }: CreateFieldServiceProps) => {
   const [loading, setLoading] = useState(false);
   const { status, category, fieldUser } = useSupportTicketFilterStore();
 
-  const statusOptions = status.map(s => ({ value: s, label: s }));
-  const categoryOptions = category.map(c => ({ value: c, label: c }));
-  const fieldUserOptions = fieldUser?.map(f => ({
-    value: f?.displayName,
-    label: f?.displayName,
-    id: f?.id,
-  }));
+const statusOptions = status?.map((s: string) => ({
+  value: s?.trim(),
+  label: s,
+}));
+
+const categoryOptions = category?.map((c: string) => ({
+  value: c?.trim(),
+  label: c,
+}));
+
+const fieldUserOptions = fieldUser?.map((f) => ({
+  value: f?.displayName?.trim(),
+  label: f?.displayName,
+  id: f?.id,
+}));
+
+    const handleRefreshFieldServices = async () => {
+    try {
+      await refetchFieldData();
+      console.log('Field services data refreshed');
+    } catch (error) {
+      console.error('Failed to refresh field services:', error);
+    }
+  }
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
-    const userRep = fieldUser.find(
-      user =>
-        user.displayName?.trim().toLowerCase() ===
-        data?.fieldServiceRep?.trim().toLowerCase()
-    );
-    const appointmentFromDate = new Date(data?.appointmentDateFrom);
-    const appointmentToDate = new Date(data?.appointmentDateTo);
-    const payload = {
-      title: data?.subject,
-      description: data?.description,
-      ticketIdentifier: id,
-      ownerUserId: userRep?.id,
-      ownerUsername: data?.fieldServiceRep,
-      status: data?.status,
-      location: data?.customerAddress,
-      appointmentFromDateTime: appointmentFromDate,
-      appointmentToDateTime: appointmentToDate,
+    console.log(data)
+    setLoading(true)
+const userRep = fieldUser.find(
+  (user) =>
+    user.displayName?.trim().toLowerCase() ===
+    data?.fieldServiceRep?.trim().toLowerCase()
+);
+const appointmentFromDate = new Date(data?.appointmentDateFrom);
+const appointmentToDate=new Date(data?.appointmentDateTo);
+const payload={
+      title:data?.subject,
+      description:data?.description,
+      ticketIdentifier:id,
+      ownerUserId:userRep?.id,
+      ownerUsername:data?.fieldServiceRep,
+      status:data?.status,
+      location:data?.customerAddress,
+      appointmentFromDateTime:appointmentFromDate,
+      appointmentToDateTime:appointmentToDate,
       createdDateTime: new Date().toISOString(),
-      updatedDateTime: new Date().toISOString(),
-      createdByUserId: userId,
-      createdByUsername: displayName,
-      updatedByUserId: userId,
-      updatedByUsername: displayName,
-      attachments: data?.attachments ?? [],
-    };
-    const res = await createFieldService(tenantId, token, payload);
+      updatedDateTime:new Date().toISOString(),
+      createdByUserId:userId,
+      createdByUsername:data?.fieldServiceRep,
+      updatedByUserId:userId,
+      updatedByUsername:displayName,
+      attachments:data?.attachments??[],
+      category:data?.category
 
-    if (data?.notes) {
-      var body = {
-        ticketIdentifier: id,
-        fieldServiceIdentifier: res?.identifier,
-        identifier: '',
-        notes: data?.notes,
-        domainName: tenantId,
+    }
+    const res = await createFieldService(tenantId,token,payload);
+     handleRefreshFieldServices();
+    if(data?.notes){
+      var body={
+        ticketIdentifier:id,
+        fieldServiceIdentifier:res?.identifier,
+        identifier: "",
+        notes:data?.notes,
+        domainName:tenantId,
         createdDateTime: new Date().toISOString(),
         updatedDateTime: new Date().toISOString(),
         createdByUserId: userId,
@@ -150,6 +171,12 @@ const CreateFieldService = ({ open, setOpen }: CreateFieldServiceProps) => {
       toast.error('Failed to create Field Service');
     }
   };
+useEffect(() => {
+  const subscription = methods.watch((value) => {
+    console.log("Form Values:", value);
+  });
+  return () => subscription.unsubscribe();
+}, [methods]);
 
   return (
     <EditDialog
@@ -226,25 +253,33 @@ const CreateFieldService = ({ open, setOpen }: CreateFieldServiceProps) => {
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormSelect name="status" label="Status" options={statusOptions} />
-            <FormSelect
-              name="category"
-              label="Category"
-              options={categoryOptions}
-            />
-          </div>
+       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <FormSelect
+    name="status"
+    label="Status"
+    options={statusOptions}
+    placeholder="Select Status"
+  />
+  <FormSelect
+    name="category"
+    label="Category"
+    options={categoryOptions}
+    placeholder="Select Category"
+  />
+</div>
 
-          <FormSelect
-            name="fieldServiceRep"
-            label="Field Service Rep"
-            options={fieldUserOptions}
-          />
-          <FormTextarea
-            name="customerAddress"
-            label="Customer Address"
-            placeholder="Enter customer address"
-          />
+<FormSelect
+  name="fieldServiceRep"
+  label="Field Service Rep"
+  options={fieldUserOptions}
+  placeholder="Select Representative"
+/>
+
+
+         
+          <FormTextarea name="customerAddress" label="Customer Address" placeholder="Enter customer address" />
+
+         
         </form>
       </FormProvider>
     </EditDialog>

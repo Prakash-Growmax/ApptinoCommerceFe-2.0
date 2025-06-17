@@ -7,12 +7,10 @@ import { SupportInfo } from '../types/support.types';
 export const GetSupportFilter = async ({
   userId,
   tenantId,
-  token,
 }: SupportInfo): Promise<ParsedPropertyList> => {
   const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
   };
   const response = await apiGet<ParsedPropertyList>({
     url: `/corecommerce/templates/get?domainName=dev3&propertyName=${userId}_filters`,
@@ -27,12 +25,10 @@ export const GetFetchSupportTicket = async ({
   page,
   rowPerPage,
   body,
-  token,
 }: SupportInfo): Promise<SupportTicketResponse> => {
   const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
   };
   const response = await apiPost<SupportTicketResponse>({
     url: `/support/service-support/filter?domainName=${tenantId}&page=${page}&size=${rowPerPage}`,
@@ -88,78 +84,94 @@ export const getSupportTimeline = async (
   });
   return response;
 };
-export const getSupportTicketStatus=async(tenantId:string,token:string)=>{
- 
-    const headers = {
-    'Content-Type': 'application/json',
-    'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-const response = await apiGet({
-  url:`/corecommerce/templates/get?domainName=${tenantId}&propertyName=${"ticketSettings"}`,
-  config:{
-    headers
-  }
-})
-return response
-}
-export const getSupportFieldServiceRep=async(tenantId:string,token:string,companyId:number)=>{
-    const headers = {
+export const getSupportTicketStatus = async (
+  tenantId: string,
+  token: string
+) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
   const response = await apiGet({
-    url:`/corecommerce/userses/getAllUsersByCompanyIdNew?companyId=${companyId}`,
-     config:{
-    headers
-  }
-  })
-  return response
-}
-export const createFieldService=async(tenantId:string,token:string,payload)=>{
-    const headers = {
-    'Content-Type': 'application/json',
-    'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-  const response = await apiPost({
-    url:`/support/service-support/fieldService/create?domainName=${tenantId}`,
-    data:payload,
-    config:{
-      headers
-    }
-  })
+    url: `/corecommerce/templates/get?domainName=${tenantId}&propertyName=${'ticketSettings'}`,
+    config: {
+      headers,
+    },
+  });
   return response;
-}
-export const postFieldNotes=async(tenantId:string,token:string,body)=>{
-    const headers = {
+};
+export const getSupportFieldServiceRep = async (
+  tenantId: string,
+  token: string,
+  companyId: number
+) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiGet({
+    url: `/corecommerce/userses/getAllUsersByCompanyIdNew?companyId=${companyId}`,
+    config: {
+      headers,
+    },
+  });
+  return response;
+};
+export const createFieldService = async (
+  tenantId: string,
+  token: string,
+  payload
+) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
   const response = await apiPost({
-   url:`/support/service-support/fieldService/notes/add`,
-   data:body,
-   config:{
-    headers
-   }
-  })
- 
-return response;
-}
-export const postFieldAttachments=async(tenantId:string,token:string,ticketId,fsId,body)=>{
-     const headers = {
+    url: `/support/service-support/fieldService/create?domainName=${tenantId}`,
+    data: payload,
+    config: {
+      headers,
+    },
+  });
+  return response;
+};
+export const postFieldNotes = async (tenantId: string, token: string, body) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
-const response = await apiPost({
-  url:`/support/service-support/fieldService/addAttachments?domainName=${tenantId}&ticketIdentifier=${ticketId}&fieldServiceIdentifier=${fsId}`,
-   data:body,
-   config:{
-    headers
-   }
-})
-return response;
-}
+  const response = await apiPost({
+    url: `/support/service-support/fieldService/notes/add`,
+    data: body,
+    config: {
+      headers,
+    },
+  });
+
+  return response;
+};
+export const postFieldAttachments = async (
+  tenantId: string,
+  token: string,
+  ticketId,
+  fsId,
+  body
+) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiPost({
+    url: `/support/service-support/fieldService/addAttachments?domainName=${tenantId}&ticketIdentifier=${ticketId}&fieldServiceIdentifier=${fsId}`,
+    data: body,
+    config: {
+      headers,
+    },
+  });
+  return response;
+};
