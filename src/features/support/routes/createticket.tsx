@@ -29,6 +29,8 @@ import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
 import useAppStore from '@/stores/appStore';
 import { TokenPayload } from '@/types/auth.types';
+import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
+import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
 
 type FormData = {
   customer: string;
@@ -58,6 +60,7 @@ const SupportTicketsDialog = () => {
     const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const {tenantId ,companyId,displayName,companyName,userId} = payload as TokenPayload;
+  useGetSupportFilterSettings();
 
   // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
   // const [skillsOpen, setSkillsOpen] = useState(false);
@@ -75,6 +78,18 @@ const SupportTicketsDialog = () => {
     label: item.companyName,
     disabled: !item.isActivated,
   }));
+
+  const { status, fieldUser } = useSupportTicketFilterStore();
+  const statusOptions = status.map(s => ({ value: s, label: s }));
+  // const categoryOptions = category.map(c => ({ value: c, label: c }));
+  const fieldUserOptions = fieldUser?.map(f => ({
+    value: f?.displayName,
+    label: f?.displayName,
+    id: f?.id,
+  }));
+      
+
+
   const methods = useForm<FormData>({
     defaultValues: {
       customer: '',
@@ -434,10 +449,7 @@ const SupportTicketsDialog = () => {
                   label="Status"
                   className="text-gray-700 md:w-[320px]"
                   placeholder="Select status"
-                  options={[
-                    { value: 'Low', label: 'Low' },
-                    { value: 'High', label: 'High' },
-                  ]}
+                  options={statusOptions}
                   disabled={false}
                 />
 
@@ -446,11 +458,7 @@ const SupportTicketsDialog = () => {
                   label="Select Field Service Representative"
                   className="text-gray-700 md:w-[330px]"
                   placeholder="service representative"
-                  options={[
-                    { value: 'technical', label: 'Technical Issue' },
-                    { value: 'billing', label: 'Billing' },
-                    { value: 'general', label: 'General Inquiry' },
-                  ]}
+                   options={fieldUserOptions}
                   disabled={false}
                 />
               </div>
