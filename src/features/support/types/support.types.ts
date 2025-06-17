@@ -41,6 +41,12 @@ export type SupportTicketFilter = {
   setCategory: (category: string[]) => void;
   fieldUser:any[];
   setFieldUser:(fieldUser:any[])=>void;
+  issueCategory:any[];
+  setIssueCategory:(issueCategory:any[])=>void;
+  reason:any[];
+  setReason:(reason:any[])=>void;
+  severity:any[];
+  setSeverity:(severity:any[])=>void;
   
 };
 export type SupportTicketType={

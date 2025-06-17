@@ -67,14 +67,14 @@ const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServi
     setValue("attachments", updated);
   };
   const [loading,setLoading] = useState(false);
-  const { status, category, fieldUser } = useSupportTicketFilterStore();
+  const { status,issueCategory, fieldUser } = useSupportTicketFilterStore();
 
 const statusOptions = status?.map((s: string) => ({
   value: s?.trim(),
   label: s,
 }));
 
-const categoryOptions = category?.map((c: string) => ({
+const categoryOptions = issueCategory?.map((c: string) => ({
   value: c?.trim(),
   label: c,
 }));
