@@ -18,6 +18,7 @@ const SupportDetails = () => {
     data: fieldServicesData,
     isLoading: isFieldServicesLoading,
     error: fieldServicesError,
+    refetch:refetchFieldData
   } = useGetSupportTicketFieldServices('dev3', id);
 
   const {
@@ -66,7 +67,7 @@ const SupportDetails = () => {
       <TicketHeader />
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 p-4">
         <div className="w-full lg:w-2/3">
-          <ServiceDetails />
+          <ServiceDetails refetchFieldData={refetchFieldData}/>
         </div>
         <div className="flex flex-col gap-4 w-full lg:w-1/3">
           <SupportCustomerCard />

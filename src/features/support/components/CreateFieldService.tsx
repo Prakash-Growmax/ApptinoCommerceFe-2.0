@@ -16,9 +16,10 @@ import { toast } from "sonner";
 type CreateFieldServiceProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  refetchFieldData?: () => void; 
 };
 
-const CreateFieldService = ({ open, setOpen }: CreateFieldServiceProps) => {
+const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServiceProps) => {
   const handleClose = () => setOpen(false);
   const {id} = useParams();
   const { accessToken, payload } = useAppStore();
@@ -68,15 +69,33 @@ const CreateFieldService = ({ open, setOpen }: CreateFieldServiceProps) => {
   const [loading,setLoading] = useState(false);
   const { status, category, fieldUser } = useSupportTicketFilterStore();
 
-  const statusOptions = status.map((s) => ({ value: s, label: s }));
-  const categoryOptions = category.map((c) => ({ value: c, label: c }));
-  const fieldUserOptions = fieldUser?.map((f) => ({
-    value: f?.displayName,
-    label: f?.displayName,
-    id:f?.id
-  }));
+const statusOptions = status?.map((s: string) => ({
+  value: s?.trim(),
+  label: s,
+}));
+
+const categoryOptions = category?.map((c: string) => ({
+  value: c?.trim(),
+  label: c,
+}));
+
+const fieldUserOptions = fieldUser?.map((f) => ({
+  value: f?.displayName?.trim(),
+  label: f?.displayName,
+  id: f?.id,
+}));
+
+    const handleRefreshFieldServices = async () => {
+    try {
+      await refetchFieldData();
+      console.log('Field services data refreshed');
+    } catch (error) {
+      console.error('Failed to refresh field services:', error);
+    }
+  }
 
   const onSubmit = async (data: any) => {
+    console.log(data)
     setLoading(true)
 const userRep = fieldUser.find(
   (user) =>
@@ -98,13 +117,15 @@ const payload={
       createdDateTime: new Date().toISOString(),
       updatedDateTime:new Date().toISOString(),
       createdByUserId:userId,
-      createdByUsername:displayName,
+      createdByUsername:data?.fieldServiceRep,
       updatedByUserId:userId,
       updatedByUsername:displayName,
-      attachments:data?.attachments??[]
+      attachments:data?.attachments??[],
+      category:data?.category
+
     }
     const res = await createFieldService(tenantId,token,payload);
-
+     handleRefreshFieldServices();
     if(data?.notes){
       var body={
         ticketIdentifier:id,
@@ -134,6 +155,12 @@ const payload={
 }
 
   };
+useEffect(() => {
+  const subscription = methods.watch((value) => {
+    console.log("Form Values:", value);
+  });
+  return () => subscription.unsubscribe();
+}, [methods]);
 
   return (
     <EditDialog open={open} closeDialog={handleClose} title="Create FieldService" loading={loading} handleSubmit={methods.handleSubmit(onSubmit)}>
@@ -194,12 +221,30 @@ const payload={
             
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormSelect name="status" label="Status" options={statusOptions} />
-            <FormSelect name="category" label="Category" options={categoryOptions} />
-          </div>
+       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <FormSelect
+    name="status"
+    label="Status"
+    options={statusOptions}
+    placeholder="Select Status"
+  />
+  <FormSelect
+    name="category"
+    label="Category"
+    options={categoryOptions}
+    placeholder="Select Category"
+  />
+</div>
 
-          <FormSelect name="fieldServiceRep" label="Field Service Rep" options={fieldUserOptions} />
+<FormSelect
+  name="fieldServiceRep"
+  label="Field Service Rep"
+  options={fieldUserOptions}
+  placeholder="Select Representative"
+/>
+
+
+         
           <FormTextarea name="customerAddress" label="Customer Address" placeholder="Enter customer address" />
 
          

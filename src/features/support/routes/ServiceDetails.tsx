@@ -1,11 +1,11 @@
 import ServiceVisits from './ServiceVisits';
 import ServiceIssueDetails from './SeviceIssueDetails';
 
-const ServiceDetails = () => {
+const ServiceDetails = ({refetchFieldData}) => {
   return (
     <div className="flex flex-col gap-4">
       <ServiceIssueDetails />
-      <ServiceVisits />
+      <ServiceVisits refetchFieldData={refetchFieldData} />
     </div>
   );
 };

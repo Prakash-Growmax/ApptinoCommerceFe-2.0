@@ -71,13 +71,15 @@ const VisitDetails = ({ fieldService }) => {
 
         {/* Status and Category - Single row with 2 columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-             <FormInput
-            name="Category"
+            <FormSelect
+            name="category"
             label="Category"
             className="text-gray-700"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            options={[
+              { value: fieldService?.category, label: fieldService?.category }
+            ]}
           />
+           
           <FormSelect
             name="Status"
             label="Status"
