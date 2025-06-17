@@ -11,6 +11,7 @@ import { useGetSupportTicketFieldServices } from '../hook/useGetSupportTicketFie
 import { useSupportTimeline } from '../hook/useGetSupportTimeline';
 import ServiceDetails from './ServiceDetails';
 import TicketHeader from './Serviceheader';
+import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
 
 const SupportDetails = () => {
   const { id } = useParams();
@@ -43,7 +44,7 @@ const SupportDetails = () => {
     },
     mode: 'onChange',
   });
-
+ useGetSupportFilterSettings();
   useEffect(() => {
     if (fieldServicesData && ticketDetailsData) {
       methods.reset({

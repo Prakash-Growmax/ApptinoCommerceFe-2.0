@@ -1,14 +1,21 @@
-import { FormInput,FormTextarea } from "@/components/molecules/ReactHookForm";
+import { FormInput, FormSelect, FormTextarea } from "@/components/molecules/ReactHookForm";
 import { FormCalendar } from "@/components/molecules/ReactHookForm/Calendar/Calendar";
 import { FormField } from "@/components/molecules/ReactHookForm/FormField/FormField";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormContext } from "react-hook-form";
-
+import { useSupportTicketFilterStore } from "../store/useSupportTicketFilterStore";
 
 const ServiceIssueDetails = () => {
-  const { watch } = useFormContext();
-  const supportTicketData = watch("supportTicketData") ?? [];
-  
+   const { status, category, fieldUser } = useSupportTicketFilterStore();
+   const statusOptions = status?.map((s: string) => ({
+  value: s?.trim(),
+  label: s,
+}));
+
+const categoryOptions = category?.map((c: string) => ({
+  value: c?.trim(),
+  label: c,
+}));
   return (
     <div className="flex justify-start">
       <div className="w-full">
@@ -18,84 +25,88 @@ const ServiceIssueDetails = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
-                name="Product Category"
+              {/* <FormInput
+                name="supportTicketData.category"
                 label="Product Category"
-                className="text-gray-700"
                 placeholder="Product Category"
-                value={supportTicketData?.category ?? ""}
+              /> */}
+              <FormSelect
+                name="supportTicketData.category"
+                label="Product Category"
+                 placeholder="Product Category"
+                 options={categoryOptions}
               />
               <FormInput
-                name="Product Details"
+                name="supportTicketData.productSKUs.0"
                 label="Product Details"
-                className="text-gray-700"
-                placeholder="ProductDetails"
-                value={supportTicketData?.productSKUs?.[0] ?? ""}
+                placeholder="Product Details"
+              
               />
               <FormInput
-                name="Asset Serial Number"
+                name="supportTicketData.serialNumbers.0"
                 label="Asset Serial Number"
-                className="text-gray-700"
                 placeholder="Asset Serial Number"
-                value={supportTicketData?.serialNumbers?.[0] ?? ""}
               />
               <FormInput
-                name="Reference order no/Invoice No"
+                name="supportTicketData.referenceIdentifiers.0"
                 label="Reference order no/Invoice No"
-                className="text-gray-700"
                 placeholder="Reference order no/Invoice No"
-                value={supportTicketData?.referenceIdentifiers?.[0] ?? ""}
               />
               <FormInput
-                name="Reason"
+                name="supportTicketData.reason"
                 label="Reason"
-                className="text-gray-700"
                 placeholder="Reason"
-                value={supportTicketData?.reason ?? ""}
               />
-              <FormInput
-                name="Status"
+              <FormSelect
+                name="supportTicketData.status"
                 label="Status"
-                className="text-gray-700"
                 placeholder="Status"
-                value={supportTicketData?.status ?? ""}
+                options={statusOptions}
               />
-              <FormInput
-                name="Priority"
+              {/* <FormInput
+                name="supportTicketData.status"
+                label="Status"
+                placeholder="Status"
+              /> */}
+              <FormSelect
+              name="supportTicketData.priority"
+              label="Priority"
+               placeholder="Select the priority"
+                 options={[
+                    { value: 'Low', label: 'Low' },
+                    { value: 'Medium', label: 'Medium' },
+                     { value: 'High', label: 'High' },
+                  ]}
+              />
+              {/* <FormInput
+                name="supportTicketData.priority"
                 label="Priority"
-                className="text-gray-700"
                 placeholder="Priority"
-                value={supportTicketData?.priority ?? ""}
-              />
+              /> */}
               <FormInput
-                name="Ticket Owner"
+                name="supportTicketData.ownerDetails.0.ownerName"
                 label="Ticket Owner"
-                className="text-gray-700"
                 placeholder="Ticket Owner"
-                value={supportTicketData?.ownerDetails?.[0]?.ownerName ?? ""}
               />
             </div>
-            
+
             <div className="w-full">
               <FormTextarea
-                name="Problem Description"
+                name="supportTicketData.description"
                 label="Problem Description"
-                className="text-gray-700"
                 placeholder="Write a problem description"
-                value={supportTicketData?.description ?? ""}
               />
             </div>
-            
+
             <div className="w-full md:w-1/2">
               <FormField
-                name="Resolution Due Date"
+                name="supportTicketData.dueDateTime"
                 label="Resolution Due Date"
-                className="text-gray-700"
               >
                 {({ field }) => (
-                  <FormCalendar value={supportTicketData?.dueDateTime ?? ""} onChange={field.onChange} />
+                  <FormCalendar {...field} />
                 )}
-              </FormField> 
+              </FormField>
             </div>
           </CardContent>
         </Card>

@@ -25,7 +25,7 @@ const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServi
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const {tenantId ,companyId,userId,displayName }= payload as TokenPayload;
-  useGetSupportFilterSettings();
+  // useGetSupportFilterSettings();
 
   const methods = useForm({
     defaultValues: {

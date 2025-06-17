@@ -13,6 +13,7 @@ const Login = lazy(() => import('@/features/auth/routes/LoginPage'));
 const SupportDetails = lazy(
   () => import('@/features/support/routes/SupportDetails')
 );
+const CustomerDetails=lazy(()=>import('@/features/customer/route/CustomerDetail'))
 export const routeConfig: RouteConfig[] = [
   {
     path: '/',
@@ -64,6 +65,17 @@ export const routeConfig: RouteConfig[] = [
     },
     icon: Users,
     showInSidebar: true,
+  },
+    {
+    path: '/customers/customerdetails/:id',
+    layout: 'main',
+    protected: true,
+    element: <CustomerDetails/>,
+    meta: {
+      title: 'Customers Details' ,
+      description: 'Customer management',
+    },
+  
   },
   {
     path: '/settings',
