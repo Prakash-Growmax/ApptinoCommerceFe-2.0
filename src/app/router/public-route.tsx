@@ -10,7 +10,7 @@ interface PublicOnlyRouteProps {
 
 export const PublicOnlyRoute = ({
   children,
-  redirectTo = '/dashboard',
+  redirectTo = '/supporttickets',
 }: PublicOnlyRouteProps) => {
   const { isAuthenticated, isAuthLoading, isAppLoading } = useAppStore();
   const location = useLocation();

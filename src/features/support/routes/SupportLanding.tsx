@@ -7,10 +7,9 @@ import DashboardTable from '@/components/organisms/DashboardTable/DashboardTable
 import { TableCellText } from '@/components/ui/table-typography';
 import useSideBarStore from '@/stores/sidebarStore';
 
-import SupportTickets from '../SupportTickets';
+import SupportFilters from '../components/SupportFilters';
 import { useGetSupportTicketFilters } from '../hook/useGetSupportTicketFilter';
 import useSupportStore from '../store/useSupportStore';
-import SupportFilters from '../components/SupportFilters';
 
 export default function SupportLanding() {
   const navigate = useNavigate();
@@ -43,7 +42,7 @@ export default function SupportLanding() {
   const handleNext = () => {
     setPage(prev => prev + 1);
   };
-  console.log('Adfas');
+  
 
   const Columns: ColumnDef<any>[] = [
     {
@@ -57,7 +56,7 @@ export default function SupportLanding() {
       accessorKey: 'ticketIdentifier',
       header: 'Ticket Id',
       cell: ({ row }) => (
-        <TableCellText variant="primary">{row.original?.title}</TableCellText>
+        <TableCellText variant="primary">{row.original?.ticketIdentifier}</TableCellText>
       ),
     },
     {
@@ -190,10 +189,10 @@ export default function SupportLanding() {
   return (
     <div
       className={`flex flex-col gap-4 p-4 transition-all duration-300 ${
-        sideOpen ? 'lg:pl-4' : 'lg:pl-4'
+        sideOpen ? 'lg:pl-4' : 'lg:pl-0'
       }`}
     >
-       <SupportFilters/>
+      <SupportFilters />
       <div
         className={`w-full ${
           sideOpen

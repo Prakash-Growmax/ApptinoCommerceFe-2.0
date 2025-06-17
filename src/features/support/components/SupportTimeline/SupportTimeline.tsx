@@ -18,17 +18,16 @@ type TimelineItemType = {
 export default function SupportTimeline() {
 const { watch } = useFormContext();
   const rawticketTimelineData = watch("ticketTimelineData") ?? [];
-  // console.log(ticketTimelineData);
+
 
   const ticketTimelineData: TimelineItemType[] = [...rawticketTimelineData].sort(
     (a, b) => new Date(b.updatedDateTime).getTime() - new Date(a.updatedDateTime).getTime()
   );
-
-  if (ticketTimelineData.length === 0) {
-    return null;
-  }
+  console.log(Boolean(ticketTimelineData.length));
   return (
-    <div>
+    <>
+    {Boolean(ticketTimelineData.length) && (
+        <div>
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Activity Timeline</CardTitle>
@@ -51,6 +50,10 @@ const { watch } = useFormContext();
         </CardContent>
       </Card>
     </div>
+    )}
+    
+    </>
+  
   );
 }
 

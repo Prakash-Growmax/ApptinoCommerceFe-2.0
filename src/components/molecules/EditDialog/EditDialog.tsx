@@ -104,7 +104,6 @@
 
 import { ReactNode } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
-
 import { ShadCnButton } from '@/components/ui/button';
 import {
   Dialog,
@@ -114,6 +113,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 interface EditDialogProps {
   open: boolean;
@@ -126,6 +126,8 @@ interface EditDialogProps {
   primaryBtnText?: string;
   hideDialogActions?: boolean;
   ShadCnButtonField?: string;
+  showMobileAppBar?: boolean;
+  loading:boolean;
 }
 
 const EditDialog = ({
@@ -138,7 +140,8 @@ const EditDialog = ({
   ShadCnButtonDisabled = false,
   primaryBtnText = "Save",
   hideDialogActions = false,
-  ShadCnButtonField = "",
+  ShadCnButtonField,
+  loading=false,
 }: EditDialogProps) => {
   const isMobile = useMediaQuery("(max-width:318px)");
 
@@ -146,60 +149,56 @@ const EditDialog = ({
     <Dialog open={open} onOpenChange={(v) => !v && closeDialog()}>
       <DialogContent
         className={cn(
-          // Important flex column & fixed max height
-          "flex flex-col max-h-[90vh] md:max-w-3xl",
-          isMobile && "w-full h-full max-w-full m-0 rounded-none p-0 overflow-x-hidden"
+          "max-h-[90vh] md:max-w-3xl flex flex-col p-0",
+          isMobile && "w-full h-full max-w-full m-0 rounded-none"
         )}
         // style={{ minHeight: '300px', maxHeight: '90vh' }} // optional, to ensure min size
       >
-        {/* Header */}
+        {/* Fixed Header */}
         {title && (
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="lg:text-lg font-semibold ">{title}</DialogTitle>
-            <hr className="border-t border-gray-300 " />
-          </DialogHeader>
+          <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-300">
+            <DialogHeader>
+              <DialogTitle className="lg:text-lg font-semibold text-left">
+                {title}
+              </DialogTitle>
+            </DialogHeader>
+          </div>
         )}
 
-        {/* Scrollable content area */}
-         <div className={cn(
-          'flex-1 overflow-y-auto px-6 py-4',
-          isMobile && 'pb-28' // padding bottom to avoid content under sticky footer
-        )}>
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto p-6">
           {children}
         </div>
 
-        {/* Footer fixed at bottom */}
+        {/* Fixed Footer */}
         {!hideDialogActions && (
-          <div
-            className={cn(
-              'px-6 py-4 border-t border-gray-200 bg-white',
-              isMobile
-                ? 'fixed bottom-0 left-0 right-0 z-20 shadow-md'
-                : 'flex-shrink-0'
-            )}
-          >
-            <div
-              className={cn(
-                'flex w-full gap-2',
-                isMobile ? 'flex-col' : 'justify-end'
-              )}
-            >
-              <ShadCnButton
-                variant="outline"
-                onClick={closeDialog}
-                className={cn('text-base', ShadCnButtonField)}
+          <div className="flex-shrink-0 border-t border-gray-300">
+            <DialogFooter className="p-6 pt-4">
+              <div
+                className={cn(
+                  'flex w-full gap-2',
+                  isMobile ? 'flex-col' : 'justify-end'
+                )}
               >
-                Cancel
-              </ShadCnButton>
-
-              <ShadCnButton
-                onClick={handleSubmit}
-                disabled={ShadCnButtonDisabled || isSubmitting}
-                className={cn('text-base font-semibold', ShadCnButtonField)}
-              >
-                {isSubmitting ? 'Saving...' : primaryBtnText}
-              </ShadCnButton>
-            </div>
+                <ShadCnButton
+                  variant="outline"
+                  onClick={closeDialog}
+                  className={cn('text-base', ShadCnButtonField)}
+                >
+                  Cancel
+                </ShadCnButton>
+                <ShadCnButton
+                  onClick={handleSubmit}
+                  disabled={ShadCnButtonDisabled || isSubmitting}
+                  className={cn('text-base font-semibold', ShadCnButtonField)}
+                >
+                  {loading ?    <Loader2
+            className="h-4 w-4 animate-spin"
+            data-testid="loading-spinner"
+          /> : primaryBtnText}
+                </ShadCnButton>
+              </div>
+            </DialogFooter>
           </div>
         )}
       </DialogContent>

@@ -64,9 +64,7 @@ export default defineConfig(({ command, mode }) => {
             router: ['react-router-dom'],
             query: ['@tanstack/react-query'],
             ui: ['@radix-ui/react-slot', 'class-variance-authority'],
-            // Feature chunks
             auth: ['src/features/auth'],
-            dashboard: ['src/features/dashboard'],
           },
         },
       },

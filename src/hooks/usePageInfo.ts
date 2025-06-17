@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom';
 
 import { routeConfig } from '@/app/router/routes.config';
 import { PageInfo, RouteConfig } from '@/types/router.types';
@@ -10,11 +10,15 @@ const findRouteInfo = (
 ): PageInfo | null => {
   for (const route of routes) {
     const fullPath = basePath + route.path;
-    console.log(pathname === fullPath);
-    console.log(route.index && pathname === basePath)
-
-    // Check if current route matches exactly
-    if (pathname === fullPath || (route.index && pathname === basePath)) {
+    
+    // Use matchPath to handle dynamic segments like :id
+    const match = matchPath(
+      { path: fullPath },
+      pathname
+    );
+    
+    // Check if current route matches (including dynamic params)
+    if (match || (route.index && pathname === basePath)) {
       return {
         title: route.meta?.title || 'Page',
         description: route.meta?.description || '',

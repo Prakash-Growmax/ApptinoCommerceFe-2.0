@@ -23,7 +23,7 @@ function TimelineItem({ title, date, description, isActive = false, isLast = fal
 
       {/* Content */}
       <div className="-mt-6">
-        <div className="flex   gap-0.5">
+        <div className="flex flex-col  gap-0.5">
           <span className="text-md font-medium text-gray-900 capitalize">{title}</span>
           <span className="text-xs text-gray-500 capitalize mt-[6px] ml-1">{date}</span>
         </div>

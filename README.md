@@ -232,7 +232,6 @@ interface ApiError {
 Route Structure:
 / (MainLayout)
   ├── / (HomePage)
-  └── /dashboard (ProtectedRoute → DashboardPage)
 /auth
   ├── /login (LoginPage)
   ├── /register (RegisterPage)

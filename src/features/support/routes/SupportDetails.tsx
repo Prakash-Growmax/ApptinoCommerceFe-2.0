@@ -1,26 +1,23 @@
-import { FormProvider, useForm } from "react-hook-form";
-import ServiceDetails from "./ServiceDetails";
-import { useGetSupportTicketFieldServices } from "../hook/useGetSupportTicketFieldServices";
-import { useGetSupportTicketDetails } from "../hook/useGetSupportTicketDetails";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Loader2 } from "lucide-react";
-import SupportCustomerCard from "../components/SupportCustomerCard/SupportCustomerCard";
-import { useSupportTimeline } from "../hook/useGetSupportTimeline";
-import SupportTimeline from "../components/SupportTimeline/SupportTimeline";
-import TicketHeader from "./Serviceheader";
+import { useEffect } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
+import { Loader2 } from 'lucide-react';
 
-
+import SupportCustomerCard from '../components/SupportCustomerCard/SupportCustomerCard';
+import SupportTimeline from '../components/SupportTimeline/SupportTimeline';
+import { useGetSupportTicketDetails } from '../hook/useGetSupportTicketDetails';
+import { useGetSupportTicketFieldServices } from '../hook/useGetSupportTicketFieldServices';
+import { useSupportTimeline } from '../hook/useGetSupportTimeline';
+import ServiceDetails from './ServiceDetails';
+import TicketHeader from './Serviceheader';
 
 const SupportDetails = () => {
   const { id } = useParams();
- 
   const {
     data: fieldServicesData,
     isLoading: isFieldServicesLoading,
     error: fieldServicesError,
-    refetch: refetchFieldServices,
   } = useGetSupportTicketFieldServices('dev3', id);
 
   const {
@@ -29,7 +26,11 @@ const SupportDetails = () => {
     error: ticketDetailsError,
     refetch: refetchTicketDetails,
   } = useGetSupportTicketDetails('dev3', id);
-    const { data:ticketTimelineData, isLoading:isTicketTimelineLoadinf, error:ticketTimelineError } = useSupportTimeline("dev3", id);
+  const {
+    data: ticketTimelineData,
+    isLoading: isTicketTimelineLoadinf,
+    error: ticketTimelineError,
+  } = useSupportTimeline('dev3', id);
 
   const isLoading = isFieldServicesLoading || isTicketDetailsLoading;
   const error = fieldServicesError || ticketDetailsError;
@@ -39,7 +40,7 @@ const SupportDetails = () => {
       fieldServicesData: null,
       supportTicketData: null,
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   useEffect(() => {
@@ -47,18 +48,20 @@ const SupportDetails = () => {
       methods.reset({
         fieldServicesData,
         supportTicketData: ticketDetailsData,
-        ticketTimelineData
+        ticketTimelineData,
       });
     }
-  }, [fieldServicesData, ticketDetailsData,ticketTimelineData]);
-  
+  }, [fieldServicesData, ticketDetailsData, ticketTimelineData]);
+
   if (isLoading) {
-    return <div className="flex justify-center">
-       <Loader2
-            className="h-20 w-20 animate-spin"
-            data-testid="loading-spinner"
-          />
-    </div>; 
+    return (
+      <div className="flex justify-center">
+        <Loader2
+          className="h-20 w-20 animate-spin"
+          data-testid="loading-spinner"
+        />
+      </div>
+    );
   }
 
   if (error) {
@@ -67,14 +70,14 @@ const SupportDetails = () => {
 
   return (
     <FormProvider {...methods}>
-        <TicketHeader/>
+      <TicketHeader />
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 p-4">
         <div className="w-full lg:w-2/3">
           <ServiceDetails />
         </div>
         <div className="flex flex-col gap-4 w-full lg:w-1/3">
-          <SupportCustomerCard/>
-          <SupportTimeline/>
+          <SupportCustomerCard />
+          <SupportTimeline />
         </div>
       </div>
     </FormProvider>

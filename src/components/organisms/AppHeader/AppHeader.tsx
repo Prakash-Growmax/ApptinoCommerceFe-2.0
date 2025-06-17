@@ -13,6 +13,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ children }: AppHeaderProps) {
   const pageInfo = usePageInfo();
+  console.log('🚀 ~ AppHeader ~ pageInfo:', pageInfo);
 
   return (
     <div className="h-screen overflow-x-hidden">
