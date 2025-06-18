@@ -7,7 +7,13 @@ export const useSupportTicketFilterStore = create<SupportTicketFilter>((set) => 
   category: [],
   setCategory: (category) => set({ category }),
    fieldUser:[],
-   setFieldUser:(fieldUser)=>set({fieldUser})
+   setFieldUser:(fieldUser)=>set({fieldUser}),
+   issueCategory:[],
+   setIssueCategory:(issueCategory)=>set({ issueCategory}),
+   reason:[],
+   setReason:(reason)=>set({reason}),
+   severity:[],
+   setSeverity:(severity)=>set({severity})
 }));
 
 export const useUpdateServiceStore = create<UpdateType>((set) => ({

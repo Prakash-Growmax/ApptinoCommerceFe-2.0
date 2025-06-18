@@ -9,7 +9,7 @@ export const useGetSupportFilterSettings = () => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const {tenantId ,companyId} = payload as TokenPayload;
-  const {setStatus,setCategory,setFieldUser}=useSupportTicketFilterStore();
+  const {setStatus,setCategory,setFieldUser,setIssueCategory,setReason,setSeverity}=useSupportTicketFilterStore();
 
   const filtersQuery = useQuery({
     queryKey: ["status", tenantId],
@@ -18,10 +18,13 @@ export const useGetSupportFilterSettings = () => {
         tenantId,
         token,
       );
-      
-      var data = JSON.parse(response[0].content)
      
+      var data = JSON.parse(response[0].content)
+      console.log(data);
       setCategory(data.tCategory)
+      setIssueCategory(data?.fsCategory);
+      setReason(data?.reasons);
+      setSeverity(data?.severity);
       setStatus(_.map(data.ticketStatus, 'status'))
     },
     enabled: !!tenantId,

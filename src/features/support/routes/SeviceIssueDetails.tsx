@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { useSupportTicketFilterStore } from "../store/useSupportTicketFilterStore";
 
 const ServiceIssueDetails = () => {
-   const { status, category, fieldUser } = useSupportTicketFilterStore();
+   const { status, category,reason} = useSupportTicketFilterStore();
    const statusOptions = status?.map((s: string) => ({
   value: s?.trim(),
   label: s,
@@ -16,6 +16,10 @@ const categoryOptions = category?.map((c: string) => ({
   value: c?.trim(),
   label: c,
 }));
+const reasonOptions = reason?.map((r:string)=>({
+ value: r?.trim(),
+  label: r,
+}))
   return (
     <div className="flex justify-start">
       <div className="w-full">
@@ -52,10 +56,12 @@ const categoryOptions = category?.map((c: string) => ({
                 label="Reference order no/Invoice No"
                 placeholder="Reference order no/Invoice No"
               />
-              <FormInput
-                name="supportTicketData.reason"
-                label="Reason"
-                placeholder="Reason"
+           
+               <FormSelect
+                 name="supportTicketData.reason"
+                 label="Reason"
+                 placeholder="Reason"
+                options={reasonOptions}
               />
               <FormSelect
                 name="supportTicketData.status"

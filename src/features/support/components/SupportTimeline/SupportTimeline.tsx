@@ -23,7 +23,7 @@ const { watch } = useFormContext();
   const ticketTimelineData: TimelineItemType[] = [...rawticketTimelineData].sort(
     (a, b) => new Date(b.updatedDateTime).getTime() - new Date(a.updatedDateTime).getTime()
   );
-  console.log(Boolean(ticketTimelineData.length));
+
   return (
     <>
     {Boolean(ticketTimelineData.length) && (

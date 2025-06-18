@@ -29,8 +29,7 @@ import useSupportStore from '@/stores/useSupportStore';
 import useUserStore from '@/stores/useUserStore';
 import useAppStore from '@/stores/appStore';
 import { TokenPayload } from '@/types/auth.types';
-import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
-import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
+import { createTicketss } from '../api/support.api';
 
 type FormData = {
   customer: string;
@@ -208,7 +207,7 @@ const SupportTicketsDialog = () => {
     // }
 
     try {
-      const response = await createTicket({ body: payload, tenantId });
+      const response = await createTicketss(tenantId,token,payload)
       alert('Ticket created successfully!');
       setOpen(false);
       reset();

@@ -175,3 +175,18 @@ export const postFieldAttachments = async (
   });
   return response;
 };
+export const createTicketss=async(tenantId:string,token:string,payload)=>{
+   const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiPost({
+    url:`/support/service-support/fieldService/createWithSupportTicket?domainName=${tenantId}`,
+    data:payload,
+    config:{
+      headers,
+    }
+  })
+  return response;
+}
