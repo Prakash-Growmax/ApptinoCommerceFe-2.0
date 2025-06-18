@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { getCompanyDetails } from "../api/company.api";
 import { CompanyDetailsType } from "../types/company.type";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import AddressComponent from "./address";
 
 const InfoRow = ({ label, value }: { label: string; value?: string | string[] | undefined }) => {
   const displayValue =
@@ -61,6 +62,7 @@ const CompanyDetailsPage = () => {
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
+      <div>
 
     <Card className="">
       
@@ -90,6 +92,8 @@ const CompanyDetailsPage = () => {
       </div>
     
     </Card>
+      <AddressComponent/>
+      </div>
   );
 };
 

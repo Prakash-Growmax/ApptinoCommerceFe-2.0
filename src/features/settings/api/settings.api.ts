@@ -31,3 +31,5 @@ export const GetCompanyDetails=async({companyId,tenantId,token}:GetBranchDetails
   })
   return response;
 }
+
+
