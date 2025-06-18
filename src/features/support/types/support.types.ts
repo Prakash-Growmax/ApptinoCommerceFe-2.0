@@ -65,7 +65,10 @@ export type CreateFiledService={
   open:boolean;
   setOpen:(open:boolean)=>void;
 }
-export type UpdateType = {
-  updated: boolean;
-  setUpdated: (updated: boolean) => void;
+export type UpdateSupportIssueType = {
+  updateSupportIssue: any; // Ideally, replace `any` with the correct type
+  setUpdateSupportIssue: (updateSupportIssue: any) => void;
+  openSupportIssue: boolean;
+  setOpenSupportIssue: (openSupportIssue: boolean) => void;
 };
+

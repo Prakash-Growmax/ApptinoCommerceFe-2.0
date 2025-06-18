@@ -190,3 +190,18 @@ export const createTicketss=async(tenantId:string,token:string,payload)=>{
   })
   return response;
 }
+export const updateTicket=async(tenantId:string,token:string,payload)=>{
+    const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiPost({
+    url:`/support/service-support/update`,
+    data:payload,
+    config:{
+      headers
+    }
+  })
+ return response;
+}
