@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { SupportTicketFilter, UpdateType } from "../types/support.types";
+import { SupportTicketFilter} from "../types/support.types";
 
 export const useSupportTicketFilterStore = create<SupportTicketFilter>((set) => ({
   status: [],
@@ -16,7 +16,4 @@ export const useSupportTicketFilterStore = create<SupportTicketFilter>((set) => 
    setSeverity:(severity)=>set({severity})
 }));
 
-export const useUpdateServiceStore = create<UpdateType>((set) => ({
-  updated: false,
-  setUpdated: (updated) => set({ updated }), // ✅ fixed spelling
-}));
+
