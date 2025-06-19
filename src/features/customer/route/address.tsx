@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { useGetAddressDetails } from "../hook/usegetaddress"; 
+import { useGetAddressDetails } from "../hook/useGetaddress"; 
 import CustomerDetail from "./address.landing";
 
 const AddressComponent = () => {
@@ -14,12 +14,7 @@ const AddressComponent = () => {
   return (
     <div className="p-4">
       <Suspense fallback={<div>Loading Customer Detail...</div>}>
-        {/* <CustomerDetail addressData={addressData} /> */}
-        
-        <CustomerDetail addressData={addressData ? [addressData] : []} />
-        
-        
-
+        <CustomerDetail addressData={addressData?.data?.addressTags ?? []} />
       </Suspense>
     </div>
   );
@@ -108,7 +103,8 @@ export default AddressComponent;
 //         {JSON.stringify(addressData, null, 2)}
 //       </pre> */}
 //       <Suspense fallback={<div>Loading Customer Detail...</div>}>
-//         <CustomerDetail addressData={addressData} />
+//         {/* <CustomerDetail addressData={addressData} /> */}
+//         <CustomerDetail addressData={addressData?.data?.addressTags ?? []} />
 //       </Suspense>
 //     </div>
 //   );

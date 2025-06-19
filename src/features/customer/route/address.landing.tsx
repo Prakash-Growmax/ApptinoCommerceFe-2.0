@@ -1,23 +1,23 @@
+import useAccountsStore from "@/stores/useAccountStore";
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFetchCustomersWithFilters } from "../hook/useGetCustomersDetails";
+import useSideBarStore from "@/stores/sidebarStore";
 import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
-import useAccountsStore from "@/stores/useAccountStore";
-import { useGetAddressDetails } from "../hook/usegetaddress";
+// import { useGetAddressDetails } from "../hook/useGetaddress";
 
-type CustomerDetailProps = {
-  addressData: any[]; 
-};
 
-const CustomerDetail = ({ addressData }: CustomerDetailProps) => {
-    console.log("Address Data:", addressData);
-  const [pagination, setPagination] = useState({
+
+const CustomerDetail = () => {
+
+    const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 5, 
   });
-
-  const navigate = useNavigate();
+const navigate = useNavigate();
   const {
+    data,
     loading,
     page,
     setPage,
@@ -25,7 +25,8 @@ const CustomerDetail = ({ addressData }: CustomerDetailProps) => {
     setRowPerPage,
     totalCount,
   } = useAccountsStore();
-  useGetAddressDetails();
+  // useGetAddressDetails();
+  useFetchCustomersWithFilters();
   
 
   const columns: ColumnDef<any>[] = [
@@ -33,69 +34,95 @@ const CustomerDetail = ({ addressData }: CustomerDetailProps) => {
     id: 'name',
     accessorKey: 'branchName',
     header: 'Branch Name',
-    cell: ({ row }) => <span>{row.original?.branchName || '-'}</span>,
-  },
-  {
-    id: 'addressId',
-    header: 'Address',
-    cell: ({ row }) => {
-      const address = row.original?.addressId;
-      const addressLine = address?.addressLine || '';
-      const state = address?.state || '';
-      const pin = address?.pinCodeId || '';
-      const country = address?.country || '';
-
-      const fullAddress = [addressLine, state, pin, country].filter(Boolean).join(', ');
-
-      return <span className="text-sm">{fullAddress || '-'}</span>;
+    cell: ({ getValue }) => {
+      const value = getValue();
+      return <span>{value || '-'}</span>;
     },
   },
+   {
+  id: "addressId",
+  header: "Address",
+  cell: ({ row }) => {  
+    const address = row?.original?.addressId;
+
+    return (
+      <div className="text-sm leading-5">
+        <div>{address?.addressTags?.addressLine}</div>
+        <div>{address?.state}</div>
+        <div>{address?.pinCodeId}</div>
+        <div>{address?.country}</div>
+      </div>
+    );
+  },
+},
   {
     id: 'gst',
     accessorKey: 'gst',
     header: 'Tax ID',
-    cell: ({ row }) => <span>{row.original?.gst || '-'}</span>,
+    cell: ({ getValue }) => {
+      const value = getValue();
+      return <span>{value || '-'}</span>;
+    },
   },
   {
     id: 'primaryContact',
+    accessorKey: 'primaryContact',
     header: 'Contact',
-    cell: ({ row }) => <span>{row.original?.primaryContact || '-'}</span>,
+    cell: ({ getValue }) => {
+      const value = getValue();
+      return <span>{value || '-'}</span>;
+    },
   },
   {
     id: 'phone',
+    accessorKey: 'phone',
     header: 'Phone',
-    cell: ({ row }) => <span>{row.original?.phone || '-'}</span>,
+    cell: ({ getValue }) => {
+      const value = getValue();
+      return <span>{value || '-'}</span>;
+    },
   },
 ];
 
 
-  const handleRowClick = (row: any) => {
-    console.log(row);
-    navigate(`/customers/customerdetails/${row?.companyID}`);
-  };
+
+// const handleRowClick = (row: any) => {
+//       console.log(row);
+//     navigate(/customers/customerdetails/${row?.companyID});
+//   };
+//   const handlePrevious = () => {
+//     setPage(prev => prev - 1);
+//   };
+
+//   const handleNext = () => {
+//     setPage(prev => prev + 1);
+//   };
+//   const { sideOpen } = useSideBarStore();
+
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Customer Address</h2>
-      <div className="w-full overflow-hidden">
-        <DashboardTable
-          data={addressData}
-          columns={columns}
-          loading={loading}
-          pagination={pagination}
-          setPagination={setPagination}
-          totalDataCount={totalCount}
-          pageOptions={[5, 10, 20]}
-          page={page}
-          setPage={setPage}
-          rowPerPage={rowPerPage}
-          setRowPerPage={setRowPerPage}
-          handlePrevious={() => setPage((prev) => prev - 1)}
-          handleNext={() => setPage((prev) => prev + 1)}
-          tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
-          onRowClick={handleRowClick}
-        />
-      </div>
+      <h2 className="text-xl font-bold"> Address</h2>
+
+          <div className="w-full overflow-hidden">
+      <DashboardTable
+        data={data}
+        columns={columns}
+        loading={loading}
+        pagination={pagination}
+        setPagination={setPagination}
+        totalDataCount={totalCount}
+        pageOptions={[5, 10, 20]}
+        page={page}
+        setPage={setPage}
+        rowPerPage={rowPerPage}
+        // setRowPerPage={setRowPerPage}
+        // handlePrevious={handlePrevious}
+        // handleNext={handleNext}
+        tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
+        // onRowClick={handleRowClick}
+      />
+    </div>
     </div>
   );
 };
@@ -110,82 +137,100 @@ export default CustomerDetail;
 
 
 
-
-
-
-
-
-// src/features/customer/route/CustomerDetail.tsx
-
-
-// import { useState } from "react";
-// import { AddressDetailsType } from "../schema/address.schema";
 // import { ColumnDef } from "@tanstack/react-table";
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 // import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
+// import useAccountsStore from "@/stores/useAccountStore";
+// import { useGetAddressDetails } from "../hook/useGetaddress";
 
-// const CustomerDetail = ({ addressData }: { addressData: AddressDetailsType }) => {
-//   const data = addressData?.data?.addressTags ?? []; // use the address list
+// type CustomerDetailProps = {
+//   addressData: any[]; 
+// };
+
+// const CustomerDetail = ({ addressData }: CustomerDetailProps) => {
+//   console.log("Address Data:", addressData);
+
 //   const [pagination, setPagination] = useState({
 //     pageIndex: 0,
 //     pageSize: 5,
 //   });
 
+//   const navigate = useNavigate();
+//   const {
+//     loading,
+//     page,
+//     setPage,
+//     rowPerPage,
+//     setRowPerPage,
+//     totalCount,
+//   } = useAccountsStore();
+//   // useGetAddressDetails();
+
 //   const columns: ColumnDef<any>[] = [
-//     {
-//       id: 'branchName',
-//       accessorKey: 'branch.branchName',
-//       header: 'Branch Name',
-//       cell: ({ row }) => <span>{row.original?.branch?.branchName || '-'}</span>,
+//   {
+//     id: 'name',
+//     accessorKey: 'name',
+//     header: 'Branch Name',
+//     cell: ({ row }) => <span>{row.original?.name || '-'}</span>,
+//   },
+//   {
+//     id: 'addressId',
+//     header: 'Address',
+//     cell: ({ row }) => {
+//       const address = row.original?.addressId || {};
+//       const addressLine = address?.addressLine || '';
+//       const state = address?.state || '';
+//       const pin = address?.pinCodeId || '';
+//       const country = address?.country || '';
+
+//       const fullAddress = [addressLine, state, pin, country].filter(Boolean).join(', ');
+//       return <span className="text-sm">{fullAddress || '-'}</span>;
 //     },
-//     {
-//       id: 'address',
-//       header: 'Address',
-//       cell: ({ row }) => {
-//         const a = row.original;
-//         const full = [a?.addressLine, a?.state, a?.pinCodeId, a?.country]
-//           .filter(Boolean)
-//           .join(', ');
-//         return <span className="text-sm">{full || '-'}</span>;
-//       },
-//     },
-//     {
-//       id: 'gst',
-//       accessorKey: 'gst',
-//       header: 'Tax ID',
-//       cell: ({ row }) => <span>{row.original?.gst || '-'}</span>,
-//     },
-//     {
-//       id: 'primaryContact',
-//       header: 'Contact',
-//       cell: ({ row }) => <span>{row.original?.contact || '-'}</span>,
-//     },
-//     {
-//       id: 'phone',
-//       header: 'Phone',
-//       cell: ({ row }) => <span>{row.original?.phone || '-'}</span>,
-//     },
-//   ];
+//   },
+//   {
+//     id: 'gst',
+//     accessorKey: 'gst',
+//     header: 'Tax ID',
+//     cell: ({ row }) => <span>{row.original?.gst || '-'}</span>,
+//   },
+//   {
+//     id: 'contact',
+//     header: 'Contact',
+//     cell: ({ row }) => <span>{row.original?.contact || '-'}</span>,
+//   },
+//   {
+//     id: 'phone',
+//     header: 'Phone',
+//     cell: ({ row }) => <span>{row.original?.phone || '-'}</span>,
+//   },
+// ];
+
+//   const handleRowClick = (row: any) => {
+//     console.log(row);
+//     navigate(`/customers/customerdetails/${row?.companyID}`);
+//   };
 
 //   return (
 //     <div>
-//       <h2 className="text-xl font-bold">Customer Address</h2>
+//       <h2 className="text-xl font-bold mb-4">Customer Address</h2>
 //       <div className="w-full overflow-hidden">
 //         <DashboardTable
-//           data={data}
+//           data={addressData}
 //           columns={columns}
-//           loading={false}
+//           loading={loading}
 //           pagination={pagination}
 //           setPagination={setPagination}
-//           totalDataCount={data.length}
+//           totalDataCount={totalCount}
 //           pageOptions={[5, 10, 20]}
-//           page={pagination.pageIndex}
-//           setPage={(p) => setPagination(prev => ({ ...prev, pageIndex: p }))}
-//           rowPerPage={pagination.pageSize}
-//           setRowPerPage={(size) => setPagination(prev => ({ ...prev, pageSize: size }))}
-//           handlePrevious={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
-//           handleNext={() => setPagination(prev => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
+//           page={page}
+//           setPage={setPage}
+//           rowPerPage={rowPerPage}
+//           setRowPerPage={setRowPerPage}
+//           handlePrevious={() => setPage((prev) => prev - 1)}
+//           handleNext={() => setPage((prev) => prev + 1)}
 //           tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
-//           onRowClick={(row) => console.log(row)}
+//           onRowClick={handleRowClick}
 //         />
 //       </div>
 //     </div>
@@ -193,4 +238,18 @@ export default CustomerDetail;
 // };
 
 // export default CustomerDetail;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
