@@ -70,5 +70,9 @@ export type UpdateSupportIssueType = {
   setUpdateSupportIssue: (updateSupportIssue: any) => void;
   openSupportIssue: boolean;
   setOpenSupportIssue: (openSupportIssue: boolean) => void;
+  updateSupportVisit:any;
+  setUpdateSupportVisit:(updateSupportVisit:any)=>void;
+  openSupportVisit:boolean;
+  setOpenSupportVisit: (openSupportVisit:boolean)=>void;
 };
 

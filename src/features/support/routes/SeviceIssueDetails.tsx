@@ -103,7 +103,7 @@ const ServiceIssueDetails = () => {
     if (!isEqual(prevValuesRef.current, currentValues)) {
       prevValuesRef.current = currentValues;
        setUpdateSupportIssue(currentValues);
-       console.log(currentValues);
+      
     
     }
   }, [getUpdatedValuesWithParams]);

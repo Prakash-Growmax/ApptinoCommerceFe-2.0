@@ -16,16 +16,19 @@ import ActionHeader from '@/components/molecules/ActionHeader/ActionHeader';
 import { useSupportDetailStore } from '../store/useSupportDetailStore';
 import { TokenPayload } from '@/types/auth.types';
 import useAppStore from '@/stores/appStore';
-import { updateTicket } from '../api/support.api';
+import { updateTicket, updateTicketServices } from '../api/support.api';
 
 const SupportDetails = () => {
   const { id } = useParams();
  const {
   updateSupportIssue,
- 
+  openSupportVisit,
+  updateSupportVisit,
   openSupportIssue,
   setOpenSupportIssue
 } = useSupportDetailStore();
+console.log(updateSupportVisit);
+console.log(openSupportIssue);
    const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const {tenantId} = payload as TokenPayload;
@@ -61,6 +64,8 @@ const SupportDetails = () => {
     },
     mode: 'onChange',
   });
+ 
+
 
   useEffect(() => {
     if (fieldServicesData && ticketDetailsData) {
@@ -79,7 +84,21 @@ const SupportDetails = () => {
   if (error) {
     return <div className="p-4 text-sm text-red-600">Failed to load data</div>;
   }
+const matchedItem = fieldServicesData.find(
+  (item) => item.identifier === updateSupportVisit?.identifier
+);
+  const updatedFieldPayload={
+    ...matchedItem,
+    appointmentFromDateTime:updateSupportVisit?.allFormValues?.appointmentFromDateTime,
+    appointmentToDateTime:updateSupportVisit?.allFormValues?.appointmentToDateTime,
+    category:updateSupportVisit?.allFormValues?.category,
+    location:updateSupportVisit?.allFormValues?.location,
+    ownerUsername:updateSupportVisit?.allFormValues?.ownerUsername,
+    status:updateSupportVisit?.allFormValues?.status,
+    title:updateSupportVisit?.allFormValues?.title,
 
+
+  }
   const updateTicketPayload = {
     ...ticketDetailsData,
     category: updateSupportIssue?.category,
@@ -104,11 +123,15 @@ const SupportDetails = () => {
    setOpenSupportIssue(false);
    
   };
+  const handleUpdateFieldService=async()=>{
+  const response = await updateTicketServices(tenantId,token,updatedFieldPayload);
+  setOpenSupportIssue(false)
+  }
 
   return (
     <FormProvider {...methods}>
-      {openSupportIssue && (  <div className='px-4 py-2'>
-         <ActionHeader handleSubmit={handleUpdateTicket} />
+      {(openSupportIssue || openSupportVisit) && (  <div className='px-4 py-2'>
+         <ActionHeader handleSubmit={openSupportIssue ? handleUpdateTicket : handleUpdateFieldService} />
 
       </div>)}
     
