@@ -1,21 +1,21 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetAddressDetails } from "../hook/useGetaddress"; 
 import CustomerDetail from "./address.landing";
 
 const AddressComponent = () => {
   const { id } = useParams<{ id: string }>();
+  const [page,setPage]=useState<number>(0);
+  const [rowPerPage,setRowPerPage]=useState<number>(20);
+  const { addressData, isLoading, isError } = useGetAddressDetails(id,page,rowPerPage);
 
-  const { addressData, isLoading, isError } = useGetAddressDetails(id);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (isError || !addressData) return <p>No address data found.</p>;
+ 
 
   return (
-    <div className="p-4">
-      <Suspense fallback={<div>Loading Customer Detail...</div>}>
-        <CustomerDetail addressData={addressData?.data?.addressTags ?? []} />
-      </Suspense>
+    <div className="w-full">
+    
+        <CustomerDetail addressData={addressData?.data?.addressTags ?? []} page={page} setPage={setPage} rowPerPage={rowPerPage} setRowPerPage={setRowPerPage} loading={isLoading} totalCount={addressData?.data?.totalCount }/>
+      
     </div>
   );
 };

@@ -42,8 +42,8 @@ const CompanyDetailsPage = () => {
    const [isDialogOpen, setIsDialogOpen] = useState(false);
    const { reset } = useForm<FormData>();
 
-  const tenantId = "dev3"; 
-  const token = "your_jwt_token_here"; 
+  const tenantId = "dev3";
+  const token = "your_jwt_token_here";
 
   useEffect(() => {
     if (!companyId) return;
@@ -75,57 +75,41 @@ const CompanyDetailsPage = () => {
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
+    <div className="w-full px-6 py-4 space-y-4">
+      {/* Company Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Company Details</CardTitle>
+        </CardHeader>
+        <div className="grid grid-cols-2 gap-x-12 px-6 py-4">
+          <div className="space-y-2">
+            <InfoRow label="Partner Name" value={companyDetails?.companyName} />
+            <InfoRow label="Tax ID" value={companyDetails?.taxId} />
+            <InfoRow label="Business Type" value={companyDetails?.businessType} />
+            <InfoRow label="SubIndustry" value={companyDetails?.subIndustry} />
+            <InfoRow label="Account Owner" value={companyDetails?.accountOwnerName} />
+            <InfoRow label="Company Tags" value={companyDetails?.tags} />
+          </div>
+          <div className="space-y-2">
+            <InfoRow label="Website" value={companyDetails?.website} />
+            <InfoRow label="Currency" value={companyDetails?.currencyCode} />
+            <InfoRow label="Account Type" value={companyDetails?.accountType} />
+            <InfoRow label="Industry Description" value={companyDetails?.industryDescription} />
+            <InfoRow label="Support Owner" value={companyDetails?.supportOwnerName} />
+          </div>
+        </div>
+      </Card>
+
+      {/* Address Section */}
       <div>
-        <div className="flex justify-end mb-4">
-
-      <Dialog 
-            open={isDialogOpen}
-            onOpenChange={open => {
-              setIsDialogOpen(open);
-              if (!open) {
-                reset();
-              }
-            }}
-          >
-            <DialogTrigger asChild>
-              <AddressTicketsDialog />
-            </DialogTrigger>
-          </Dialog>
-        </div>
-    <Card className="">
-      
-    
-      <CardHeader className="flex-shrink-0  ">
-        <CardTitle className="text-lg p-0 m-0">Company Details</CardTitle>
-      </CardHeader>
-
-      <div className="grid grid-cols-2 gap-x-12 pl-5  ">
-        
-        <div className="space-y-2">
-          <InfoRow label="Partner Name" value={companyDetails?.companyName} />
-          <InfoRow label="Tax ID" value={companyDetails?.taxId} />
-          <InfoRow label="Business Type" value={companyDetails?.businessType} />
-          <InfoRow label="SubIndustry" value={companyDetails?.subIndustry} />
-          <InfoRow label="Account Owner" value={companyDetails?.accountOwnerName} />
-          <InfoRow label="Company Tags" value={companyDetails?.tags} />
-        </div>
-
-        <div className="space-y-2">
-          <InfoRow label="Website" value={companyDetails?.website} />
-          <InfoRow label="Currency" value={companyDetails?.currencyCode} />
-          <InfoRow label="Account Type" value={companyDetails?.accountType} />
-          <InfoRow label="Industry Description" value={companyDetails?.industryDescription} />
-          <InfoRow label="Support Owner" value={companyDetails?.supportOwnerName} />
-        </div>
+        <AddressComponent />
       </div>
-    
-    </Card>
-      <AddressComponent/>
-      </div>
+    </div>
   );
 };
 
 export default CompanyDetailsPage;
+
 
 
 

@@ -5,10 +5,14 @@ export const GetAddressDetails = async ({
   companyId,
   tenantId,
   token,
+  page,
+  rowPerPage
 }: {
   companyId: string;
   tenantId: string;
   token: string;
+  page:number,
+  rowPerPage:number
 }): Promise<AddressDetailsType> => {
   const headers = {
     "Content-Type": "application/json",
@@ -17,7 +21,7 @@ export const GetAddressDetails = async ({
   };
 
   const response = await apiGet<AddressDetailsType>({
-    url: `/corecommerce/accountses/getAddressDetails?companyId=${companyId}&offset=0&limit=20&searchString=`,
+    url: `/corecommerce/accountses/getAddressDetails?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=`,
     config: { headers },
   });
 
