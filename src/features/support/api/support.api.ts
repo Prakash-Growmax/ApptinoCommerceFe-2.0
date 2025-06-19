@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from '@/lib/api/client';
+import { apiGet, apiPost, apiPut } from '@/lib/api/client';
 
 import { ParsedPropertyList } from '../schema/support.schema';
 import { SupportTicketResponse } from '../schema/suppot.ticket';
@@ -204,4 +204,19 @@ export const updateTicket=async(tenantId:string,token:string,payload)=>{
     }
   })
  return response;
+}
+export const updateTicketServices=async(tenantId:string,token:string,payload)=>{
+ const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiPut({
+    url:`/support/service-support/fieldService/update?domainName=${tenantId}`,
+    data:payload,
+    config:{
+      headers
+    }
+  })
+  return response;
 }
