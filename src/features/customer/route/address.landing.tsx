@@ -46,6 +46,7 @@ const navigate = useNavigate();
     const address = row?.original?.addressId;
 
     return (
+      
       <div className="text-sm leading-5">
         <div>{address?.addressTags?.addressLine}</div>
         <div>{address?.state}</div>

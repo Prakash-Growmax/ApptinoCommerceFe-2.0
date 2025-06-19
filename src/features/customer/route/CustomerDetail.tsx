@@ -14,6 +14,9 @@ import { getCompanyDetails } from "../api/company.api";
 import { CompanyDetailsType } from "../types/company.type";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import AddressComponent from "./address";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import { useForm } from "react-hook-form";
+import AddressTicketsDialog from "./createaddress";
 
 const InfoRow = ({ label, value }: { label: string; value?: string | string[] | undefined }) => {
   const displayValue =
@@ -36,6 +39,8 @@ const CompanyDetailsPage = () => {
   const [companyDetails, setCompanyDetails] = useState<CompanyDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+   const [isDialogOpen, setIsDialogOpen] = useState(false);
+   const { reset } = useForm<FormData>();
 
   const tenantId = "dev3"; 
   const token = "your_jwt_token_here"; 
@@ -58,12 +63,35 @@ const CompanyDetailsPage = () => {
     fetchCompanyDetails();
   }, [companyId]);
 
+  
+  
+  useEffect(() => {
+    if (!isDialogOpen) {
+      reset();
+    }
+  }, [isDialogOpen, reset]);
+  
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
       <div>
+        <div className="flex justify-end mb-4">
 
+      <Dialog 
+            open={isDialogOpen}
+            onOpenChange={open => {
+              setIsDialogOpen(open);
+              if (!open) {
+                reset();
+              }
+            }}
+          >
+            <DialogTrigger asChild>
+              <AddressTicketsDialog />
+            </DialogTrigger>
+          </Dialog>
+        </div>
     <Card className="">
       
     
