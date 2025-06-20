@@ -18,6 +18,10 @@ import { ElasticSearchService } from '@/utils/Services/ElasticSearchServices';
 
 import { AccountElastic } from '../api/AccountElastics';
 import { ElasticSearchServices } from '../api/ElasticSearchServices';
+import { useState } from 'react';
+import CreateCustomer from './CreateCustomer';
+
+
 
 const CustomerFilter = () => {
   const {
@@ -94,8 +98,10 @@ const CustomerFilter = () => {
   // Check if any filters are applied
   const hasActiveFilters = searchText || statuss;
   const { sideOpen } = useSideBarStore();
+  const [open,setOpen]=useState(false)
   return (
-    <Card
+    <div className='w-full'>
+        <Card
       className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
@@ -159,7 +165,15 @@ const CustomerFilter = () => {
           )}
         </div>
       </div>
+      <div>
+        <ShadCnButton type='button' className="flex-1 sm:flex-none" onClick={()=>{setOpen(true)}} >
+          Create Customer
+        </ShadCnButton>
+      </div>
     </Card>
+     <CreateCustomer open={open} setOpen={setOpen}/>
+    </div>
+  
   );
 };
 

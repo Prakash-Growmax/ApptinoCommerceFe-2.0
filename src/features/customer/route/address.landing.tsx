@@ -31,7 +31,7 @@ const { sideOpen } = useSideBarStore();
     cell:({row})=>{
        return(
         <TableCellText variant="primary">
-          {row?.original?.branch?.addressId?.branchName}
+          {row?.original?.branch?.addressId?.branchName || "_"}
         </TableCellText>
        )
     }
@@ -62,7 +62,7 @@ const { sideOpen } = useSideBarStore();
      cell:({row})=>{
        return(
         <TableCellText variant="primary">
-          {row?.original?.branch?.addressId?.gst}
+          {row?.original?.branch?.addressId?.gst || "_"}
         </TableCellText>
        )
     }
@@ -74,7 +74,7 @@ const { sideOpen } = useSideBarStore();
       cell:({row})=>{
        return(
         <TableCellText variant="primary">
-          {row?.original?.branch?.addressId?.primaryContact}
+          {row?.original?.branch?.addressId?.primaryContact || "_"}
         </TableCellText>
        )
     }
@@ -165,7 +165,7 @@ export default CustomerDetail;
 
 
 
-// import { ColumnDef } from "@tanstack/react-table";
+
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
