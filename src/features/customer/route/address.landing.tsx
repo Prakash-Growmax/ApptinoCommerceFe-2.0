@@ -31,7 +31,7 @@ const CustomerDetail = ({addressData,page,setPage,rowPerPage,setRowPerPage,loadi
     cell:({row})=>{
        return(
         <TableCellText variant="primary">
-          {row?.original?.branch?.addressId?.branchName}
+          {row?.original?.branch?.addressId?.branchName || "_"}
         </TableCellText>
        )
     }
@@ -62,7 +62,7 @@ const CustomerDetail = ({addressData,page,setPage,rowPerPage,setRowPerPage,loadi
      cell:({row})=>{
        return(
         <TableCellText variant="primary">
-          {row?.original?.branch?.addressId?.gst}
+          {row?.original?.branch?.addressId?.gst || "_"}
         </TableCellText>
        )
     }
@@ -74,7 +74,7 @@ const CustomerDetail = ({addressData,page,setPage,rowPerPage,setRowPerPage,loadi
       cell:({row})=>{
        return(
         <TableCellText variant="primary">
-          {row?.original?.branch?.addressId?.primaryContact}
+          {row?.original?.branch?.addressId?.primaryContact || "_"}
         </TableCellText>
        )
     }
@@ -156,6 +156,122 @@ return(
 };
 
 export default CustomerDetail;
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import DashboardTable from "@/components/organisms/DashboardTable/DashboardTable";
+// import useAccountsStore from "@/stores/useAccountStore";
+// import { useGetAddressDetails } from "../hook/useGetaddress";
+
+// type CustomerDetailProps = {
+//   addressData: any[]; 
+// };
+
+// const CustomerDetail = ({ addressData }: CustomerDetailProps) => {
+//   console.log("Address Data:", addressData);
+
+//   const [pagination, setPagination] = useState({
+//     pageIndex: 0,
+//     pageSize: 5,
+//   });
+
+//   const navigate = useNavigate();
+//   const {
+//     loading,
+//     page,
+//     setPage,
+//     rowPerPage,
+//     setRowPerPage,
+//     totalCount,
+//   } = useAccountsStore();
+//   // useGetAddressDetails();
+
+//   const columns: ColumnDef<any>[] = [
+//   {
+//     id: 'name',
+//     accessorKey: 'name',
+//     header: 'Branch Name',
+//     cell: ({ row }) => <span>{row.original?.name || '-'}</span>,
+//   },
+//   {
+//     id: 'addressId',
+//     header: 'Address',
+//     cell: ({ row }) => {
+//       const address = row.original?.addressId || {};
+//       const addressLine = address?.addressLine || '';
+//       const state = address?.state || '';
+//       const pin = address?.pinCodeId || '';
+//       const country = address?.country || '';
+
+//       const fullAddress = [addressLine, state, pin, country].filter(Boolean).join(', ');
+//       return <span className="text-sm">{fullAddress || '-'}</span>;
+//     },
+//   },
+//   {
+//     id: 'gst',
+//     accessorKey: 'gst',
+//     header: 'Tax ID',
+//     cell: ({ row }) => <span>{row.original?.gst || '-'}</span>,
+//   },
+//   {
+//     id: 'contact',
+//     header: 'Contact',
+//     cell: ({ row }) => <span>{row.original?.contact || '-'}</span>,
+//   },
+//   {
+//     id: 'phone',
+//     header: 'Phone',
+//     cell: ({ row }) => <span>{row.original?.phone || '-'}</span>,
+//   },
+// ];
+
+//   const handleRowClick = (row: any) => {
+//     console.log(row);
+//     navigate(`/customers/customerdetails/${row?.companyID}`);
+//   };
+
+//   return (
+//     <div>
+//       <h2 className="text-xl font-bold mb-4">Customer Address</h2>
+//       <div className="w-full overflow-hidden">
+//         <DashboardTable
+//           data={addressData}
+//           columns={columns}
+//           loading={loading}
+//           pagination={pagination}
+//           setPagination={setPagination}
+//           totalDataCount={totalCount}
+//           pageOptions={[5, 10, 20]}
+//           page={page}
+//           setPage={setPage}
+//           rowPerPage={rowPerPage}
+//           setRowPerPage={setRowPerPage}
+//           handlePrevious={() => setPage((prev) => prev - 1)}
+//           handleNext={() => setPage((prev) => prev + 1)}
+//           tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
+//           onRowClick={handleRowClick}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CustomerDetail;
+
+
+
+
+
+
 
 
 
