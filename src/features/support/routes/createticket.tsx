@@ -32,6 +32,7 @@ import { TokenPayload } from '@/types/auth.types';
 import { createTicketss } from '../api/support.api';
 import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
 import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
+import { toast } from 'sonner';
 
 type FormData = {
   customer: string;
@@ -210,11 +211,11 @@ const SupportTicketsDialog = () => {
 
     try {
       const response = await createTicketss(tenantId,token,payload)
-      alert('Ticket created successfully!');
+      toast.success('Ticket created successfully!');
       setOpen(false);
       reset();
     } catch (error) {
-      alert('Ticket creation failed');
+      toast.success('Login failed.');
       console.error('API Error:', error);
       // console.error(error);
     }

@@ -1,12 +1,3 @@
-// const CustomerDetails=()=>{
-//   return(
-//     <div>
-//         Customer Detail
-//     </div>
-//   )
-// }
-// export default CustomerDetails;
-
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -16,7 +7,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import AddressComponent from "./address";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
-import AddressTicketsDialog from "./createaddress";
+import AddressTicketsDialog from "./CreateCustomer";
 
 const InfoRow = ({ label, value }: { label: string; value?: string | string[] | undefined }) => {
   const displayValue =
@@ -75,9 +66,9 @@ const CompanyDetailsPage = () => {
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
-    <div className="w-full px-6 py-4 space-y-4">
+    <div className="w-full px-6 py-4 space-y-4 ">
       {/* Company Details */}
-      <Card>
+      <Card className="mx-4">
         <CardHeader>
           <CardTitle className="text-lg">Company Details</CardTitle>
         </CardHeader>

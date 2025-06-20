@@ -42,37 +42,3 @@ export const useGetAddressDetails = (companyIdFromUrl?: string,page:number,rowPe
 
 
 
-// // src/features/customer/hook/useGetAddressDetails.ts
-// import { useEffect, useState } from "react";
-// import { GetAddressDetails } from "../api/address.api";
-// import { AddressDetailsType } from "../types/address.type";
-
-// export const useGetAddressDetails = ({
-//   companyId,
-//   tenantId,
-//   token,
-// }: {
-//   companyId: string;
-//   tenantId: string;
-//   token: string;
-// }) => {
-//   const [addressData, setAddressData] = useState<any[]>([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const res = await GetAddressDetails({ companyId, tenantId, token });
-//         setAddressData(res.data.addressTags || []);
-//       } catch (error) {
-//         console.error("Failed to fetch address data", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, [ tenantId, token]);
-
-//   return { addressData, loading };
-// };
