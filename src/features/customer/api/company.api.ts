@@ -1,5 +1,5 @@
 
-import { apiGet } from "@/lib/api/client";
+import { apiGet, apiPost } from "@/lib/api/client";
 import { CompanyDetailsType } from "../types/company.type";
 
 type CompanyDetailsParams = {
@@ -28,4 +28,18 @@ export const getCompanyDetails = async ({
 
   return response.data; // ✅ Only return inner `data`
 };
-
+export const createCustomer=async(tenantId:string,token:string,payload)=>{
+  const headers = {
+    "Content-Type": "application/json",
+    "x-tenant": tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiPost({
+    url:`/corecommerce/accountses/inviteAccountsWithCompany`,
+    data:payload,
+    config:{
+      headers
+    }
+  })
+  return response;
+}

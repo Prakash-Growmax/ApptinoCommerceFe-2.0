@@ -20,6 +20,7 @@ import { AccountElastic } from '../api/AccountElastics';
 import { ElasticSearchServices } from '../api/ElasticSearchServices';
 import { useState } from 'react';
 import CreateCustomer from './CreateCustomer';
+import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
 
 
 
@@ -45,7 +46,7 @@ const CustomerFilter = () => {
   const handleSearchClear = () => {
     setSearchText('');
   };
-
+  
   const fetchCustomers = async (filterParams: any, searchText = '') => {
     try {
       const elasticData = AccountElastic.BuildCustomerquery(

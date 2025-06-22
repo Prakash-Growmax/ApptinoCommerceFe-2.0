@@ -23,3 +23,45 @@ export const CustomerFilters = async ({
 
   return response; // 👈 You should return or process this
 };
+export const getState=async(tenantId:string,token:string)=>{
+    const headers = {
+    "Content-Type": "application/json",
+    "x-tenant": tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await apiGet({
+    url:`homepagepublic/getAllState`,
+    config:{
+      headers,
+    }
+  })
+  return response
+}
+export const getCountry=async(tenantId:string,token:string)=>{
+   const headers = {
+    "Content-Type": "application/json",
+    "x-tenant": tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+    const response = await apiGet({
+    url:`homepagepublic/getCountry`,
+    config:{
+      headers,
+    }
+  })
+  return response
+}
+export const getDistrict=async(tenantId:string,token:string)=>{
+    const headers = {
+    "Content-Type": "application/json",
+    "x-tenant": tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+   const response = await apiGet({
+    url:`/homepagepublic/getAllDistrict`,
+    config:{
+      headers,
+    }
+  })
+  return response;
+}

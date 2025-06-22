@@ -2,8 +2,15 @@ import EditDialog from "@/components/molecules/EditDialog/EditDialog";
 import { FormInput, FormSelect } from "@/components/molecules/ReactHookForm";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
+import { useGetCustomerAddress } from "../hook/useGetCustomerAddress";
+import { useCustomerAddressStore } from "../store/useCustomerAddressStore";
+import useAppStore from "@/stores/appStore";
+import { TokenPayload } from "@/types/auth.types";
+import { createCustomer } from "../api/company.api";
+import { toast } from "sonner";
+import { useState } from "react";
 
 type FormData = {
   customerBranchName: string;
@@ -28,16 +35,12 @@ type FormData = {
 };
 
 const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boolean) => void }) => {
-  const countryOptions = [
-    { label: 'Afghanistan (AF)', value: 'AF' },
-    { label: 'Albania (AL)', value: 'AL' },
-    { label: 'Algeria (DZ)', value: 'DZ' },
-    { label: 'Andorra (AD)', value: 'AD' },
-    { label: 'Angola (AO)', value: 'AO' },
-    { label: 'Argentina (AR)', value: 'AR' },
-    { label: 'Australia (AU)', value: 'AU' },
-  ];
-
+   const {accessToken,payload}=useAppStore();
+   const token = accessToken as string;
+  const {userId,tenantId} = payload as TokenPayload;
+  useGetCustomerAddress({open})
+  const {stateList,countryList,districtList}=useCustomerAddressStore();
+  const [loading,setLoading]=useState(false)
   const methods = useForm<FormData>({
     defaultValues: {
       customerBranchName: '',
@@ -63,15 +66,105 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
   });
 
   const { control, handleSubmit, reset } = methods;
+ 
+    const selectedCountry = useWatch({ control, name: "country" });
+  const selectedState = useWatch({ control, name: "state" });
 
+
+  // 🌍 Filter based on selections
+  const filteredStates = stateList.filter(
+  (state: any) => state?.countryCode?.toString() === selectedCountry?.iso2
+);
+
+
+  const filteredDistricts = districtList.filter(
+    (district: any) => district?.stateId === selectedState?.id
+  );
+  
+  
   const handleDialogClose = () => {
     setOpen(false);
     reset();
   };
 
   const onSubmit = async (data: FormData) => {
-    console.log("Submitted Data", data);
-  };
+    setLoading(true);
+   const payload={
+     regAddress:{
+       isShipping:true,
+       isBilling:true,
+       primaryContact:data?.name,
+       gst:data?.tax,
+       addressLine:data?.address,
+       locality:data?.locality,
+       locationUrl:"",
+       lattitude:"",
+       longitude:"",
+       country:data?.country?.name,
+       state:data?.state?.name,
+       pinCodeId:data?.pincode,
+       city:data?.city,
+       district:data?.district?.name,
+       branchName:data?.branchname,
+       mobileNo:data?.phone,
+       phone:"",
+       iso2:data?.country?.iso2,
+       callingCodes:data?.country?.callingCodes,
+       countryData:data?.country,
+       stateData:data?.state,
+       countryCode:data?.country?.iso2,
+       countryCodeIso:data?.country?.iso2,
+       districtData:data?.district,
+     },
+     currencyId: {
+        "currencyCode": "INR",
+        "decimal": ".",
+        "description": "Indian rupee",
+        "id": 66,
+        "precision": 2,
+        "symbol": "INR ₹",
+        "tenantId": 54,
+        "thousand": ","
+    },
+    displayName:data?.name,
+    mobileNo:"",
+    jobTitle:"",
+    department:data?.department,
+    userEmail:data?.email,
+    pan:null,
+    id:0,
+    cognitoUserId:"temporary_name",
+    invitedBy:userId,
+    businessTypeId:808,
+    businesstype:{
+         "id": 808,
+        "name": "EPC",
+        "tenantId": 54
+    },
+
+  "companyLogo": "/images/default-placeholder.png",
+    "status": "CREATED",
+    "inviteAccess": 0,
+    "accountTypeId": 2,
+    "userId": null,
+    "companyName": data?.name,
+    "fullStock": true,
+    "roleName": "",
+    "activated": true,
+    "verified": true
+     }
+     const response = await createCustomer(tenantId,token,payload);
+     
+     if(response){
+      setLoading(false);
+      toast.success('Customer created successfully');
+     }
+     else{
+       setLoading(false);
+      toast.error('Customer failed to create');
+     }
+   }
+  
 
   return (
     <div>
@@ -122,27 +215,21 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
                   label="Country"
                   placeholder="Select a country"
                   className="text-gray-700"
-                  options={countryOptions}
+                  options={countryList}
                 />
                 <FormSelect
                   name="state"
                   label="State/province"
                   placeholder="State/province"
                   className="text-gray-700"
-                  options={[
-                    { value: 'Low', label: 'Low' },
-                    { value: 'High', label: 'High' },
-                  ]}
+                  options={filteredStates}
                 />
                 <FormSelect
                   name="district"
                   label="District"
                   placeholder="District"
                   className="text-gray-700"
-                  options={[
-                    { value: 'Field Work', label: 'Field Work' },
-                    { value: 'Repair reasons', label: 'Repair reasons' },
-                  ]}
+                  options={filteredDistricts}
                 />
                 <FormSelect
                   name="city"
@@ -211,9 +298,9 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
                   rules={{ required: 'Phone is required' }}
                   render={({ field }) => (
                     <div>
-                      <label className="block text-sm font-medium mb-1">
+                      {/* <label className="block text-sm font-medium mb-1">
                         Customer Contact Number
-                      </label>
+                      </label> */}
                       <PhoneInput
                         {...field}
                         country="in"
