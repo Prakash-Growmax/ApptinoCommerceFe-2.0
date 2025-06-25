@@ -250,7 +250,7 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
               </div>
 
               <div className="flex my-3">
-                <h4 className="mr-4 font-semibold">Address for</h4>
+                <h4 className="lg:mr-4 mr-2 text-sm lg:text-md   font-semibold">Address for</h4>
                 <RadioGroup defaultValue="option-one" className="flex">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="option-one" id="option-one" />

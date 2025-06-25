@@ -18,8 +18,8 @@ const InfoRow = ({ label, value }: { label: string; value?: string | string[] | 
       : value;
 
   return (
-    <div className="grid grid-cols-2 gap-2 mb-3">
-      <div className="text-sm font-semibold  ">{label}</div>
+    <div className="grid grid-cols-2 lg:gap-2 gap-8 mb-3">
+      <div className="lg:text-sm text-xs font-semibold  lg:w-[100px]  ">{label}</div>
       <div className="text-sm text-black text-muted-foreground">{displayValue}</div>
     </div>
   );
@@ -66,13 +66,13 @@ const CompanyDetailsPage = () => {
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
-    <div className="w-full px-6 py-4 space-y-4 ">
+    <div className="w-full lg:px-6 lg:py-4 space-y-4 ">
       {/* Company Details */}
-      <Card className="mx-4">
+      <Card className="lg:mx-4">
         <CardHeader>
           <CardTitle className="text-lg">Company Details</CardTitle>
         </CardHeader>
-        <div className="grid grid-cols-2 gap-x-12 px-6 py-4">
+        <div className="grid grid-cols-2 lg:gap-x-12  lg:px-6 lg:py-4 p-3">
           <div className="space-y-2">
             <InfoRow label="Partner Name" value={companyDetails?.companyName} />
             <InfoRow label="Tax ID" value={companyDetails?.taxId} />
@@ -81,7 +81,7 @@ const CompanyDetailsPage = () => {
             <InfoRow label="Account Owner" value={companyDetails?.accountOwnerName} />
             <InfoRow label="Company Tags" value={companyDetails?.tags} />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 ml-3">
             <InfoRow label="Website" value={companyDetails?.website} />
             <InfoRow label="Currency" value={companyDetails?.currencyCode} />
             <InfoRow label="Account Type" value={companyDetails?.accountType} />

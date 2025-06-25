@@ -137,7 +137,7 @@ const matchedItem = fieldServicesData.find(
     
      
       <TicketHeader />
-      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 p-4">
+      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 lg:p-4">
         <div className="w-full lg:w-2/3">
           <ServiceDetails refetchFieldData={refetchFieldData} />
         </div>

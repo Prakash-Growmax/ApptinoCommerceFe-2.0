@@ -223,7 +223,7 @@ const SupportTicketsDialog = () => {
 
   return (
     <>
-      <ShadCnButton onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
+      <ShadCnButton className='w-full' onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
       <div className="">
         <EditDialog
           open={open}

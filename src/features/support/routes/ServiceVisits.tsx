@@ -43,7 +43,7 @@ const ServiceVisits = ({refetchFieldData}) => {
 
         <CardContent className="p-0">
           {fieldServicesData.length > 0 ? (
-            <div className="p-6 pb-6">
+            <div className="lg:p-6 p-3 pb-6">
               <Accordion type="multiple" className="w-full">
                 {fieldServicesData.map((fieldService, index) => (
                   <AccordionItem 

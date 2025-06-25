@@ -9,7 +9,7 @@ import { Card, CardHeader } from "@/components/ui/card";
       const {ticketIdentifier, createdDateTime} =supportTicketData
       
     return (
-      <div className="p-3">
+      <div className=" mb-3  lg:mx-4">
           <Card>
               <CardHeader>
 

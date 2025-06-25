@@ -32,7 +32,7 @@ const { watch } = useFormContext();
         <CardHeader>
           <CardTitle>Activity Timeline</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6 mt-8 ">
+        <CardContent className=" mt-8 ">
           {ticketTimelineData?.map((entry, index) => {
             const change = entry.changes?.[0];
             return (

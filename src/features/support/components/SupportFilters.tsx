@@ -131,12 +131,12 @@ const SupportFilters = () => {
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
-      <div className="flex flex-1 gap-2 flex-wrap">
+      <div className="lg:flex flex-1 lg:gap-2   flex-wrap ">
         <Select
           value={selectedStatus}
           onValueChange={value => handleChange('status', value)}
         >
-          <SelectTrigger id="status" className="min-w-24 sm:min-w-32">
+          <SelectTrigger id="status" className="w-full lg:w-[160px] my-3 lg:my-0">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -152,7 +152,7 @@ const SupportFilters = () => {
           value={selectedPriority}
           onValueChange={value => handleChange('priority', value)}
         >
-          <SelectTrigger id="priority" className="min-w-24 sm:min-w-32">
+          <SelectTrigger id="priority" className="w-full lg:w-[160px] my-3 lg:my-0">
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
           <SelectContent>
@@ -166,7 +166,7 @@ const SupportFilters = () => {
           value={selectedCategory}
           onValueChange={value => handleChange('category', value)}
         >
-          <SelectTrigger id="category" className="min-w-24 sm:min-w-32">
+          <SelectTrigger id="category" className="w-full lg:w-[160px] my-3 lg:my-0">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -178,7 +178,7 @@ const SupportFilters = () => {
           </SelectContent>
         </Select>
 
-        <div className="flex min-w-32 sm:min-w-40">
+        <div className="flex min-w-32 sm:min-w-40 my-3 lg:my-0">
           <Input
             type="text"
             placeholder="Ticket ID"
@@ -192,7 +192,7 @@ const SupportFilters = () => {
           <ShadCnButton
             type="button"
             onClick={handleApplyFilter}
-            className="flex-1 sm:flex-none"
+            className="flex-1 sm:flex-none lg:ml-52" 
           >
             <span className="sm:hidden">Apply</span>
             <span className="hidden sm:inline">Apply Filters</span>
@@ -212,9 +212,10 @@ const SupportFilters = () => {
           )}
         </div>
       </div>
-      <div className="flex justify-center sm:justify-end">
+      <div className="flex justify-center sm:justify-end ">
         <Dialog
           open={isDialogOpen}
+          
           onOpenChange={open => {
             setIsDialogOpen(open);
             if (!open) {

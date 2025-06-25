@@ -109,15 +109,15 @@ const CustomerFilter = () => {
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
-      <div className="flex flex-1 gap-2 flex-wrap">
+      <div className="flex flex-1 gap-3 flex-wrap">
         {/* Search Input */}
-        <div className="relative min-w-48 sm:min-w-64">
+        <div className="relative  w-full lg:w-[240px]">
           <Input
             type="text"
             value={searchText}
             onChange={e => handleSearch(e.target.value)}
             placeholder="Search Customer"
-            className="w-full pr-8"
+            className="w-full "
           />
           <div className="absolute inset-y-0 right-2 flex items-center">
             {searchText ? (
@@ -132,7 +132,7 @@ const CustomerFilter = () => {
 
         {/* Company Status */}
         <Select onValueChange={handleStatusChange} value={statuss}>
-          <SelectTrigger className="min-w-24 sm:min-w-32">
+          <SelectTrigger className="w-full lg:w-[100px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -167,7 +167,7 @@ const CustomerFilter = () => {
         </div>
       </div>
       <div>
-        <ShadCnButton type='button' className="flex-1 sm:flex-none" onClick={()=>{setOpen(true)}} >
+        <ShadCnButton type='button' className="flex-1 sm:flex-none w-full" onClick={()=>{setOpen(true)}} >
           Create Customer
         </ShadCnButton>
       </div>
