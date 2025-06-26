@@ -1,6 +1,7 @@
 import { apiGet } from "@/lib/api/client";
 import { CustomerData } from "../types/customer.type";
 import { AccountFilterType } from "../schema/customer.schema";
+import { CurrencyType } from "../types/address.type";
 
 export const CustomerFilters = async ({
   userId,
@@ -65,3 +66,5 @@ export const getDistrict=async(tenantId:string,token:string)=>{
   })
   return response;
 }
+
+

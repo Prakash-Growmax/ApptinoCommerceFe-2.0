@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { CreateCustomer } from "../types/customer.type";
 
+
+
 export const useCustomerAddressStore=create<CreateCustomer>((set)=>({
   stateList: [],
   setStateList: (stateList) => set({ stateList }),
@@ -10,4 +12,9 @@ export const useCustomerAddressStore=create<CreateCustomer>((set)=>({
 
   districtList: [],
   setDistrictList: (districtList) => set({ districtList }),
+
+currencyList: [],
+setCurrencyList: (list) => set({ currencyList: list }),
+
 }))
+

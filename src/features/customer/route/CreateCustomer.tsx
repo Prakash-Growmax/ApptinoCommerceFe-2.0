@@ -1,17 +1,26 @@
-import EditDialog from "@/components/molecules/EditDialog/EditDialog";
-import { FormInput, FormSelect } from "@/components/molecules/ReactHookForm";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
-import { useGetCustomerAddress } from "../hook/useGetCustomerAddress";
-import { useCustomerAddressStore } from "../store/useCustomerAddressStore";
-import useAppStore from "@/stores/appStore";
-import { TokenPayload } from "@/types/auth.types";
-import { createCustomer } from "../api/company.api";
-import { toast } from "sonner";
-import { useState } from "react";
+import { useState } from 'react';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
+import PhoneInput from 'react-phone-input-2';
 
+import { toast } from 'sonner';
+
+import EditDialog from '@/components/molecules/EditDialog/EditDialog';
+import { FormInput, FormSelect } from '@/components/molecules/ReactHookForm';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
+
+import { createCustomer } from '../api/company.api';
+import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
+import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
+import { CurrencyType } from '../types/customer.type';
+
+export type CurrencyOptionType = {
+  value: string;
+  label: string;
+  fullData: CurrencyType;
+};
 type FormData = {
   customerBranchName: string;
   sellername: string;
@@ -34,13 +43,24 @@ type FormData = {
   department: string;
 };
 
-const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boolean) => void }) => {
-   const {accessToken,payload}=useAppStore();
-   const token = accessToken as string;
-  const {userId,tenantId} = payload as TokenPayload;
-  useGetCustomerAddress({open})
-  const {stateList,countryList,districtList}=useCustomerAddressStore();
-  const [loading,setLoading]=useState(false)
+const CreateCustomer = ({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (val: boolean) => void;
+}) => {
+  const { accessToken, payload } = useAppStore();
+  const token = accessToken as string;
+  const { userId, tenantId } = payload as TokenPayload;
+  useGetCustomerAddress({ open });
+  const { stateList, countryList, districtList, currencyList } = useCustomerAddressStore();
+  
+  
+  const [loading, setLoading] = useState(false);
+
+  console.log("✅ currencyList", currencyList);
+  
   const methods = useForm<FormData>({
     defaultValues: {
       customerBranchName: '',
@@ -66,22 +86,19 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
   });
 
   const { control, handleSubmit, reset } = methods;
- 
-    const selectedCountry = useWatch({ control, name: "country" });
-  const selectedState = useWatch({ control, name: "state" });
 
+  const selectedCountry = useWatch({ control, name: 'country' });
+  const selectedState = useWatch({ control, name: 'state' });
 
   // 🌍 Filter based on selections
   const filteredStates = stateList.filter(
-  (state: any) => state?.countryCode?.toString() === selectedCountry?.iso2
-);
-
+    (state: any) => state?.countryCode?.toString() === selectedCountry?.iso2
+  );
 
   const filteredDistricts = districtList.filter(
     (district: any) => district?.stateId === selectedState?.id
   );
-  
-  
+
   const handleDialogClose = () => {
     setOpen(false);
     reset();
@@ -89,82 +106,80 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-   const payload={
-     regAddress:{
-       isShipping:true,
-       isBilling:true,
-       primaryContact:data?.name,
-       gst:data?.tax,
-       addressLine:data?.address,
-       locality:data?.locality,
-       locationUrl:"",
-       lattitude:"",
-       longitude:"",
-       country:data?.country?.name,
-       state:data?.state?.name,
-       pinCodeId:data?.pincode,
-       city:data?.city,
-       district:data?.district?.name,
-       branchName:data?.branchname,
-       mobileNo:data?.phone,
-       phone:"",
-       iso2:data?.country?.iso2,
-       callingCodes:data?.country?.callingCodes,
-       countryData:data?.country,
-       stateData:data?.state,
-       countryCode:data?.country?.iso2,
-       countryCodeIso:data?.country?.iso2,
-       districtData:data?.district,
-     },
-     currencyId: {
-        "currencyCode": "INR",
-        "decimal": ".",
-        "description": "Indian rupee",
-        "id": 66,
-        "precision": 2,
-        "symbol": "INR ₹",
-        "tenantId": 54,
-        "thousand": ","
-    },
-    displayName:data?.name,
-    mobileNo:"",
-    jobTitle:"",
-    department:data?.department,
-    userEmail:data?.email,
-    pan:null,
-    id:0,
-    cognitoUserId:"temporary_name",
-    invitedBy:userId,
-    businessTypeId:808,
-    businesstype:{
-         "id": 808,
-        "name": "EPC",
-        "tenantId": 54
-    },
+    const payload = {
+      regAddress: {
+        isShipping: true,
+        isBilling: true,
+        primaryContact: data?.name,
+        gst: data?.tax,
+        addressLine: data?.address,
+        locality: data?.locality,
+        locationUrl: '',
+        lattitude: '',
+        longitude: '',
+        country: data?.country?.name,
+        state: data?.state?.name,
+        pinCodeId: data?.pincode,
+        city: data?.city,
+        district: data?.district?.name,
+        branchName: data?.branchname,
+        mobileNo: data?.phone,
+        phone: '',
+        iso2: data?.country?.iso2,
+        callingCodes: data?.country?.callingCodes,
+        countryData: data?.country,
+        stateData: data?.state,
+        countryCode: data?.country?.iso2,
+        countryCodeIso: data?.country?.iso2,
+        districtData: data?.district,
+      },
+      currencyId: {
+        currencyCode: 'INR',
+        decimal: '.',
+        description: 'Indian rupee',
+        id: 66,
+        precision: 2,
+        symbol: 'INR ₹',
+        tenantId: 54,
+        thousand: ',',
+      },
+      displayName: data?.name,
+      mobileNo: '',
+      jobTitle: '',
+      department: data?.department,
+      userEmail: data?.email,
+      pan: null,
+      id: 0,
+      cognitoUserId: 'temporary_name',
+      invitedBy: userId,
+      businessTypeId: 808,
+      businesstype: {
+        id: 808,
+        name: 'EPC',
+        tenantId: 54,
+      },
 
-  "companyLogo": "/images/default-placeholder.png",
-    "status": "CREATED",
-    "inviteAccess": 0,
-    "accountTypeId": 2,
-    "userId": null,
-    "companyName": data?.name,
-    "fullStock": true,
-    "roleName": "",
-    "activated": true,
-    "verified": true
-     }
-     const response = await createCustomer(tenantId,token,payload);
-     
-     if(response){
+      companyLogo: '/images/default-placeholder.png',
+      status: 'CREATED',
+      inviteAccess: 0,
+      accountTypeId: 2,
+      userId: null,
+      companyName: data?.name,
+      fullStock: true,
+      roleName: '',
+      activated: true,
+      verified: true,
+    };
+    const response = await createCustomer(tenantId, token, payload);
+
+    if (response) {
       setLoading(false);
       toast.success('Customer created successfully');
-     }
-     else{
-       setLoading(false);
+    } else {
+      setLoading(false);
       toast.error('Customer failed to create');
-     }
-   }
-  
+    }
+  };
 
   return (
     <div>
@@ -175,7 +190,6 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
         handleSubmit={handleSubmit(onSubmit)}
         hideDialogActions={false}
         widthClass="md:max-w-xl"
-      
         loading={false}
       >
         <FormProvider {...methods}>
@@ -189,9 +203,9 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
                 options={[]}
               />
               <FormInput
-              name="sellername"
-              label="Seller Name"
-                   placeholder="Seller name"
+                name="sellername"
+                label="Seller Name"
+                placeholder="Seller name"
                 className="text-gray-700"
               />
               {/* <FormSelect
@@ -205,9 +219,24 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
 
               <h3 className="font-semibold text-lg mb-2">Address Details</h3>
 
-              <FormInput name="branchname" label="Branch Name" placeholder="Branch name" className="text-gray-700" />
-              <FormInput name="address" label="Address" className="text-gray-700" placeholder="Address" />
-              <FormInput name="locality" label="Locality" className="text-gray-700" placeholder="Locality" />
+              <FormInput
+                name="branchname"
+                label="Branch Name"
+                placeholder="Branch name"
+                className="text-gray-700"
+              />
+              <FormInput
+                name="address"
+                label="Address"
+                className="text-gray-700"
+                placeholder="Address"
+              />
+              <FormInput
+                name="locality"
+                label="Locality"
+                className="text-gray-700"
+                placeholder="Locality"
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
                 <FormSelect
@@ -250,20 +279,31 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
               </div>
 
               <div className="flex my-3">
-                <h4 className="lg:mr-4 mr-2 text-sm lg:text-md   font-semibold">Address for</h4>
+                <h4 className="lg:mr-4 mr-2 text-sm lg:text-md   font-semibold">
+                  Address for
+                </h4>
                 <RadioGroup defaultValue="option-one" className="flex">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="option-one" id="option-one" />
-                    <Label htmlFor="option-one" className="text-gray-600">Billing</Label>
+                    <Label htmlFor="option-one" className="text-gray-600">
+                      Billing
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="option-two" id="option-two" />
-                    <Label htmlFor="option-two" className="text-gray-600">Shipping</Label>
+                    <Label htmlFor="option-two" className="text-gray-600">
+                      Shipping
+                    </Label>
                   </div>
                 </RadioGroup>
               </div>
 
-              <FormInput name="tax" label="Tax ID" placeholder="Tax ID/GST#" className="text-gray-700" />
+              <FormInput
+                name="tax"
+                label="Tax ID"
+                placeholder="Tax ID/GST#"
+                className="text-gray-700"
+              />
               <FormSelect
                 name="business"
                 label="Business Type"
@@ -277,21 +317,27 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
               <FormSelect
                 name="currency"
                 label="Currency"
-                placeholder="Currency"
+                placeholder="Select currency"
                 className="text-gray-700"
-                options={[
-                  { value: 'WEB', label: 'WEB' },
-                  { value: 'Mobile', label: 'Mobile' },
-                ]}
+                options={Array.isArray(currencyList) ? currencyList : []}
+                 
+                
               />
             </div>
 
             <div className="bg-white rounded-lg">
-              <h3 className="font-semibold text-lg mb-2">Customer - User Details</h3>
+              <h3 className="font-semibold text-lg mb-2">
+                Customer - User Details
+              </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 w-full">
-                <FormInput name="name" label="Name" placeholder="Name" autoComplete="Name" />
-                
+                <FormInput
+                  name="name"
+                  label="Name"
+                  placeholder="Name"
+                  autoComplete="Name"
+                />
+
                 <Controller
                   name="phone"
                   control={control}
@@ -308,12 +354,12 @@ const CreateCustomer = ({ open, setOpen }: { open: boolean; setOpen: (val: boole
                         placeholder="Enter phone number"
                         enableSearch
                         inputStyle={{ width: '100%' }}
-                        onChange={(value) => field.onChange(value)}
+                        onChange={value => field.onChange(value)}
                       />
                     </div>
                   )}
                 />
-                
+
                 <FormInput
                   name="email"
                   label="Business Email"

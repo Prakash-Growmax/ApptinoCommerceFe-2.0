@@ -4,6 +4,24 @@ export type CustomerData = {
   tenantId: string;
   token: string;
 };
+
+export type CurrencyType = {
+  currencyCode: string;
+  decimal: string;
+  description: string;
+  id: number;
+  precision: number;
+  symbol: string;
+  tenantId: number;
+  thousand: string;
+};
+
+export type CurrencyOptionType = {
+  value: string;
+  label: string;
+  fullData: CurrencyType;
+};
+
 export type CreateCustomer={
  stateList: any[];
   setStateList: (stateList: any[]) => void;
@@ -13,4 +31,7 @@ export type CreateCustomer={
 
   districtList: any[];
   setDistrictList: (districtList: any[]) => void;
+
+  currencyList: any[];
+  setCurrencyList: (currencyList: any[]) => void;
 }
