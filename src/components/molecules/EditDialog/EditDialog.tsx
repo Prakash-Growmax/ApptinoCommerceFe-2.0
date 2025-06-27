@@ -309,6 +309,7 @@ const EditDialog = ({
                 </ShadCnButton>
                 <ShadCnButton
                   onClick={handleSubmit}
+                  form="create-customer-form"
                   disabled={ShadCnButtonDisabled || isSubmitting}
                   className={cn('text-base font-semibold', ShadCnButtonField)}
                 >

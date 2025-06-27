@@ -264,7 +264,7 @@ const SupportTicketsDialog = () => {
                   className="text-gray-700 md:w-[330px]"
                   autoComplete="contactPerson"
 
-                  // rules={{ required: 'Contact person is required' }}
+                  rules={{ required: 'Contact person is required' }}
                 />
                 <FormInput
                   name="contactPerson"
@@ -273,7 +273,7 @@ const SupportTicketsDialog = () => {
                   className="text-gray-700 md:w-[320px]"
                   autoComplete="contactPerson"
 
-                  // rules={{ required: 'Contact person is required' }}
+                  rules={{ required: 'Contact person is required' }}
                 />
 
                 <FormInput
@@ -282,26 +282,26 @@ const SupportTicketsDialog = () => {
                   type="email"
                   className="text-gray-700 md:w-[330px]"
                   placeholder="Customer email"
-                  // rules={{
-                  //   required: 'Email is required',
-                  //   pattern: {
-                  //     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                  //     message: 'Invalid email format',
-                  //   },
-                  // }}
+                  rules={{
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                      message: 'Invalid email format',
+                    },
+                  }}
                 />
                 <FormInput
                   name="phone"
                   label="Customer Contact Number"
                   className="text-gray-700 md:w-[320px]"
                   placeholder="Contact number"
-                  // rules={{
-                  //   required: 'Phone is required',
-                  //   pattern: {
-                  //     value: /^[0-9]{10}$/,
-                  //     message: 'Phone must be 10 digits',
-                  //   },
-                  // }}
+                  rules={{
+                    required: 'Phone is required',
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: 'Phone must be 10 digits',
+                    },
+                  }}
                 />
                 <FormSelect
                   name="priority"

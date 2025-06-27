@@ -5,14 +5,22 @@ import { TokenPayload } from '@/types/auth.types';
 
 import { getCurrencies } from '../api/currencies.api';
 import { getCountry, getDistrict, getState } from '../api/customer.api';
+import { getRoles } from '../api/customer.api';
 import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
+import { RawRoleResponse } from '../types/customer.type';
+import { RoleOptionType } from '../types/customer.type';
 
 export const useGetCustomerAddress = ({ open }) => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const { userId, companyId, tenantId } = payload as TokenPayload;
-  const { setStateList, setCountryList, setDistrictList, setCurrencyList } =
-    useCustomerAddressStore();
+  const {
+    setStateList,
+    setCountryList,
+    setDistrictList,
+    setCurrencyList,
+    setRoleList,
+  } = useCustomerAddressStore();
   const getAllStateQuery = useQuery({
     queryKey: ['state', tenantId, open],
     queryFn: async () => {
@@ -66,10 +74,21 @@ export const useGetCustomerAddress = ({ open }) => {
     enabled: !!tenantId && open,
   });
 
+  const getRolesQuery = useQuery({
+    queryKey: ['roles', tenantId, open],
+    queryFn: async () => {
+      const response = await getRoles(tenantId, token);
+      setRoleList(response);
+      return response;
+    },  
+    enabled: !!tenantId && open,
+  });
+
   return {
     getAllStateQuery,
     getAllDistrictQuery,
     getAllCountQuery,
     getCurrencyQuery,
+    getRolesQuery,
   };
 };

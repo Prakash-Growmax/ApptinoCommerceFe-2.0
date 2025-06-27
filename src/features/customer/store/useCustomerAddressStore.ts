@@ -16,5 +16,7 @@ export const useCustomerAddressStore=create<CreateCustomer>((set)=>({
 currencyList: [],
 setCurrencyList: (list) => set({ currencyList: list }),
 
+ roleList: [],
+    setRoleList: (list) => set({ roleList: list }),
 }))
 

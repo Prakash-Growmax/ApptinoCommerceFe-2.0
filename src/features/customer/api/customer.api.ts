@@ -2,6 +2,7 @@ import { apiGet } from "@/lib/api/client";
 import { CustomerData } from "../types/customer.type";
 import { AccountFilterType } from "../schema/customer.schema";
 import { CurrencyType } from "../types/address.type";
+import RawRoleResponse  from '../types/customer.type';
 
 export const CustomerFilters = async ({
   userId,
@@ -66,5 +67,24 @@ export const getDistrict=async(tenantId:string,token:string)=>{
   })
   return response;
 }
+
+export const getRoles = async (tenantId: string, token: string) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-tenant': tenantId,
+    Authorization: `Bearer ${token}`,
+  };
+
+  const response = await apiGet({
+    url: `/corecommerce/accessgroups`,
+    config: {
+      headers,
+    },
+  });
+  
+  return response;
+  // return response.data?? []
+};
+
 
 

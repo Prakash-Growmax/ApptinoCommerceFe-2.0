@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import PhoneInput from 'react-phone-input-2';
+import { useNavigate } from 'react-router-dom';
 
 import { toast } from 'sonner';
 
 import EditDialog from '@/components/molecules/EditDialog/EditDialog';
 import { FormInput, FormSelect } from '@/components/molecules/ReactHookForm';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import useAppStore from '@/stores/appStore';
@@ -15,15 +17,17 @@ import { createCustomer } from '../api/company.api';
 import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
 import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
 import { CurrencyType } from '../types/customer.type';
+import useAccountsStore from '@/stores/useAccountStore';
 
 export type CurrencyOptionType = {
   value: string;
   label: string;
   fullData: CurrencyType;
 };
+
 type FormData = {
   customerBranchName: string;
-  sellername: string;
+  cutomername: string;
   branchname: string;
   address: string;
   locality: string;
@@ -53,18 +57,18 @@ const CreateCustomer = ({
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const { userId, tenantId } = payload as TokenPayload;
+  const navigate = useNavigate();
   useGetCustomerAddress({ open });
-  const { stateList, countryList, districtList, currencyList } = useCustomerAddressStore();
-  
-  
+  const { stateList, countryList, districtList, currencyList, roleList } =
+    useCustomerAddressStore();
+
+
   const [loading, setLoading] = useState(false);
 
-  console.log("✅ currencyList", currencyList);
-  
   const methods = useForm<FormData>({
     defaultValues: {
       customerBranchName: '',
-      sellername: '',
+      cutomername: '',
       branchname: '',
       address: '',
       locality: '',
@@ -105,6 +109,11 @@ const CreateCustomer = ({
   };
 
   const onSubmit = async (data: FormData) => {
+    console.log('🚀 onSubmit called!'); // Add this line
+    console.log('✅ Form submitted with data:', data);
+    const selectedCurrency = currencyList.find(
+      (c: any) => c.id === data.currency || c.value === data.currency
+    );
     setLoading(true);
     const payload = {
       regAddress: {
@@ -117,35 +126,26 @@ const CreateCustomer = ({
         locationUrl: '',
         lattitude: '',
         longitude: '',
-        country: data?.country?.name,
-        state: data?.state?.name,
+        country: data?.country?.name || '',
+        state: data?.state?.name || '',
         pinCodeId: data?.pincode,
         city: data?.city,
-        district: data?.district?.name,
+        district: data?.district?.name || '',
         branchName: data?.branchname,
         mobileNo: data?.phone,
         phone: '',
-        iso2: data?.country?.iso2,
-        callingCodes: data?.country?.callingCodes,
+        iso2: data?.country?.iso2 || '',
+        callingCodes: data?.country?.callingCodes || '',
         countryData: data?.country,
         stateData: data?.state,
-        countryCode: data?.country?.iso2,
-        countryCodeIso: data?.country?.iso2,
+        countryCode: data?.country?.iso2 || '',
+        countryCodeIso: data?.country?.iso2 || '',
         districtData: data?.district,
       },
-      currencyId: {
-        currencyCode: 'INR',
-        decimal: '.',
-        description: 'Indian rupee',
-        id: 66,
-        precision: 2,
-        symbol: 'INR ₹',
-        tenantId: 54,
-        thousand: ',',
-      },
+      currencyId: selectedCurrency ?? {},
       displayName: data?.name,
-      mobileNo: '',
-      jobTitle: '',
+      mobileNo: data?.phone,
+      jobTitle: data?.job,
       department: data?.department,
       userEmail: data?.email,
       pan: null,
@@ -156,9 +156,8 @@ const CreateCustomer = ({
       businesstype: {
         id: 808,
         name: 'EPC',
-        tenantId: 54,
+        tenantId: Number(tenantId),
       },
-
       companyLogo: '/images/default-placeholder.png',
       status: 'CREATED',
       inviteAccess: 0,
@@ -166,19 +165,25 @@ const CreateCustomer = ({
       userId: null,
       companyName: data?.name,
       fullStock: true,
-      roleName: '',
+      roleName: data?.roles,
       activated: true,
       verified: true,
     };
+
+    console.log('🟢 Final Payload:', payload);
+
     const response = await createCustomer(tenantId, token, payload);
 
     if (response) {
-      setLoading(false);
       toast.success('Customer created successfully');
+      setOpen(false);
+      reset();
+      navigate('/customers');
     } else {
-      setLoading(false);
       toast.error('Customer failed to create');
     }
+
+    setLoading(false);
   };
 
   return (
@@ -187,27 +192,25 @@ const CreateCustomer = ({
         open={open}
         title="Create Customer"
         closeDialog={handleDialogClose}
-        handleSubmit={handleSubmit(onSubmit)}
+        // handleSubmit={methods.handleSubmit(onSubmit)}
         hideDialogActions={false}
         widthClass="md:max-w-xl"
-        loading={false}
+        loading={loading}
       >
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="">
+          <form
+            id="create-customer-form"
+            onSubmit={handleSubmit(onSubmit)}
+            className=""
+          >
             <div className="bg-white rounded-lg">
-              <FormSelect
+              {/* <FormSelect
                 name="customerBranchName"
                 label="Search By Company Name"
                 placeholder="Customer branch name"
                 className="text-gray-700"
                 options={[]}
-              />
-              <FormInput
-                name="sellername"
-                label="Seller Name"
-                placeholder="Seller name"
-                className="text-gray-700"
-              />
+              /> */}
               {/* <FormSelect
                 name="sellername"
                 label="Seller Name"
@@ -217,28 +220,36 @@ const CreateCustomer = ({
                 rules={{ required: 'Contact person is required' }}
               /> */}
 
-              <h3 className="font-semibold text-lg mb-2">Address Details</h3>
-
-              <FormInput
-                name="branchname"
-                label="Branch Name"
-                placeholder="Branch name"
-                className="text-gray-700"
-              />
-              <FormInput
-                name="address"
-                label="Address"
-                className="text-gray-700"
-                placeholder="Address"
-              />
-              <FormInput
-                name="locality"
-                label="Locality"
-                className="text-gray-700"
-                placeholder="Locality"
-              />
+              {/* <h3 className="font-semibold text-lg mb-2">Address Details</h3> */}
 
               <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+                <FormInput
+                  name="cutomername"
+                  label="Customer Name *"
+                  placeholder="Customer name"
+                  className="text-gray-700 "
+                  rules={{ required: 'Customer name is required' }}
+                />
+
+                <FormInput
+                  name="branchname"
+                  label="Branch Name"
+                  placeholder="Branch name"
+                  className="text-gray-700"
+                />
+
+                <FormInput
+                  name="address"
+                  label="Address"
+                  className="text-gray-700"
+                  placeholder="Address"
+                />
+                <FormInput
+                  name="locality"
+                  label="Locality"
+                  className="text-gray-700"
+                  placeholder="Locality"
+                />
                 <FormSelect
                   name="country"
                   label="Country"
@@ -260,42 +271,38 @@ const CreateCustomer = ({
                   className="text-gray-700"
                   options={filteredDistricts}
                 />
-                <FormSelect
+                <FormInput
                   name="city"
                   label="City"
-                  placeholder="City"
                   className="text-gray-700"
-                  options={[
-                    { value: 'WEB', label: 'WEB' },
-                    { value: 'Mobile', label: 'Mobile' },
-                  ]}
+                  placeholder="City"
                 />
                 <FormInput
                   name="pincode"
-                  label="PIN Code"
+                  label="Postal Code / PIN Code"
                   placeholder="PIN Code"
                   className="text-gray-700 md:w-[320px]"
                 />
               </div>
 
               <div className="flex my-3">
-                <h4 className="lg:mr-4 mr-2 text-sm lg:text-md   font-semibold">
+                <h4 className="lg:mr-4 mr-2 text-sm lg:text-md font-semibold">
                   Address for
                 </h4>
-                <RadioGroup defaultValue="option-one" className="flex">
+                <div className="flex space-x-4">
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="option-one" id="option-one" />
-                    <Label htmlFor="option-one" className="text-gray-600">
+                    <Checkbox id="billing" defaultChecked />
+                    <Label htmlFor="billing" className="text-gray-600">
                       Billing
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="option-two" id="option-two" />
-                    <Label htmlFor="option-two" className="text-gray-600">
+                    <Checkbox id="shipping" />
+                    <Label htmlFor="shipping" className="text-gray-600">
                       Shipping
                     </Label>
                   </div>
-                </RadioGroup>
+                </div>
               </div>
 
               <FormInput
@@ -306,22 +313,22 @@ const CreateCustomer = ({
               />
               <FormSelect
                 name="business"
-                label="Business Type"
+                label="Business Type *"
                 placeholder="Business type"
                 className="text-gray-700"
                 options={[
                   { value: 'WEB', label: 'WEB' },
                   { value: 'Mobile', label: 'Mobile' },
                 ]}
+                rules={{ required: 'Business Type is required' }}
               />
               <FormSelect
                 name="currency"
-                label="Currency"
+                label="Currency *"
                 placeholder="Select currency"
                 className="text-gray-700"
                 options={Array.isArray(currencyList) ? currencyList : []}
-                 
-                
+                rules={{ required: 'Currency is required' }}
               />
             </div>
 
@@ -350,7 +357,7 @@ const CreateCustomer = ({
                       <PhoneInput
                         {...field}
                         country="in"
-                        inputClass="!w-full !form-input !rounded-md !border !border-gray-300 !py-2"
+                        inputClass="!w-full h-[36px] !rounded-sm text-black !border !border-gray-300 p-1 pl-2"
                         placeholder="Enter phone number"
                         enableSearch
                         inputStyle={{ width: '100%' }}
@@ -371,10 +378,11 @@ const CreateCustomer = ({
                   label="Roles"
                   placeholder="Roles"
                   className="text-gray-700"
-                  options={[
-                    { value: 'WEB', label: 'WEB' },
-                    { value: 'Mobile', label: 'Mobile' },
-                  ]}
+                  options={roleList?.map(item => ({
+                    value: item.roleId.roleName,
+                    label: item.roleId.roleName,
+                    fullData: item,
+                  }))}
                 />
                 <FormInput
                   name="job"

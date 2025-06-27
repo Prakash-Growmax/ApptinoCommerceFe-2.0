@@ -22,6 +22,23 @@ export type CurrencyOptionType = {
   fullData: CurrencyType;
 };
 
+export type RoleType = {
+  id: number;
+  roleId: {
+    id: number;
+    roleName: string;
+    roleDescription: string;
+  };
+};
+
+
+
+
+
+
+
+
+
 export type CreateCustomer={
  stateList: any[];
   setStateList: (stateList: any[]) => void;
@@ -34,4 +51,8 @@ export type CreateCustomer={
 
   currencyList: any[];
   setCurrencyList: (currencyList: any[]) => void;
+
+   roleList: any[]; 
+  setRoleList: (roleList: any[]) => void; 
+  
 }

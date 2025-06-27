@@ -7,6 +7,7 @@ import { FormField } from '../FormField/FormField';
 interface FormInputProps {
   name: string;
   label?: string;
+  rules?: any;
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
   placeholder?: string;
   description?: string;
@@ -27,6 +28,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     {
       name,
       label,
+      rules,
       type = 'text',
       placeholder,
       description,
@@ -49,6 +51,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     return (
       <FormField
         name={name}
+        rules={rules}
         {...(label && { label })}
         {...(description && { description })}
         {...(className && { className })}
@@ -56,31 +59,31 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         {({ field, fieldState }) => (
           <div className="relative">
             {/* <Input
-              {...field}
-              ref={ref}
-              type={type}
-              placeholder={placeholder}
-              value={safeValue}
-              autoComplete={autoComplete}
-              disabled={disabled}
-              aria-invalid={!!fieldState.error}
-              aria-describedby={fieldState.error ? `${name}-error` : undefined}
-              className={`${fieldState.error ? 'border-red-500' : ''} ${
-                rightElement ? 'pr-20' : ''
-              }`}
-              autoFocus={autoFocus}
-              onKeyDown={onKeyDown}
-              
-              onBlur={(e) => {
-                field.onBlur();
-                onBlur?.(e);
-              }}
-              onFocus={onFocus}
-              onChange={(e) => {
-                field.onChange(e);
-                onChange?.(e);
-              }}
-            /> */}
+                {...field}
+                ref={ref}
+                type={type}
+                placeholder={placeholder}
+                value={safeValue}
+                autoComplete={autoComplete}
+                disabled={disabled}
+                aria-invalid={!!fieldState.error}
+                aria-describedby={fieldState.error ? `${name}-error` : undefined}
+                className={`${fieldState.error ? 'border-red-500' : ''} ${
+                  rightElement ? 'pr-20' : ''
+                }`}
+                autoFocus={autoFocus}
+                onKeyDown={onKeyDown}
+                
+                onBlur={(e) => {
+                  field.onBlur();
+                  onBlur?.(e);
+                }}
+                onFocus={onFocus}
+                onChange={(e) => {
+                  field.onChange(e);
+                  onChange?.(e);
+                }}
+              /> */}
             <Input
               {...field}
               ref={ref}
@@ -90,7 +93,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               disabled={disabled}
               aria-invalid={!!fieldState.error}
               aria-describedby={fieldState.error ? `${name}-error` : undefined}
-              className={`${fieldState.error ? 'border-red-500' : ''} ${
+              className={`${fieldState.error ? 'border-red-500 focus:border-red-500' : ' rounded-sm border-gray-300 focus:border-gray-400 focus:ring-gray-400'}  ${
                 rightElement ? 'pr-20' : ''
               }`}
               autoFocus={autoFocus}
@@ -107,7 +110,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             />
 
             {rightElement && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-auto">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-auto ">
                 {rightElement}
               </div>
             )}
