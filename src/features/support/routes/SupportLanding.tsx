@@ -45,15 +45,6 @@ export default function SupportLanding() {
 
   const Columns: ColumnDef<any>[] = [
     {
-      accessorKey: 'title',
-      header: 'Subject',
-      cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.title || '--'}
-        </TableCellText>
-      ),
-    },
-    {
       accessorKey: 'ticketIdentifier',
       header: 'Ticket Id',
       cell: ({ row }) => (
@@ -62,6 +53,25 @@ export default function SupportLanding() {
         </TableCellText>
       ),
     },
+    {
+      accessorKey: 'buyerCompanyName',
+      header: 'Company',
+      cell: ({ row }) => (
+        <TableCellText variant="primary">
+          {row.original?.buyerCompanyName || '--'}
+        </TableCellText>
+      ),
+    },
+    {
+      accessorKey: 'title',
+      header: 'Subject',
+      cell: ({ row }) => (
+        <TableCellText variant="primary">
+          {row.original?.title || '--'}
+        </TableCellText>
+      ),
+    },
+    
     {
       accessorKey: 'createdDateTime',
       header: 'Created',
@@ -148,15 +158,7 @@ export default function SupportLanding() {
         }
       },
     },
-    {
-      accessorKey: 'buyerCompanyName',
-      header: 'Company',
-      cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.buyerCompanyName || '--'}
-        </TableCellText>
-      ),
-    },
+    
     {
       accessorKey: 'buyerContactPerson',
       header: 'Contact',
@@ -195,14 +197,14 @@ export default function SupportLanding() {
 
   return (
     <div
-      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ${
+      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full bg-[#E5E5E5] ml-3  ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
       <SupportFilters />
-      <div className="w-full overflow-hidden">
+      <div className="w-[76rem] overflow-hidden bg-white rounded-md ">
         <DashboardTable
           data={supportData}
           columns={Columns}
@@ -218,7 +220,7 @@ export default function SupportLanding() {
           rowPerPage={rowPerPage}
           setRowPerPage={setRowPerPage}
           onRowClick={handleRowClick}
-          tableHeight={`${sideOpen ? 'h-[calc(100vh-180px)]' : 'h-[calc(100vh-180px)]'} sm:h-[calc(100vh-200px)]`}
+          tableHeight={`${sideOpen ? 'h-[calc(100vh-180px)]' : 'h-[calc(100vh-180px)]'} sm:h-[calc(105vh-200px)] bg-white`}
         />
       </div>
     </div>

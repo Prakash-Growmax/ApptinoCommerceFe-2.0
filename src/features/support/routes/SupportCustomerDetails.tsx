@@ -10,14 +10,14 @@ const SupportCustomerDetails=()=>{
         isLoading: isFieldServicesLoading,
         error: fieldServicesError,
         refetch: refetchFieldServices,
-      } = useGetSupportTicketFieldServices('dev3', 'ST0071');
+      } = useGetSupportTicketFieldServices('siemensdev', 'ST0071');
     
       const {
         data: ticketDetailsData,
         isLoading: isTicketDetailsLoading,
         error: ticketDetailsError,
         refetch: refetchTicketDetails,
-      } = useGetSupportTicketDetails('dev3', 'ST0071');
+      } = useGetSupportTicketDetails('siemensdev', 'ST0071');
     
       const isLoading = isFieldServicesLoading || isTicketDetailsLoading;
       const error = fieldServicesError || ticketDetailsError;

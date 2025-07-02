@@ -18,5 +18,6 @@ setCurrencyList: (list) => set({ currencyList: list }),
 
  roleList: [],
     setRoleList: (list) => set({ roleList: list }),
+    
 }))
 

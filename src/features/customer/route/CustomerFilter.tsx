@@ -34,10 +34,12 @@ const CustomerFilter = () => {
     setFilters,
     statuss,
     setStatus,
+     refetchCustomers,
   } = useAccountsStore();
   const { payload } = useAppStore();
 
   const { tenantId } = payload as TokenPayload;
+  
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -80,6 +82,7 @@ const CustomerFilter = () => {
     };
     setFilters(updated);
     fetchCustomers(updated, searchText);
+    if (refetchCustomers) refetchCustomers();
   };
 
   const handleClearFilters = () => {
@@ -94,6 +97,7 @@ const CustomerFilter = () => {
     };
     setFilters(clearedFilters);
     fetchCustomers(clearedFilters, '');
+    if (refetchCustomers) refetchCustomers(); 
   };
 
   // Check if any filters are applied
@@ -103,7 +107,7 @@ const CustomerFilter = () => {
   return (
     <div className='w-full'>
         <Card
-      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full ${
+      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full rounded-md w-[900rem] ml-4 ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'

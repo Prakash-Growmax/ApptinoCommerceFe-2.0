@@ -9,7 +9,7 @@ export const useGetSupportFilterSettings = () => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const {tenantId ,companyId} = payload as TokenPayload;
-  const {setStatus,setCategory,setFieldUser,setIssueCategory,setReason,setSeverity}=useSupportTicketFilterStore();
+  const {setStatus, setPriority, setCategory,setFieldUser,setIssueCategory,setReason,setSeverity}=useSupportTicketFilterStore();
 
   const filtersQuery = useQuery({
     queryKey: ["status", tenantId],
@@ -23,9 +23,16 @@ export const useGetSupportFilterSettings = () => {
       console.log(data);
       setCategory(data.tCategory)
       setIssueCategory(data?.fsCategory);
+      setPriority(data.priority); 
       setReason(data?.reasons);
       setSeverity(data?.severity);
       setStatus(_.map(data.ticketStatus, 'status'))
+
+      if (data.priority) {
+      setPriority(data.priority); // e.g., ['Low', 'Medium', 'High']
+    } else {
+      setPriority(["Low", "Medium", "High"]); // fallback if priority is missing
+    }
     },
     enabled: !!tenantId,
     refetchOnWindowFocus: false,

@@ -27,10 +27,11 @@ function SupportCustomerCard() {
   const supportTicketData = watch("supportTicketData");
 
   return (
-    <Card className="w-full">
+    <Card className="w-full  rounded-md">
       <CardHeader>
         <CardTitle className="text-lg">Customer Information</CardTitle>
       </CardHeader>
+      <div className="h-px bg-gray-300  w-full  p-0 " />  
       <CardContent className="space-y-4">
         <InfoRow label="Customer Name" value={supportTicketData?.buyerCompanyName ? supportTicketData?.buyerCompanyName : "_"} />
         <InfoRow label="Contact Person" value={supportTicketData?.buyerContactPerson ? supportTicketData?.buyerContactPerson : "_"} />

@@ -9,8 +9,8 @@ import { Card, CardHeader } from "@/components/ui/card";
       const {ticketIdentifier, createdDateTime} =supportTicketData
       
     return (
-      <div className=" mb-3  lg:mx-4">
-          <Card>
+      <div className="  mt-3 lg:mx-4 ">
+          <Card className="rounded-md">
               <CardHeader>
 
           <TicketInfo ticketId={ticketIdentifier} createdAt={createdDateTime} />

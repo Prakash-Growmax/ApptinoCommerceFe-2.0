@@ -37,20 +37,20 @@ console.log(openSupportIssue);
     isLoading: isFieldServicesLoading,
     error: fieldServicesError,
     refetch: refetchFieldData,
-  } = useGetSupportTicketFieldServices('dev3', id);
+  } = useGetSupportTicketFieldServices('siemensdev', id);
 
   const {
     data: ticketDetailsData,
     isLoading: isTicketDetailsLoading,
     error: ticketDetailsError,
     refetch: refetchTicketDetails,
-  } = useGetSupportTicketDetails('dev3', id);
+  } = useGetSupportTicketDetails('siemensdev', id);
 
   const {
     data: ticketTimelineData,
     isLoading: isTicketTimelineLoading,
     error: ticketTimelineError,
-  } = useSupportTimeline('dev3', id);
+  } = useSupportTimeline('siemensdev', id);
 
   useGetSupportFilterSettings();
 
@@ -130,14 +130,14 @@ const matchedItem = fieldServicesData.find(
 
   return (
     <FormProvider {...methods}>
-      {(openSupportIssue || openSupportVisit) && (  <div className='px-4 py-2'>
+      {(openSupportIssue || openSupportVisit) && (  <div className='px-4 py-2 '>
          <ActionHeader handleSubmit={openSupportIssue ? handleUpdateTicket : handleUpdateFieldService} />
 
       </div>)}
     
      
       <TicketHeader />
-      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 lg:p-4">
+      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 lg:p-4 ">
         <div className="w-full lg:w-2/3">
           <ServiceDetails refetchFieldData={refetchFieldData} />
         </div>

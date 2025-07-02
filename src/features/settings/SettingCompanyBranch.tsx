@@ -50,7 +50,7 @@ const SettingCompanyBranch = () => {
       accessorKey: 'branchName',
       header: () => getCustomLabel('branchName', address) || 'Branch Name',
       cell: ({ row }) => (
-        <div className="text-sm font-medium">
+        <div className="text-sm font-medium ">
           {row.original?.addressId?.branchName}
         </div>
       ),
@@ -111,7 +111,7 @@ const SettingCompanyBranch = () => {
       cell: ({ row }) => {
         const units = row.original?.businessUnits || [];
         return (
-          <div className="flex items-center gap-1 text-sm">
+          <div className="flex items-center gap-1 text-sm ">
             {units[0] ? (
               <span className="px-2 py-0.5 rounded-full border text-xs">
                 {units[0].unitName}
@@ -201,8 +201,8 @@ const SettingCompanyBranch = () => {
     setPage(prev => prev + 1);
   };
   return (
-       <div className={`w-full ${
-      sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
+       <div className={`w-full bg-white  rounded-md ${
+      sideOpen ? 'lg:max-w-[calc(100vw-20rem)] ' : 'lg:max-w-[calc(100vw-5rem)]'
     } overflow-x-auto`}>
         <DashboardTable
         data={branchData}

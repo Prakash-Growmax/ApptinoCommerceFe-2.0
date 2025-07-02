@@ -6,7 +6,7 @@ import { AppHeader } from '@/components/organisms/AppHeader/AppHeader';
 
 export const MainLayout = () => {
   return (
-    <AppHeader>
+    <AppHeader >
       <Suspense fallback={<LoadingFallback />}>
         <Outlet />
       </Suspense>

@@ -12,7 +12,7 @@ const AddressComponent = () => {
  
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white rounded-md ">
     
         <CustomerDetail addressData={addressData?.data?.addressTags ?? []} page={page} setPage={setPage} rowPerPage={rowPerPage} setRowPerPage={setRowPerPage} loading={isLoading} totalCount={addressData?.data?.totalCount }/>
       

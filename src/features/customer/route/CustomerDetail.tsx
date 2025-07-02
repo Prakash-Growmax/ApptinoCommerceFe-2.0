@@ -33,7 +33,7 @@ const CompanyDetailsPage = () => {
    const [isDialogOpen, setIsDialogOpen] = useState(false);
    const { reset } = useForm<FormData>();
 
-  const tenantId = "dev3";
+  const tenantId = "siemensdev";
   const token = "your_jwt_token_here";
 
   useEffect(() => {
@@ -66,13 +66,14 @@ const CompanyDetailsPage = () => {
   if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
-    <div className="w-full lg:px-6 lg:py-4 space-y-4 ">
+    <div className="w-full lg:px-6 lg:py-4  space-y-4 ">
       {/* Company Details */}
-      <Card className="lg:mx-4">
+      <Card className=" rounded-md">
         <CardHeader>
-          <CardTitle className="text-lg">Company Details</CardTitle>
+          <CardTitle className="text-lg ">Company Details</CardTitle>
         </CardHeader>
-        <div className="grid grid-cols-2 lg:gap-x-12  lg:px-6 lg:py-4 p-3">
+        <div className="h-px bg-gray-300  w-full  p-0 " />
+        <div className="grid grid-cols-2 lg:gap-x-12  lg:px-6 lg:py-3 p-3">
           <div className="space-y-2">
             <InfoRow label="Partner Name" value={companyDetails?.companyName} />
             <InfoRow label="Tax ID" value={companyDetails?.taxId} />

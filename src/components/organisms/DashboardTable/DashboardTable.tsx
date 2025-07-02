@@ -91,7 +91,7 @@ const DashboardTable = <T,>({
           </div>
         )}
         <Table className="min-w-full">
-          <TableHeader className="bg-muted/50 sticky top-0 z-10">
+          <TableHeader className="bg-gray-100 sticky top-0 z-10">
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
@@ -112,7 +112,7 @@ const DashboardTable = <T,>({
               table.getRowModel().rows.map((row, index) => (
                 <TableRow
                   key={row.id}
-                  className="hover:bg-muted/20 cursor-pointer animate-in fade-in slide-in-from-bottom-1"
+                  className="hover:bg-gray-100 cursor-pointer animate-in fade-in slide-in-from-bottom-1"
                   style={{ animationDelay: `${index * 50}ms` }}
                   onClick={() => onRowClick?.(row.original)}
                 >

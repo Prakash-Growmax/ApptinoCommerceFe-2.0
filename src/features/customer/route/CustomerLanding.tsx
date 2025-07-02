@@ -100,7 +100,7 @@ const navigate = useNavigate();
         const value = getValue();
 
         return (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 ">
             {value[0] ? (
               <Badge variant="outline" className="text-sm px-2 py-1">
                 {value[0]}
@@ -150,7 +150,7 @@ const navigate = useNavigate();
   };
   const { sideOpen } = useSideBarStore();
   return (
-    <div className="w-full overflow-hidden">
+    <div className="  w-[76rem] bg-white ml-4 rounded-md">
       <DashboardTable
         data={data}
         columns={columns}
@@ -165,7 +165,7 @@ const navigate = useNavigate();
         setRowPerPage={setRowPerPage}
         handlePrevious={handlePrevious}
         handleNext={handleNext}
-        tableHeight="h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)]"
+        tableHeight="h-[calc(100vh-180px)] sm:h-[calc(106vh-200px)]"
         onRowClick={handleRowClick}
       />
     </div>

@@ -37,6 +37,8 @@ export type SupportInfo={
 export type SupportTicketFilter = {
   status: string[];
   setStatus: (status: string[]) => void;
+  priority: string[];
+  setPriority: (priority: string[]) => void;
   category: string[];
   setCategory: (category: string[]) => void;
   fieldUser:any[];
@@ -54,8 +56,8 @@ export type SupportTicketType={
   setTicketId:(ticketId:string | number)=>void;
   searchText:string;
   setSearchText:(searchText:string)=>void;
-  priority:string
-  setPriority:(priority:string)=>void;
+  supportPriority:string
+  setSupportPriority:(supportPriority:string)=>void;
   supportStatus:string;
   setSupportStatus:(supportStatus:string)=>void;
   supportCategory:string;

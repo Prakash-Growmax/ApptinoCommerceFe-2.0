@@ -13,7 +13,7 @@ export const GetSupportFilter = async ({
     'x-tenant': tenantId,
   };
   const response = await apiGet<ParsedPropertyList>({
-    url: `/corecommerce/templates/get?domainName=dev3&propertyName=${userId}_filters`,
+    url: `/corecommerce/templates/get?domainName=siemensdev&propertyName=${userId}_filters`,
     config: {
       headers,
     },

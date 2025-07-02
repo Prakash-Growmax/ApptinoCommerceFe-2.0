@@ -26,5 +26,8 @@ export interface AccountsState {
 
   rowPerPage: number;
   setRowPerPage: (rowPerPage: number) => void;
+
+  
+  
 }
 

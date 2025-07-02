@@ -33,7 +33,7 @@ export function AppHeader({ children }: AppHeaderProps) {
                 </h1>
               </div>
             </header>
-            <main className="flex-1 p-4 overflow-y-auto">{children}</main>
+            <main className="flex-1 bg-[#E5E5E5]  w-full ">{children}</main>
           </div>
         </SidebarInset>
       </SidebarProvider>

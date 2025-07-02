@@ -223,7 +223,7 @@ const SupportTicketsDialog = () => {
 
   return (
     <>
-      <ShadCnButton className='w-full' onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
+      <ShadCnButton className='w-[130px]' onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
       <div className="">
         <EditDialog
           open={open}
@@ -231,6 +231,7 @@ const SupportTicketsDialog = () => {
           closeDialog={handleDialogClose}
           handleSubmit={methods.handleSubmit(onSubmit)}
           hideDialogActions={false}
+          primaryBtnText="Create Ticket" 
         >
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
             {/* <Form form={methods} onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4"> */}

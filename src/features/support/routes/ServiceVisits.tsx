@@ -27,10 +27,11 @@ const ServiceVisits = ({refetchFieldData}) => {
   };
    
   return (
-    <div className="w-full">
-      <Card className="border border-gray-200 shadow-sm">
+    <div className="w-full ">
+      <Card className="border border-gray-200 shadow-sm rounded-md">
         <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between ">
           <CardTitle className="text-base sm:text-lg">Service Visits</CardTitle>
+          
           <ShadCnButton
             variant="default"
             className="w-full sm:w-auto h-[36px] text-sm flex items-center gap-2"
@@ -40,6 +41,7 @@ const ServiceVisits = ({refetchFieldData}) => {
             Add Service Visit
           </ShadCnButton>
         </CardHeader>
+        <div className="h-px bg-gray-300  w-full  p-0 " />  
 
         <CardContent className="p-0">
           {fieldServicesData.length > 0 ? (

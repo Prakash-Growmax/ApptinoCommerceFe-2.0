@@ -33,6 +33,10 @@ const useAccountsStore = create<AccountsState>((set) => ({
 
   rowPerPage: 20,
   setRowPerPage: (rowPerPage) => set({ rowPerPage }),
+
+  
+
+  
 }));
 
 

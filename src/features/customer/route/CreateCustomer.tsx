@@ -11,13 +11,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import useAppStore from '@/stores/appStore';
+import useAccountsStore from '@/stores/useAccountStore';
 import { TokenPayload } from '@/types/auth.types';
 
 import { createCustomer } from '../api/company.api';
 import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
 import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
 import { CurrencyType } from '../types/customer.type';
-import useAccountsStore from '@/stores/useAccountStore';
 
 export type CurrencyOptionType = {
   value: string;
@@ -61,7 +61,6 @@ const CreateCustomer = ({
   useGetCustomerAddress({ open });
   const { stateList, countryList, districtList, currencyList, roleList } =
     useCustomerAddressStore();
-
 
   const [loading, setLoading] = useState(false);
 
@@ -114,6 +113,11 @@ const CreateCustomer = ({
     const selectedCurrency = currencyList.find(
       (c: any) => c.id === data.currency || c.value === data.currency
     );
+
+    const selectedRole = roleList?.find(
+      item => item.roleId.id.toString() === data.roles
+    );
+
     setLoading(true);
     const payload = {
       regAddress: {
@@ -165,8 +169,10 @@ const CreateCustomer = ({
       userId: null,
       companyName: data?.name,
       fullStock: true,
-      roleName: data?.roles,
+      // roleName: data?.roles,
+       roleName: selectedRole?.roleId.roleName || '',
       activated: true,
+        roleId: selectedRole?.roleId.id || null,
       verified: true,
     };
 
@@ -176,8 +182,8 @@ const CreateCustomer = ({
 
     if (response) {
       toast.success('Customer created successfully');
-      setOpen(false);
       reset();
+      setOpen(false);
       navigate('/customers');
     } else {
       toast.error('Customer failed to create');
@@ -196,6 +202,7 @@ const CreateCustomer = ({
         hideDialogActions={false}
         widthClass="md:max-w-xl"
         loading={loading}
+        primaryBtnText="Create Customer"
       >
         <FormProvider {...methods}>
           <form
@@ -348,14 +355,9 @@ const CreateCustomer = ({
                 <Controller
                   name="phone"
                   control={control}
-                  rules={{ required: 'Phone is required' }}
                   render={({ field }) => (
                     <div>
-                      {/* <label className="block text-sm font-medium mb-1">
-                        Customer Contact Number
-                      </label> */}
                       <PhoneInput
-                        {...field}
                         country="in"
                         inputClass="!w-full h-[36px] !rounded-sm text-black !border !border-gray-300 p-1 pl-2"
                         placeholder="Enter phone number"
@@ -378,11 +380,25 @@ const CreateCustomer = ({
                   label="Roles"
                   placeholder="Roles"
                   className="text-gray-700"
+                  // options={roleList?.map(item => ({
+                  //   value: item.roleId.roleName,
+                  //   label: item.roleId.roleName,
+                  //   fullData: item,
+                  // }))}
+
                   options={roleList?.map(item => ({
-                    value: item.roleId.roleName,
-                    label: item.roleId.roleName,
-                    fullData: item,
-                  }))}
+    value: item.roleId.id.toString(), // Use roleId (not roleName)
+    label: item.roleId.roleName,
+    fullData: item,
+  }))}
+
+                  // options={roleList
+                  //   ?.filter(item => item.accountTypeId?.id === 2) // ✅ Filter for Buyers
+                  //   .map(item => ({
+                  //     value: item.roleId?.roleName || '',
+                  //     label: item.roleId?.roleName || '',
+                  //     fullData: item,
+                  //   }))}
                 />
                 <FormInput
                   name="job"

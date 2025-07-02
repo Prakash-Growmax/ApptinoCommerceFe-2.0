@@ -65,11 +65,11 @@ const SettingDetails = () => {
   }, [companyData, methods]);
 
   return (
-      <Card className={`w-full ${
+      <Card className={`w-full bg-white rounded-md ${
       sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
     }`}>
       {/* Header */}
-      <CardHeader className="flex md:hidden flex-row items-center justify-between">
+      <CardHeader className="flex md:hidden flex-row items-center justify-between  ">
         <div className="flex items-center gap-2">
           {loading ? (
             <Skeleton className="h-10 w-10 rounded-full" />
@@ -84,9 +84,10 @@ const SettingDetails = () => {
         </div>
       </CardHeader>
 
-      <CardHeader className="hidden md:block mb-1">
+      <CardHeader className="hidden md:block ">
         <CardTitle>Company Details</CardTitle>
       </CardHeader>
+          <div className="h-px bg-gray-300 mt-1 w-full mt-3 p-0 " />
 
       <CardContent>
         {/* Mobile View */}
@@ -109,15 +110,15 @@ const SettingDetails = () => {
         </div>
 
         {/* Desktop View */}
-        <div className="hidden md:flex flex-row items-start gap-8">
+        <div className="hidden md:flex flex-row items-start gap-4">
           {/* Logo */}
-          <div className="w-1/4 flex justify-center">
+          <div className="w-[260px] flex justify-center">
             {loading ? (
-              <Skeleton className="h-[180px] w-[280px] rounded-xl" />
+              <Skeleton className="h-[180px] w-[200px] " />
             ) : (
               <img
                 alt="logo"
-                className="object-contain w-60 h-60"
+                className=" w-50 h-70"
                 src={companyData?.logo}
               />
             )}
@@ -125,7 +126,7 @@ const SettingDetails = () => {
 
           {/* Form */}
           <FormProvider {...methods}>
-            <form className="w-3/4 grid grid-cols-2 gap-x-2 gap-y-0.5">
+            <form className="w-3/4 grid grid-cols-2 gap-8 lg:gap-x-16 gap-y-0.5 w-[800px] mt-2  ">
               {fields.map(({ id, label, path }) => {
                 const isIndustryDescription = id === "industryDescription";
 
@@ -133,9 +134,9 @@ const SettingDetails = () => {
                   return (
                     <div
                       key={id}
-                      className={`flex flex-col gap-1 w-full `}
+                      className={`flex flex-col gap-1 w-full`}
                     >
-                      <div className="text-sm font-medium text-muted-foreground">
+                      <div className="text-sm font-medium text-muted-foreground ">
                         {label}
                       </div>
                       <Skeleton className="h-9 w-full rounded-md" />

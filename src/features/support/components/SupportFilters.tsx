@@ -27,7 +27,7 @@ import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStor
 
 const SupportFilters = () => {
   useGetSupportFilterSettings();
-  const { status, category } = useSupportTicketFilterStore();
+  const { status, priority, category } = useSupportTicketFilterStore();
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const { tenantId } = payload as TokenPayload;
@@ -76,6 +76,7 @@ const SupportFilters = () => {
     try {
       setLoading(true);
       const body = _.cloneDeep(filters);
+      console.log('Sending filters:', body);
       const response = await GetFetchSupportTicket({
         tenantId,
         page,
@@ -125,18 +126,21 @@ const SupportFilters = () => {
 
   return (
     <Card
-      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full ${
+      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full rounded-md w-[900rem]  ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
-      <div className="lg:flex flex-1 lg:gap-2   flex-wrap ">
+      <div className="lg:flex flex-1 lg:gap-2   flex-wrap  ">
         <Select
           value={selectedStatus}
           onValueChange={value => handleChange('status', value)}
         >
-          <SelectTrigger id="status" className="w-full lg:w-[160px] my-3 lg:my-0">
+          <SelectTrigger
+            id="status"
+            className="w-full lg:w-[140px] my-3 lg:my-0"
+          >
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -152,13 +156,18 @@ const SupportFilters = () => {
           value={selectedPriority}
           onValueChange={value => handleChange('priority', value)}
         >
-          <SelectTrigger id="priority" className="w-full lg:w-[160px] my-3 lg:my-0">
+          <SelectTrigger
+            id="priority"
+            className="w-full lg:w-[140px] my-3 lg:my-0"
+          >
             <SelectValue placeholder="Priority" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="low">Low</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="high">High</SelectItem>
+            {priority.map((p, index) => (
+              <SelectItem key={index} value={p}>
+                {p}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
@@ -166,7 +175,10 @@ const SupportFilters = () => {
           value={selectedCategory}
           onValueChange={value => handleChange('category', value)}
         >
-          <SelectTrigger id="category" className="w-full lg:w-[160px] my-3 lg:my-0">
+          <SelectTrigger
+            id="category"
+            className="w-full lg:w-[140px] my-3 lg:my-0"
+          >
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -178,13 +190,13 @@ const SupportFilters = () => {
           </SelectContent>
         </Select>
 
-        <div className="flex min-w-32 sm:min-w-40 my-3 lg:my-0">
+        <div className="flex min-w-32 sm:min-w-40 my-3  lg:my-0">
           <Input
             type="text"
             placeholder="Ticket ID"
             value={ticketIdentifier}
             onChange={e => handleChange('ticketIdentifier', e.target.value)}
-            className="w-full"
+            className="lg:w-[150px]"
           />
         </div>
 
@@ -192,7 +204,7 @@ const SupportFilters = () => {
           <ShadCnButton
             type="button"
             onClick={handleApplyFilter}
-            className="flex-1 sm:flex-none lg:ml-52" 
+            className="flex-1 sm:flex-none "
           >
             <span className="sm:hidden">Apply</span>
             <span className="hidden sm:inline">Apply Filters</span>
@@ -215,7 +227,6 @@ const SupportFilters = () => {
       <div className="flex justify-center sm:justify-end ">
         <Dialog
           open={isDialogOpen}
-          
           onOpenChange={open => {
             setIsDialogOpen(open);
             if (!open) {

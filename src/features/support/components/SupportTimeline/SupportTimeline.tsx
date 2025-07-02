@@ -32,6 +32,8 @@ const { watch } = useFormContext();
         <CardHeader>
           <CardTitle>Activity Timeline</CardTitle>
         </CardHeader>
+        <div className="h-px bg-gray-300 mt-1 w-full mt-3 p-0 " />
+
         <CardContent className=" mt-8 ">
           {ticketTimelineData?.map((entry, index) => {
             const change = entry.changes?.[0];

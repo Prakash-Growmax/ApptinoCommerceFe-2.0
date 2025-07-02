@@ -4,6 +4,8 @@ import { SupportTicketFilter} from "../types/support.types";
 export const useSupportTicketFilterStore = create<SupportTicketFilter>((set) => ({
   status: [],
   setStatus: (status) => set({ status }),
+  priority: [], // ✅ Add this
+  setPriority: (priority) => set({ priority }), // ✅ Add this
   category: [],
   setCategory: (category) => set({ category }),
    fieldUser:[],
