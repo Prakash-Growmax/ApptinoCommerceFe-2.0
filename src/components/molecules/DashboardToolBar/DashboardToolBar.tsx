@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EllipsisVertical, Funnel, RotateCw, X } from 'lucide-react';
@@ -47,6 +48,7 @@ const DashboardToolBar = ({
 }: DashboardToolBarProps) => {
   const showBadge = true;
   const { t } = useTranslation();
+  const [searchValue, setSearchValue] = useState('');
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -93,7 +95,11 @@ const DashboardToolBar = ({
             )}
             {ShowSearch.condition && (
               <div className="ml-4 w-full">
-                <SearchBox />
+                <SearchBox 
+                  searchTextValue={searchValue}
+                  handleSearch={(value) => setSearchValue(value)}
+                  handleSearchClear={() => setSearchValue('')}
+                />
               </div>
             )}
 

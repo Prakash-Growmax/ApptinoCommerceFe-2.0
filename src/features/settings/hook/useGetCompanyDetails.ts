@@ -4,6 +4,7 @@ import useCompanyStore from "../store/useCompanyStore";
 import { GetCompanyDetails } from "../api/settings.api";
 import useAppStore from "@/stores/appStore";
 import { TokenPayload } from "@/types/auth.types";
+import { handleError } from "@/utils/errorHandling";
 
 export const useGetCompanyDetails = () => {
   const {accessToken,payload}=useAppStore();
@@ -13,7 +14,7 @@ export const useGetCompanyDetails = () => {
 
   const { setCompanyData, setLoading } = useCompanyStore();
 
-  const fetchCompany = async () => {
+  const fetchCompany = async (): Promise<any> => {
     try {
      
       setLoading(true);
@@ -22,8 +23,8 @@ export const useGetCompanyDetails = () => {
       setCompanyData(response?.data);
       setLoading(false);
       return response;
-    } catch (error) {
-      console.error("Error fetching company details", error);
+    } catch (error: unknown) {
+      handleError(error, 'fetchCompany', 'Error fetching company details');
       setLoading(false);
       return null;
     }

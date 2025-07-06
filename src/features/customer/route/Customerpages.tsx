@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CompanyDetailsCard from './CustomerDetail'; // adjust path if needed
+import { handleError } from '@/utils/errorHandling';
 
-const CustomerPage = () => {
+const CustomerPage = (): React.JSX.Element => {
   const [companyData, setCompanyData] = useState(null);
 
  useEffect(() => {
-  const fetchCompanyDetails = async () => {
+  const fetchCompanyDetails = async (): Promise<void> => {
     try {
         
         const response = await fetch(
@@ -22,8 +23,8 @@ const CustomerPage = () => {
       console.log('API status:', response.status);
       const result = await response.json();
       console.log('Result:', result);
-    } catch (error) {
-      console.error('Error calling service:', error);
+    } catch (error: unknown) {
+      handleError(error, 'fetchCompanyDetails', 'Error calling service');
     }
   };
 

@@ -93,6 +93,39 @@ export const RefreshTokenResponseSchema = z.object({
   }),
 });
 
+export const LogoutRequestSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+});
+
+export const LogoutResponseSchema = z.object({
+  message: z.string(),
+  success: z.boolean(),
+});
+
+export const UserSchema = z.object({
+  id: z.number(),
+  email: z.string().email(),
+  displayName: z.string(),
+  picture: z.string().url().optional(),
+  status: z.enum(['CONFIRMED', 'PENDING', 'INACTIVE']),
+  companyId: z.number(),
+  companyName: z.string(),
+  roleId: z.number(),
+  roleName: z.string(),
+});
+
+export const GetCurrentUserResponseSchema = z.object({
+  user: UserSchema,
+});
+
+export const GetUsersResponseSchema = z.object({
+  users: z.array(UserSchema),
+  total: z.number(),
+  page: z.number(),
+  limit: z.number(),
+});
+
 export type CheckUserNameRequestType = z.infer<typeof CheckUserNameSchema>;
 
 export type CheckUserNameResponseType = z.infer<
@@ -109,3 +142,10 @@ export type RefreshTokenRequestSchemaType = z.infer<
 export type RefreshTokenResponseSchemaType = z.infer<
   typeof RefreshTokenResponseSchema
 >;
+
+export type LogoutRequestSchemaType = z.infer<typeof LogoutRequestSchema>;
+export type LogoutResponseSchemaType = z.infer<typeof LogoutResponseSchema>;
+
+export type UserSchemaType = z.infer<typeof UserSchema>;
+export type GetCurrentUserResponseSchemaType = z.infer<typeof GetCurrentUserResponseSchema>;
+export type GetUsersResponseSchemaType = z.infer<typeof GetUsersResponseSchema>;

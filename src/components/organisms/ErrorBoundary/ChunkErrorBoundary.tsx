@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react';
+import { Component, ReactNode, ErrorInfo } from 'react';
 
 interface ChunkErrorBoundaryState {
   hasError: boolean;
@@ -32,7 +32,7 @@ export class ChunkErrorBoundary extends Component<
     return { hasError: true, chunkError };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  override componentDidCatch(error: Error, _errorInfo: ErrorInfo): void {
     if (this.state.chunkError) {
       console.error('Chunk loading error:', error);
 
@@ -43,7 +43,7 @@ export class ChunkErrorBoundary extends Component<
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError && this.state.chunkError) {
       return (
         <div className="flex items-center justify-center min-h-screen">

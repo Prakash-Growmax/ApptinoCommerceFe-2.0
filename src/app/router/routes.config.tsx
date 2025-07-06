@@ -2,18 +2,19 @@ import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { Headset, Settings as SettingsIcon, Users } from 'lucide-react';
+import { lazyWithRetry } from '@/utils/lazyWithRetry';
 
 import NotFoundPage from '@/features/error/routes/NotFoundPage';
 import SupportLanding from '@/features/support/routes/SupportLanding';
 import { RouteConfig } from '@/types/router.types';
 
-const Customers = lazy(() => import('@/features/customer/route/Customer'));
-const Settings = lazy(() => import('@/features/settings/Settings'));
-const Login = lazy(() => import('@/features/auth/routes/LoginPage'));
-const SupportDetails = lazy(
+const Customers = lazyWithRetry(() => import('@/features/customer/route'));
+const Settings = lazyWithRetry(() => import('@/features/settings/Settings'));
+const Login = lazyWithRetry(() => import('@/features/auth/routes/LoginPage'));
+const SupportDetails = lazyWithRetry(
   () => import('@/features/support/routes/SupportDetails')
 );
-const CustomerDetails=lazy(()=>import('@/features/customer/route/CustomerDetail'))
+const CustomerDetails = lazyWithRetry(() => import('@/features/customer/route/CustomerDetail'))
 export const routeConfig: RouteConfig[] = [
   {
     path: '/',

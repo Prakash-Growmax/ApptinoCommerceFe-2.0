@@ -16,11 +16,11 @@ export class ElasticSearchService {
 
     return [];
   }
-  static async CustomerSearch(searchText, tenantId, showDeactivated = false) {
+  static async CustomerSearch(searchText: string, tenantId: string, showDeactivated = false) {
   // Ensure searchText is a valid string
   const searchQuery = typeof searchText === "string" && searchText.trim() !== "" ? searchText : "*";
 
-  const newBody = {
+  const newBody: any = {
     size: 24,
     from: 0,
     query: {

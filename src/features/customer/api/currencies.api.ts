@@ -29,8 +29,5 @@ export const getCurrencies = async ({
     config: { headers },
   });
 
-
-
-      return response;
-  // return response.data?? []
+  return response.data ?? [];
 };

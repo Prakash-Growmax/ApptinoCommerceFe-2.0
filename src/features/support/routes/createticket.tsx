@@ -73,7 +73,8 @@ const SupportTicketsDialog = () => {
   //   setSkillsOpen(false);
   // };
 
-  useGetSupportFilters();
+  // Fetch all customers for support ticket creation
+  useGetSupportFilters('');
   const { supportData } = useSupportStore();
   const supportOptions = supportData?.map(item => ({
     value: item.id.toString(),

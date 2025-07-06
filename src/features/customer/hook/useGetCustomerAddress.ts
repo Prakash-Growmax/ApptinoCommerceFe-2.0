@@ -7,13 +7,11 @@ import { getCurrencies } from '../api/currencies.api';
 import { getCountry, getDistrict, getState } from '../api/customer.api';
 import { getRoles } from '../api/customer.api';
 import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
-import { RawRoleResponse } from '../types/customer.type';
-import { RoleOptionType } from '../types/customer.type';
 
-export const useGetCustomerAddress = ({ open }) => {
+export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
-  const { userId, companyId, tenantId } = payload as TokenPayload;
+  const { tenantId } = payload as TokenPayload;
   const {
     setStateList,
     setCountryList,
@@ -26,35 +24,35 @@ export const useGetCustomerAddress = ({ open }) => {
     queryFn: async () => {
       const response = await getState(tenantId, token);
 
-      setStateList(response?.data);
+      setStateList(response as any[]);
       return response;
     },
     enabled: !!tenantId && !!open,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
   });
   const getAllDistrictQuery = useQuery({
     queryKey: ['district', tenantId, open],
     queryFn: async () => {
       const response = await getDistrict(tenantId, token);
-      setDistrictList(response?.data);
+      setDistrictList(response as any[]);
       return response;
     },
     enabled: !!tenantId && !!open,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
   });
 
   const getAllCountQuery = useQuery({
     queryKey: ['country', tenantId, open],
     queryFn: async () => {
       const response = await getCountry(tenantId, token);
-      setCountryList(response?.data);
+      setCountryList(response as any[]);
       return response;
     },
     enabled: !!tenantId && !!open,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
   });
 
   const getCurrencyQuery = useQuery({

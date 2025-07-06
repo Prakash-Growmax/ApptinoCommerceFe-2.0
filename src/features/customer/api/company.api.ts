@@ -28,7 +28,7 @@ export const getCompanyDetails = async ({
 
   return response.data; // ✅ Only return inner `data`
 };
-export const createCustomer=async(tenantId:string,token:string,payload)=>{
+export const createCustomer=async(tenantId:string,token:string,payload: any)=>{
   const headers = {
     "Content-Type": "application/json",
     "x-tenant": tenantId,

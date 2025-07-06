@@ -25,6 +25,8 @@ export interface ShadcnButtonProps {
   isDisabled?: boolean;
   type?: 'button' | 'submit' | 'reset'; // Added type prop
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
 }
 
 function Button({
@@ -42,6 +44,8 @@ function Button({
   type = 'button', // Default to button type
   testId = 'data-testid',
   onClick,
+  ariaLabel,
+  ariaDescribedBy,
 }: ShadcnButtonProps) {
   const buttonContent = () => {
     if (loading) {
@@ -78,7 +82,15 @@ function Button({
       disabled={isDisabled || loading} // Use disabled instead of isDisabled for the underlying button
       data-testid={testId}
       onClick={onClick}
+      aria-label={ariaLabel || (iconOnly ? (typeof children === 'string' ? children : 'Button') : undefined)}
+      aria-describedby={ariaDescribedBy}
+      aria-busy={loading}
     >
+      {loading && (
+        <span className="sr-only" aria-live="polite">
+          {loadingText || 'Loading...'}
+        </span>
+      )}
       {buttonContent()}
     </ShadCnButton>
   );

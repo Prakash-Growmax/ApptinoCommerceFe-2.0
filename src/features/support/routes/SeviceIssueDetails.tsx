@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import isEqual from 'lodash/isEqual';
+import { isEqual } from '@/utils/object';
 
 import {
   FormInput,

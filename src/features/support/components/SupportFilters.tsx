@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import _ from 'lodash';
+import { cloneDeep } from '@/utils/object';
 import { X } from 'lucide-react';
 
 import { ShadCnButton } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import {
 import useAppStore from '@/stores/appStore';
 import useSideBarStore from '@/stores/sidebarStore';
 import { TokenPayload } from '@/types/auth.types';
+import { handleError } from '@/utils/errorHandling';
 
 import { GetFetchSupportTicket } from '../api/support.api';
 import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
@@ -25,7 +26,7 @@ import SupportTicketsDialog from '../routes/createticket';
 import useSupportStore from '../store/useSupportStore';
 import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
 
-const SupportFilters = () => {
+const SupportFilters = (): React.JSX.Element => {
   useGetSupportFilterSettings();
   const { status, priority, category } = useSupportTicketFilterStore();
   const { accessToken, payload } = useAppStore();
@@ -75,7 +76,7 @@ const SupportFilters = () => {
   const handleApplyFilter = async () => {
     try {
       setLoading(true);
-      const body = _.cloneDeep(filters);
+      const body = cloneDeep(filters);
       console.log('Sending filters:', body);
       const response = await GetFetchSupportTicket({
         tenantId,
@@ -86,8 +87,8 @@ const SupportFilters = () => {
       });
       setSupportData(response?.result || []);
       setTotalCount(response?.count || 0);
-    } catch (error) {
-      console.error('Error applying filters:', error);
+    } catch (error: unknown) {
+      handleError(error, 'applyFilters', 'Error applying filters');
     } finally {
       setLoading(false);
     }
@@ -113,8 +114,8 @@ const SupportFilters = () => {
       });
       setSupportData(response?.result || []);
       setTotalCount(response?.count || 0);
-    } catch (error) {
-      console.error('Error clearing filters:', error);
+    } catch (error: unknown) {
+      handleError(error, 'handleClearFilters', 'Error clearing filters');
     } finally {
       setLoading(false);
     }

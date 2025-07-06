@@ -13,6 +13,9 @@ interface FormProps<TFormValues extends FieldValues, Schema> {
   children: React.ReactNode;
   schema?: Schema;
   className?: string;
+  role?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
 }
 
 export const Form = <
@@ -23,10 +26,19 @@ export const Form = <
   onSubmit,
   children,
   className,
+  role,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
 }: FormProps<TFormValues, Schema>) => {
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={className}>
+      <form 
+        onSubmit={form.handleSubmit(onSubmit)} 
+        className={className}
+        role={role}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+      >
         {children}
       </form>
     </FormProvider>

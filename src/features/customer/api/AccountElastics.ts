@@ -1,12 +1,24 @@
+interface FilterType {
+  offset: number;
+  limit: number;
+  accountName?: string;
+  accountNameLs?: string[];
+  erp_Code?: string;
+  status?: string[];
+  city?: string;
+  state?: string;
+  country?: string;
+}
+
 export class AccountElastic{
-     static BuildCustomerquery(filter, searchText, CatalogId) {
+     static BuildCustomerquery(filter: FilterType, searchText: string, CatalogId: string | number) {
     let isfilter = false;
-    const must = [];
-    const must_not = [];
-    const should = [];
+    const must: any[] = [];
+    const must_not: any[] = [];
+    const should: any[] = [];
    const from = filter.offset * filter.limit || 0;
     const size = filter.limit;
-    const sort = [];
+    const sort: any[] = [];
     let json = {
       from,
       size,
@@ -30,10 +42,10 @@ export class AccountElastic{
       });
       isfilter = true;
     }
-    if (filter["accountNameLs"]?.length > 0) {
+    if (filter.accountNameLs && filter.accountNameLs.length > 0) {
       let accountNameList = [];
-      for (let i = 0; i < filter["accountNameLs"]?.length; i++) {
-        accountNameList.push(filter["accountNameLs"][i]);
+      for (let i = 0; i < filter.accountNameLs.length; i++) {
+        accountNameList.push(filter.accountNameLs[i]);
       }
       must.push({
         terms: {
@@ -50,10 +62,10 @@ export class AccountElastic{
       });
       isfilter = true;
     }
-    if (filter.status?.length > 0) {
+    if (filter.status && filter.status.length > 0) {
       must.push({
         term: {
-          isActivated: filter?.status[0] === "Active" ? 1 : 0,
+          isActivated: filter.status[0] === "Active" ? 1 : 0,
         },
       });
       isfilter = true;

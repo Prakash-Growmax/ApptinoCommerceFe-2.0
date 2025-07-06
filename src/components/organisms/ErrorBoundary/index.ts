@@ -1,4 +1,4 @@
-export { useAsyncError } from '../../hooks/useAsyncError';
+export { useAsyncError } from '@/hooks/useAsyncError';
 export {
   AsyncErrorBoundary,
   withAsyncErrorBoundary,

@@ -1,8 +1,6 @@
 import { apiGet } from "@/lib/api/client";
 import { CustomerData } from "../types/customer.type";
 import { AccountFilterType } from "../schema/customer.schema";
-import { CurrencyType } from "../types/address.type";
-import RawRoleResponse  from '../types/customer.type';
 
 export const CustomerFilters = async ({
   userId,

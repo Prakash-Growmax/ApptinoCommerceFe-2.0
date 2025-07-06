@@ -44,6 +44,7 @@ export const FormField = ({
           })}
           {...(description && { description })}
           {...(className && { className })}
+          {...(rules && { rules })}
         >
           {children({ field, fieldState })}
         </FormControl>

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCurrentUser, login, logout, getUsers } from './authApi';
+import useAppStore from '@/stores/appStore';
 
 /**
  * Auth-related query keys
@@ -13,12 +14,12 @@ export const authKeys = {
  * Query hook for getting current user (FIXED for React Query v5)
  */
 export const useUserQuery = () => {
-  const hasToken = !!localStorage.getItem('accessToken');
+  const { accessToken } = useAppStore();
 
   return useQuery({
-    queryKey:hasToken,
+    queryKey: authKeys.user(),
     queryFn: getCurrentUser,
-    enabled: hasToken, // Only runs if token exists
+    enabled: !!accessToken, // Only runs if token exists
   });
 };
 
@@ -40,7 +41,7 @@ export const useLoginMutation = () => {
 
   return useMutation({
     mutationFn: login, // Direct function reference
-    onSuccess: data => {
+    onSuccess: () => {
       // Invalidate and refetch user query
       queryClient.invalidateQueries({ queryKey: authKeys.user() });
     },

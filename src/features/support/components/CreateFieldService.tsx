@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, Form, FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
@@ -15,6 +15,21 @@ import { FormCalendar } from '@/components/molecules/ReactHookForm/Calendar/Cale
 import { FormField } from '@/components/molecules/ReactHookForm/FormField/FormField';
 import useAppStore from '@/stores/appStore';
 import { TokenPayload } from '@/types/auth.types';
+import { handleError } from '@/utils/errorHandling';
+
+// Types for form data
+interface CreateFieldServiceFormData {
+  subject: string;
+  description: string;
+  attachments: File[];
+  notes: string;
+  appointmentDateFrom: string;
+  appointmentDateTo: string;
+  fieldServiceRep: string;
+  status: string;
+  category: string;
+  customerAddress: string;
+}
 
 import {
   createFieldService,
@@ -31,7 +46,7 @@ type CreateFieldServiceProps = {
   refetchFieldData?: () => void; 
 };
 
-const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServiceProps) => {
+const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServiceProps): React.JSX.Element => {
   const handleClose = () => setOpen(false);
   const { id } = useParams();
   const { accessToken, payload } = useAppStore();
@@ -97,18 +112,20 @@ const fieldUserOptions = fieldUser?.map((f) => ({
   id: f?.id,
 }));
 
-    const handleRefreshFieldServices = async () => {
+    const handleRefreshFieldServices = async (): Promise<void> => {
     try {
-      await refetchFieldData();
+      await refetchFieldData?.();
       console.log('Field services data refreshed');
-    } catch (error) {
-      console.error('Failed to refresh field services:', error);
+    } catch (error: unknown) {
+      handleError(error, 'handleRefreshFieldServices', 'Failed to refresh field services');
     }
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: CreateFieldServiceFormData): Promise<void> => {
     console.log(data)
     setLoading(true)
+    
+    try {
 const userRep = fieldUser.find(
   (user) =>
     user.displayName?.trim().toLowerCase() ===
@@ -164,11 +181,15 @@ const payload={
     if (res) {
       setLoading(false);
       setOpen(false);
-
       toast.success('Field Service created successfully');
     } else {
       setLoading(false);
       toast.error('Failed to create Field Service');
+    }
+    } catch (error: unknown) {
+      const errorMessage = handleError(error, 'onSubmit', 'Failed to create Field Service');
+      setLoading(false);
+      toast.error(errorMessage);
     }
   };
 useEffect(() => {

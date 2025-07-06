@@ -3,7 +3,6 @@ import { TokenPayload } from "@/types/auth.types";
 import { useQuery } from "@tanstack/react-query";
 import { getSupportFieldServiceRep, getSupportTicketStatus } from "../api/support.api";
 import { useSupportTicketFilterStore } from "../store/useSupportTicketFilterStore";
-import _ from "lodash";
 
 export const useGetSupportFilterSettings = () => {
   const { accessToken, payload } = useAppStore();
@@ -26,7 +25,7 @@ export const useGetSupportFilterSettings = () => {
       setPriority(data.priority); 
       setReason(data?.reasons);
       setSeverity(data?.severity);
-      setStatus(_.map(data.ticketStatus, 'status'))
+      setStatus(data.ticketStatus.map((item: any) => item.status))
 
       if (data.priority) {
       setPriority(data.priority); // e.g., ['Low', 'Medium', 'High']
@@ -46,7 +45,7 @@ export const useGetSupportFilterSettings = () => {
         token,
         companyId
       );
-     setFieldUser(_.filter(response.data, "isActive"))
+     setFieldUser(response.data.filter((item: any) => item.isActive))
     },
     enabled: !!tenantId && !!companyId,
     refetchOnWindowFocus: false,

@@ -1,7 +1,8 @@
 // src/lib/monitoring/index.ts
 import { getEnvironmentVariables, isProduction } from '@config/environment';
 import * as Sentry from '@sentry/react';
-import { Metric, getCLS, getFCP, getFID, getLCP, getTTFB } from 'web-vitals';
+import { Metric } from 'web-vitals';
+import { ErrorInfo } from 'react';
 
 const { API_URL } = getEnvironmentVariables();
 
@@ -15,15 +16,15 @@ export const initSentry = () => {
     dsn: sentryDsn,
     environment: import.meta.env.MODE,
     integrations: [
-      Sentry.browserTracingIntegration({
-        // Set tracing origins to connect sentry for performance monitoring
-        tracePropagationTargets: [API_URL, /^\//],
-      }),
+      Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
         maskAllText: false,
         blockAllMedia: false,
       }),
     ],
+
+    // Set tracing origins to connect sentry for performance monitoring
+    tracePropagationTargets: API_URL ? [API_URL, /^\//] : [/^\//],
 
     // Performance monitoring
     tracesSampleRate: isProduction() ? 0.1 : 1.0,
@@ -39,7 +40,7 @@ export const initSentry = () => {
     beforeSend: (event, hint) => {
       // Filter out specific errors
       if (event.exception) {
-        const error = hint.originalException;
+        const error = hint.originalException as Error;
 
         // Ignore network errors in development
         if (!isProduction() && error?.message?.includes('fetch')) {
@@ -81,11 +82,14 @@ function sendToAnalytics(metric: Metric) {
 
 // Initialize Web Vitals tracking
 export const initWebVitals = () => {
-  getCLS(sendToAnalytics);
-  getFCP(sendToAnalytics);
-  getFID(sendToAnalytics);
-  getLCP(sendToAnalytics);
-  getTTFB(sendToAnalytics);
+  // Import web-vitals dynamically to use the new API
+  import('web-vitals').then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
+    onCLS(sendToAnalytics);
+    onFCP(sendToAnalytics);
+    onINP(sendToAnalytics);
+    onLCP(sendToAnalytics);
+    onTTFB(sendToAnalytics);
+  });
 };
 
 // Performance observer for custom metrics
@@ -95,24 +99,41 @@ export const initPerformanceObserver = () => {
   // Largest Contentful Paint
   const lcpObserver = new PerformanceObserver(entryList => {
     const entries = entryList.getEntries();
-    const lastEntry = entries[entries.length - 1];
+    // Process LCP entries if needed
+    entries.forEach(() => {
+      // Add processing logic here if needed
+    });
   });
   lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
   // First Input Delay
   const fidObserver = new PerformanceObserver(entryList => {
-    entryList.getEntries().forEach(entry => {});
+    entryList.getEntries().forEach(() => {
+      // Add processing logic here if needed
+    });
   });
   fidObserver.observe({ entryTypes: ['first-input'] });
 
   // Cumulative Layout Shift
   const clsObserver = new PerformanceObserver(entryList => {
     let clsValue = 0;
-    entryList.getEntries().forEach(entry => {
+    entryList.getEntries().forEach((entry: any) => {
       if (!entry.hadRecentInput) {
         clsValue += entry.value;
       }
     });
+    // Send clsValue to analytics if needed
+    if (clsValue > 0) {
+      sendToAnalytics({ 
+        name: 'CLS', 
+        value: clsValue, 
+        rating: 'good', 
+        delta: 0, 
+        entries: [],
+        id: `v5-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
+        navigationType: 'navigate'
+      });
+    }
   });
   clsObserver.observe({ entryTypes: ['layout-shift'] });
 };
@@ -121,11 +142,11 @@ export const initPerformanceObserver = () => {
 export class PerformanceTracker {
   private startTimes = new Map<string, number>();
 
-  startMeasure(name: string) {
+  startMeasure(name: string): void {
     this.startTimes.set(name, performance.now());
   }
 
-  endMeasure(name: string) {
+  endMeasure(name: string): number | undefined {
     const startTime = this.startTimes.get(name);
     if (!startTime) return;
 
@@ -138,7 +159,7 @@ export class PerformanceTracker {
     return duration;
   }
 
-  private sendCustomMetric(name: string, duration: number) {
+  private sendCustomMetric(name: string, duration: number): void {
     // Send to your analytics service
     if (isProduction()) {
       fetch('/api/analytics/custom-metrics', {
@@ -158,11 +179,14 @@ export class PerformanceTracker {
 }
 
 // Error boundary logging
-export const logErrorBoundary = (error: Error, errorInfo: any) => {
+export const logErrorBoundary = (error: Error, errorInfo: ErrorInfo): void => {
   if (isProduction()) {
     Sentry.withScope(scope => {
       scope.setTag('errorBoundary', true);
-      scope.setContext('errorInfo', errorInfo);
+      scope.setContext('errorInfo', {
+        componentStack: errorInfo.componentStack,
+        digest: errorInfo.digest
+      });
       Sentry.captureException(error);
     });
   }
@@ -175,8 +199,8 @@ export const logApiError = (
   url: string,
   method: string,
   status: number,
-  error: any
-) => {
+  error: unknown
+): void => {
   if (isProduction()) {
     Sentry.addBreadcrumb({
       category: 'api',
@@ -193,8 +217,8 @@ export const logApiError = (
 export const trackUserInteraction = (
   action: string,
   element?: string,
-  additionalData?: Record<string, any>
-) => {
+  additionalData?: Record<string, unknown>
+): void => {
   if (isProduction()) {
     // Send to your analytics service
     fetch('/api/analytics/interactions', {
@@ -236,7 +260,7 @@ export const trackBundleSize = () => {
 };
 
 // Initialize all monitoring
-export const initMonitoring = () => {
+export const initMonitoring = (): void => {
   initSentry();
   initWebVitals();
   initPerformanceObserver();

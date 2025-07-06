@@ -5,7 +5,7 @@ import { AddressDetailsType } from "../schema/address.schema";
 import useAppStore from "@/stores/appStore";
 import { TokenPayload } from "@/types/auth.types";
 
-export const useGetAddressDetails = (companyIdFromUrl?: string,page:number,rowPerPage:number) => {
+export const useGetAddressDetails = (companyIdFromUrl: string | undefined, page: number, rowPerPage: number) => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const { tenantId } = payload as TokenPayload;

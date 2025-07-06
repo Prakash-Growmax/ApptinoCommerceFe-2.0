@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 
 import { routeConfig } from '@/app/router/routes.config';
-import { RouteConfig } from '@/app/router/types';
+import { RouteConfig } from '@/types/router.types';
 
 interface BreadcrumbItem {
   label: string;

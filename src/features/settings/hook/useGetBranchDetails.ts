@@ -7,6 +7,7 @@ import { Pagination } from '../types/company.types';
 import { GetBranchDetails } from '../api/settings.api';
 import useAppStore from '@/stores/appStore';
 import { TokenPayload } from '@/types/auth.types';
+import { handleError } from '@/utils/errorHandling';
 
 export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
   const {accessToken,payload}=useAppStore();
@@ -17,7 +18,7 @@ export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
 
  
 
-  const fetchBranch = async () => {
+  const fetchBranch = async (): Promise<any> => {
     try {
       setLoading(true);
 
@@ -28,8 +29,8 @@ export const useGetBranchDetails = ({ searchString = '' }: Pagination = {}) => {
       setLoading(false);
 
       return response;
-    } catch (error) {
-      console.error('Error fetching branches', error);
+    } catch (error: unknown) {
+      handleError(error, 'fetchBranch', 'Error fetching branches');
       setLoading(false);
       return null;
     }

@@ -21,24 +21,48 @@ export const FormControl = ({
   className = '',
   rules,
 }: FormControlProps) => {
+  const isRequired = rules?.required;
+  const descriptionId = htmlFor ? `${htmlFor}-description` : undefined;
+  const errorId = htmlFor ? `${htmlFor}-error` : undefined;
+
   return (
     <div className={`mb-4 ${className}`}>
       {label && (
         <label
           htmlFor={htmlFor}
-          className="mb-1 block text-sm font-medium text-foreground "
+          className="mb-1 block text-sm font-medium text-foreground"
         >
           {label}
+          {isRequired && (
+            <span className="text-destructive ml-1" aria-label="required">
+              *
+            </span>
+          )}
         </label>
       )}
 
       {children}
 
       {description && !error && (
-        <p className="mt-1 text-xs text-muted-foreground ">{description}</p>
+        <p 
+          id={descriptionId}
+          className="mt-1 text-xs text-muted-foreground"
+          role="note"
+        >
+          {description}
+        </p>
       )}
 
-      {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+      {error && (
+        <p 
+          id={errorId}
+          className="mt-1 text-xs text-destructive"
+          role="alert"
+          aria-live="polite"
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 };

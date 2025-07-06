@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from 'lucide-react';
@@ -31,7 +31,7 @@ const navigate = useNavigate();
     totalCount,
   } = useAccountsStore();
   useFetchCustomersWithFilters();
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<any>[] = useMemo(() => [
     {
       id: 'companyName',
       accessorKey: 'companyName',
@@ -131,23 +131,24 @@ const navigate = useNavigate();
         );
       },
     },
-  ];
+  ], []);
 
   // const paginatedData = data.slice(
   //   pagination.pageIndex * pagination.pageSize,
   //   (pagination.pageIndex + 1) * pagination.pageSize
   // );
-    const handleRowClick = (row: any) => {
+    const handleRowClick = useCallback((row: any) => {
       console.log(row);
     navigate(`/customers/customerdetails/${row?.companyID}`);
-  };
-  const handlePrevious = () => {
+  }, [navigate]);
+  
+  const handlePrevious = useCallback(() => {
     setPage(prev => prev - 1);
-  };
+  }, [setPage]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setPage(prev => prev + 1);
-  };
+  }, [setPage]);
   const { sideOpen } = useSideBarStore();
   return (
     <div className="  w-[76rem] bg-white ml-4 rounded-md">

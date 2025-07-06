@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   ColumnDef,
@@ -17,18 +17,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-type TablePagination = {
-  pageIndex: number;
-  pageSize: number;
-};
-
 type TableProps<T> = {
   data: T[];
   columns: ColumnDef<T, any>[];
   loading: boolean;
   totalDataCount: number;
-  pagination: TablePagination;
-  setPagination: React.Dispatch<React.SetStateAction<TablePagination>>;
   setPage: (page: number | ((prev: number) => number)) => void;
   pageOptions: number[];
   handlePrevious: () => void;
@@ -45,8 +38,6 @@ const DashboardTable = <T,>({
   columns,
   loading,
   totalDataCount,
-  pagination,
-  setPagination,
   setPage,
   pageOptions,
   handlePrevious,
@@ -57,7 +48,7 @@ const DashboardTable = <T,>({
   onRowClick,
   tableHeight = 'h-[calc(100vh-250px)]',
 }: TableProps<T>) => {
-  const pageCount = Math.ceil(totalDataCount / rowPerPage);
+  const pageCount = useMemo(() => Math.ceil(totalDataCount / rowPerPage), [totalDataCount, rowPerPage]);
 
   const table = useReactTable({
     data,
@@ -67,10 +58,43 @@ const DashboardTable = <T,>({
     pageCount,
   });
 
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePageSizeChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setPage(0);
     setRowPerPage(e.target.value);
-  };
+  }, [setPage, setRowPerPage]);
+
+  const memoizedTableBody = useMemo(() => {
+    if (loading) return null;
+    
+    return table.getRowModel().rows.length > 0 ? (
+      table.getRowModel().rows.map((row, index) => (
+        <TableRow
+          key={row.id}
+          className="hover:bg-gray-100 cursor-pointer animate-in fade-in slide-in-from-bottom-1"
+          style={{ animationDelay: `${index * 50}ms` }}
+          onClick={() => onRowClick?.(row.original)}
+        >
+          {row.getVisibleCells().map(cell => (
+            <TableCell key={cell.id} className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
+              {flexRender(
+                cell.column.columnDef.cell,
+                cell.getContext()
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+    ) : (
+      <TableRow>
+        <TableCell
+          colSpan={columns.length}
+          className="text-center py-4 text-xs sm:text-sm text-muted-foreground"
+        >
+          No data available
+        </TableCell>
+      </TableRow>
+    );
+  }, [table, loading, onRowClick, columns.length]);
 
   return (
     <div
@@ -108,34 +132,7 @@ const DashboardTable = <T,>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  className="hover:bg-gray-100 cursor-pointer animate-in fade-in slide-in-from-bottom-1"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => onRowClick?.(row.original)}
-                >
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id} className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="text-center py-4 text-xs sm:text-sm text-muted-foreground"
-                >
-                  No data available
-                </TableCell>
-              </TableRow>
-            )}
+            {memoizedTableBody}
           </TableBody>
         </Table>
       </div>
@@ -184,4 +181,4 @@ const DashboardTable = <T,>({
   );
 };
 
-export default DashboardTable;
+export default React.memo(DashboardTable) as typeof DashboardTable;

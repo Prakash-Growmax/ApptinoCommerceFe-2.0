@@ -17,7 +17,7 @@ import { formatDateTime } from "@/utils/component/dataconverter";
 import { useSupportTicketFilterStore } from "../store/useSupportTicketFilterStore";
 import { useEffect, useRef } from "react";
 import { useSupportDetailStore } from "../store/useSupportDetailStore";
-import isEqual from "lodash/isEqual";
+import { isEqual } from '@/utils/object';
 
 const VisitDetails = ({ fieldService }) => {
   const methods = useForm({

@@ -13,7 +13,6 @@ export const createAuthClient = (
     baseURL: options.baseURL || AUTH_URL || '',
     headers: {
       'Content-Type': 'application/json',
-      'origin':'siemens.growmax.io',
       ...options.headers,
     },
   });

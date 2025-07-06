@@ -14,20 +14,11 @@ export const createTicket = async ({
   token: string;
   tenantId: string;
 }): Promise<CreateTicketResponseType> => {
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`, // ✅ Fix formatting
-  };
-
   const response = await apiPost<CreateTicketResponseType>({
     url: `/support/service-support/fieldService/createWithSupportTicket?domainName=${tenantId}`,
     data: body,
-    //  token,       // ✅ pass token here
-    // tenantId,   
-    config: {
-      headers,
-    },
+    token,
+    tenantId,
   });
 
   return response;

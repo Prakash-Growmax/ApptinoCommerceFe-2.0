@@ -1,3 +1,4 @@
+import React, { memo } from 'react';
 import { AppSidebar } from '@/components/molecules/Sidebar/AppSideBar';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -11,7 +12,7 @@ interface AppHeaderProps {
   children: React.ReactNode;
 }
 
-export function AppHeader({ children }: AppHeaderProps) {
+export const AppHeader = memo(function AppHeader({ children }: AppHeaderProps) {
   const pageInfo = usePageInfo();
   console.log('🚀 ~ AppHeader ~ pageInfo:', pageInfo);
 
@@ -39,4 +40,4 @@ export function AppHeader({ children }: AppHeaderProps) {
       </SidebarProvider>
     </div>
   );
-}
+});

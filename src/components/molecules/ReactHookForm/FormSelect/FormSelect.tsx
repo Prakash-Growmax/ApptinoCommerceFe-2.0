@@ -137,44 +137,76 @@ export const FormSelect = ({
       {...(description && { description })}
       {...(className && { className })}
     >
-      {({ field, fieldState }) => (
-        <div className="relative">
-          <Select
-            options={formattedOptions}
-            value={formattedOptions.find(opt =>
-              isPrimitive
-                ? opt.value === field.value
-                : opt.value === field.value?.id
-            )}
-            onChange={selected => {
-              const selectedOption = isPrimitive
-                ? selected?.value
-                : options.find((opt: any) => opt.id === selected?.value);
-              field.onChange(selectedOption);
-            }}
-            placeholder={placeholder}
-            isDisabled={disabled}
-            className={`react-select-container ${
-              fieldState.error
-                ? 'border border-red-500 rounded-sm'
-                : 'border focus:border-gray-300  rounded-xl  '
-            } ${rightElement ? 'pr-20' : ''}`}
-            classNamePrefix="react-select"
-  //           styles={{
-  //   control: (base) => ({
-  //     ...base,
-  //     boxShadow: 'none',
-  //   }),
-  // }}
-          />
+      {({ field, fieldState }) => {
+        const descriptionId = description ? `${name}-description` : undefined;
+        const errorId = fieldState.error ? `${name}-error` : undefined;
+        const ariaDescribedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined;
+        
+        return (
+          <div className="relative">
+            <Select
+              inputId={name}
+              options={formattedOptions}
+              value={formattedOptions.find(opt =>
+                isPrimitive
+                  ? opt.value === field.value
+                  : opt.value === field.value?.id
+              )}
+              onChange={selected => {
+                const selectedOption = isPrimitive
+                  ? selected?.value
+                  : options.find((opt: any) => opt.id === selected?.value);
+                field.onChange(selectedOption);
+              }}
+              placeholder={placeholder}
+              isDisabled={disabled}
+              className={`react-select-container ${
+                fieldState.error
+                  ? 'border border-red-500 rounded-sm'
+                  : 'border focus:border-gray-300 rounded-xl'
+              } ${rightElement ? 'pr-20' : ''}`}
+              classNamePrefix="react-select"
+              aria-invalid={!!fieldState.error}
+              aria-describedby={ariaDescribedBy}
+              aria-required={rules?.required ? true : undefined}
+              isSearchable={true}
+              isClearable={!rules?.required}
+              menuPlacement="auto"
+              menuPosition="fixed"
+              onKeyDown={(e) => {
+                // Enhanced keyboard navigation
+                if (e.key === 'Escape') {
+                  (e.target as HTMLElement).blur();
+                }
+              }}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  boxShadow: 'none',
+                  borderColor: fieldState.error ? '#ef4444' : base.borderColor,
+                  '&:hover': {
+                    borderColor: fieldState.error ? '#ef4444' : base.borderColor,
+                  },
+                  '&:focus-within': {
+                    borderColor: fieldState.error ? '#ef4444' : '#6b7280',
+                    boxShadow: fieldState.error ? '0 0 0 1px #ef4444' : '0 0 0 1px #6b7280',
+                  },
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: 1000,
+                }),
+              }}
+            />
 
-          {rightElement && (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-auto">
-              {rightElement}
-            </div>
-          )}
-        </div>
-      )}
+            {rightElement && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-auto">
+                {rightElement}
+              </div>
+            )}
+          </div>
+        );
+      }}
     </FormField>
   );
 };

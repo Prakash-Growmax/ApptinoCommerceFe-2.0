@@ -15,16 +15,17 @@ import useSideBarStore from '@/stores/sidebarStore';
 import useAccountsStore from '@/stores/useAccountStore';
 import { TokenPayload } from '@/types/auth.types';
 import { ElasticSearchService } from '@/utils/Services/ElasticSearchServices';
+import { handleError } from '@/utils/errorHandling';
 
 import { AccountElastic } from '../api/AccountElastics';
 import { ElasticSearchServices } from '../api/ElasticSearchServices';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import CreateCustomer from './CreateCustomer';
 import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
 
 
 
-const CustomerFilter = () => {
+const CustomerFilter = (): React.JSX.Element => {
   const {
     searchText,
     setSearchText,
@@ -49,7 +50,7 @@ const CustomerFilter = () => {
     setSearchText('');
   };
   
-  const fetchCustomers = async (filterParams: any, searchText = '') => {
+  const fetchCustomers = async (filterParams: unknown, searchText = ''): Promise<any> => {
     try {
       const elasticData = AccountElastic.BuildCustomerquery(
         filterParams,
@@ -59,8 +60,8 @@ const CustomerFilter = () => {
       const customerResponse = ElasticSearchService.FormatResults(data);
       setData(customerResponse);
       return customerResponse;
-    } catch (error) {
-      console.error('Error fetching customers:', error);
+    } catch (error: unknown) {
+      handleError(error, 'fetchCustomers', 'Error fetching customers');
       setData([]);
     } finally {
       setLoading(false);

@@ -1,7 +1,7 @@
 
 import { apiPost } from "@/lib/api/client";
 export class ElasticSearchServices {
-  static async CustomerGet(BuildcustomersQuery,tenantId) {
+  static async CustomerGet(BuildcustomersQuery: any, tenantId: string) {
      
 
     if (!tenantId) {

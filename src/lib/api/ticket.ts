@@ -1,4 +1,4 @@
-type ApiPostArgs<T> = {
+type ApiPostArgs = {
   url: string;
   data?: unknown;
   token?: string;
@@ -10,7 +10,7 @@ export const apiPost = async <T>({
   data,
   token,
   tenantId,
-}: ApiPostArgs<T>): Promise<T> => {
+}: ApiPostArgs): Promise<T> => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };

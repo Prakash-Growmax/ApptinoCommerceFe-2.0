@@ -5,6 +5,7 @@ const environmentSchema = z.object({
   MODE: z.enum(['development', 'production', 'test', 'staging']),
   AUTH_URL: z.string().optional(),
   API_URL: z.string().optional(),
+  CORS_ORIGIN: z.string().optional(),
   ENABLE_MOCKS: z.boolean().optional().default(false),
 });
 
@@ -19,6 +20,7 @@ export const getEnvironmentVariables = (): Environment => {
     MODE: import.meta.env.MODE,
     API_URL: import.meta.env.VITE_API_URL,
     AUTH_URL: import.meta.env.VITE_AUTH_URL,
+    CORS_ORIGIN: import.meta.env.VITE_CORS_ORIGIN,
     ENABLE_MOCKS: import.meta.env.VITE_ENABLE_MOCKS === 'true',
   };
 

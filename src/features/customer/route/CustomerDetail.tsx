@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCompanyDetails } from "../api/company.api";
 import { CompanyDetailsType } from "../types/company.type";
@@ -8,6 +8,7 @@ import AddressComponent from "./address";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import AddressTicketsDialog from "./CreateCustomer";
+import { handleError } from "@/utils/errorHandling";
 
 const InfoRow = ({ label, value }: { label: string; value?: string | string[] | undefined }) => {
   const displayValue =
@@ -25,7 +26,7 @@ const InfoRow = ({ label, value }: { label: string; value?: string | string[] | 
   );
 };
 
-const CompanyDetailsPage = () => {
+const CompanyDetailsPage = (): React.JSX.Element => {
   const { id: companyId } = useParams();
   const [companyDetails, setCompanyDetails] = useState<CompanyDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,13 +40,14 @@ const CompanyDetailsPage = () => {
   useEffect(() => {
     if (!companyId) return;
 
-    const fetchCompanyDetails = async () => {
+    const fetchCompanyDetails = async (): Promise<void> => {
       setLoading(true);
       try {
         const data = await getCompanyDetails({ companyId, tenantId, token });
         setCompanyDetails(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load company details");
+      } catch (err: unknown) {
+        const errorMessage = handleError(err, 'fetchCompanyDetails', 'Failed to load company details');
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

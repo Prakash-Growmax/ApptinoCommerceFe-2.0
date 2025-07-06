@@ -3,40 +3,45 @@ import useSupportStore from "@/stores/useSupportStore";
 import { TokenPayload } from "@/types/auth.types";
 import { ElasticSearchService } from "@/utils/Services/ElasticSearchServices";
 import { useQuery } from "@tanstack/react-query";
-import { map } from "lodash";
 
-export const useGetSupportFilters = () => {
+export const useGetSupportFilters = (searchValue: string = '') => {
   const { setSupportData, setSupportLoading } = useSupportStore();
 
     const {payload}=useAppStore();
   const {tenantId} = payload as TokenPayload;
 
-  const getSupportData = async (searchValue: string ) => {
+  const getSupportData = async (searchText: string) => {
     try {
       setSupportLoading(true);
-      const data = await ElasticSearchService.CustomerSearch(searchValue, tenantId, true);
+      // If no search value provided, fetch all active customers
+      const data = await ElasticSearchService.CustomerSearch(searchText || '', tenantId, true);
       const resData = ElasticSearchService.FormatResults(data);
-       const updatedResData = map(resData, (e) => {
+       const updatedResData = resData.map((e: any) => {
         e["id"] = parseInt(e.companyID);
         e["name"] = e.companyName;
-        e["profileAccess"] = e.isProfileAccess ? true : false;
-        e["currencyId"] = {
+        e["profileAccess"] = e.profileAccess ? true : false;
+        e["currency"] = {
           currencyCode: e.currencyCode,
           currencySymbol: e.currencySymbol,
         };
         return e;
       });
       setSupportData(updatedResData);
+      return updatedResData;
     } catch (error) {
       console.error("Support search failed:", error);
+      setSupportData([]);
+      return [];
     } finally {
       setSupportLoading(false);
     }
   };
 
   const query = useQuery({
-    queryKey: ["Supportfilters" ],
-    queryFn:getSupportData,
+    queryKey: ["Supportfilters", searchValue],
+    queryFn: () => getSupportData(searchValue),
+    // Enable query even without searchValue to fetch all customers
+    enabled: true,
   });
   return query;
 };

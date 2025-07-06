@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { login as apiLogin, logout as apiLogout } from '../api/authApi';
 import { authKeys, useUserQuery } from '../api/queries';
 import { LoginCredentials, User } from '../types/auth.types';
+import useAppStore from '@/stores/appStore';
 
 interface UseAuthReturn {
   user: User | null;
@@ -20,11 +21,12 @@ export const useAuth = (): UseAuthReturn => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
+  const { accessToken, refreshToken, logoutAction } = useAppStore();
 
   // Get user data from query (now using correct v5 syntax)
-  const { data: user, isLoading, error: userError, refetch } = useUserQuery();
+  const { data: user, isLoading, error: userError } = useUserQuery();
   
-  const isAuthenticated = user;
+  const isAuthenticated = !!user;
 
   // Login handler
   const login = useCallback(
@@ -52,14 +54,26 @@ export const useAuth = (): UseAuthReturn => {
   // Logout handler
   const logout = useCallback(async (): Promise<void> => {
     try {
-      await apiLogout();
+      // Only call server-side logout if we have tokens
+      if (accessToken && refreshToken) {
+        await apiLogout({
+          accessToken,
+          refreshToken,
+        });
+      }
+
+      // Clear client-side state
+      logoutAction();
 
       // Clear all auth-related queries
       queryClient.removeQueries({ queryKey: authKeys.all });
     } catch (err) {
       console.error('Logout error:', err);
+      // Even if server-side logout fails, clear client-side state
+      logoutAction();
+      queryClient.removeQueries({ queryKey: authKeys.all });
     }
-  }, [queryClient]);
+  }, [queryClient, accessToken, refreshToken, logoutAction]);
 
   // Set error from user query if exists
   useEffect(() => {

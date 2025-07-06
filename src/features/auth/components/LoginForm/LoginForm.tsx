@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { Eye, EyeOff } from 'lucide-react';
 
 import { Form } from '@/components';
 import Button from '@/components/atoms/Button/Button';
@@ -12,6 +13,7 @@ import { FormInput } from '@/components/molecules/ReactHookForm';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import useAppStore from '@/stores/appStore';
+import { handleError } from '@/utils/errorHandling';
 
 import { checkUserName, login } from '../../api/authApi';
 import {
@@ -22,7 +24,7 @@ import {
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<'div'>): React.JSX.Element {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { loginAction } = useAppStore();
@@ -30,6 +32,8 @@ export function LoginForm({
   const [hasPassword, setHasPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const passwordFieldRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginRequestSchema),
@@ -44,7 +48,23 @@ export function LoginForm({
   const UserName = watch('UserName');
   const Password = watch('Password');
 
-  const handleCheckUser = async () => {
+  // Focus management effect
+  useEffect(() => {
+    if (hasPassword && passwordFieldRef.current) {
+      // Focus password field when it becomes visible
+      passwordFieldRef.current.focus();
+    }
+  }, [hasPassword]);
+
+  // Focus management after form submission
+  useEffect(() => {
+    if (apiError) {
+      // Focus the password field when there's an error
+      passwordFieldRef.current?.focus();
+    }
+  }, [apiError]);
+
+  const handleCheckUser = async (): Promise<void> => {
     if (!UserName) return;
 
     const isValid = await form.trigger('UserName');
@@ -61,9 +81,9 @@ export function LoginForm({
           setHasPassword(true);
         }
       }
-    } catch (error: any) {
-      console.error('Fetch error:', error);
-      setApiError(error.message || 'Failed to check user');
+    } catch (error: unknown) {
+      const errorMessage = handleError(error, 'handleCheckUser', 'Failed to check user');
+      setApiError(errorMessage);
       setError('UserName', {
         type: 'manual',
         message: 'User not found or invalid email',
@@ -73,7 +93,7 @@ export function LoginForm({
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (): Promise<void> => {
     if (!UserName || !Password) return;
 
     const isValid = await form.trigger(['UserName', 'Password']);
@@ -95,17 +115,20 @@ export function LoginForm({
       loginAction(accessToken, refreshToken, payload);
       toast.success('Logged In Successfully.');
       navigate('/');
-    } catch (error: any) {
-      console.error(error);
+    } catch (error: unknown) {
+      const errorMessage = handleError(error, 'handleLogin', 'Login failed');
+      setApiError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleChangeEmail = () => {
+  const handleChangeEmail = (): void => {
     setHasPassword(false);
     setValue('Password', '');
     clearErrors('Password');
+    setShowPassword(false);
   };
 
   return (
@@ -119,16 +142,24 @@ export function LoginForm({
                   form={form}
                   onSubmit={() => {}}
                   className="flex flex-col gap-3"
+                  role="form"
+                  aria-labelledby="login-heading"
+                  {...(apiError && { 'aria-describedby': "login-error" })}
                 >
                   <div className="flex flex-col items-center text-center">
-                    <h1 className="text-2xl font-bold">Welcome</h1>
+                    <h1 id="login-heading" className="text-2xl font-bold">Welcome</h1>
                     <p className="text-balance text-muted-foreground">
                       Login to your Growmax account
                     </p>
                   </div>
 
                   {apiError && (
-                    <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                    <div 
+                      className="rounded-md bg-destructive/10 p-3 text-sm text-destructive"
+                      role="alert"
+                      aria-live="polite"
+                      id="login-error"
+                    >
                       {apiError}
                     </div>
                   )}
@@ -144,12 +175,14 @@ export function LoginForm({
                     className="mb-0!"
                     rightElement={
                       hasPassword && (
-                        <a
-                          className="ml-auto inline-block text-sm cursor-pointer"
+                        <button
+                          type="button"
+                          className="ml-auto inline-block text-sm cursor-pointer hover:underline focus:underline focus:outline-none"
                           onClick={handleChangeEmail}
+                          aria-label="Change email address"
                         >
                           Change
-                        </a>
+                        </button>
                       )
                     }
                   />
@@ -157,13 +190,28 @@ export function LoginForm({
                   {hasPassword && (
                     <div className="space-y-2">
                       <FormInput
+                        ref={passwordFieldRef}
                         label="Password"
                         name="Password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
                         autoComplete="current-password"
                         disabled={isLoading}
                         autoFocus={hasPassword}
+                        rightElement={
+                          <button
+                            type="button"
+                            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        }
                       />
                     </div>
                   )}
@@ -171,10 +219,12 @@ export function LoginForm({
                     type="submit"
                     className="w-full"
                     loading={isLoading}
+                    loadingText={hasPassword ? "Logging in..." : "Checking user..."}
                     isDisabled={
                       isLoading || !UserName || (hasPassword && !Password)
                     }
                     onClick={hasPassword ? handleLogin : handleCheckUser}
+                    {...(apiError && { ariaDescribedBy: "login-error" })}
                   >
                     {hasPassword ? t('Login') : t('Continue')}
                   </Button>
