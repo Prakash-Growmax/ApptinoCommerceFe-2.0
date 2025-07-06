@@ -70,7 +70,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                 aria-invalid={!!fieldState.error}
                 aria-describedby={ariaDescribedBy}
                 aria-required={rules?.required ? true : undefined}
-                className={`${fieldState.error ? 'border-red-500 focus:border-red-500' : 'rounded-sm border-gray-300 focus:border-gray-400 focus:ring-gray-400'} ${
+                className={`${fieldState.error ? 'border-destructive focus:border-destructive' : ''} ${
                   rightElement ? 'pr-20' : ''
                 }`}
                 autoFocus={autoFocus}

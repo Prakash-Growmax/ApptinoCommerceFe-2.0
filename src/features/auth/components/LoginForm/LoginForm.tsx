@@ -134,14 +134,13 @@ export function LoginForm({
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <div className={cn('flex flex-col gap-3', className)} {...props}>
+        <div className={cn('flex flex-col', className)} {...props}>
           <Card>
-            <CardContent>
-              <div className="p-4">
+            <CardContent className="p-6">
                 <Form
                   form={form}
                   onSubmit={() => {}}
-                  className="flex flex-col gap-3"
+                  className="flex flex-col gap-4"
                   role="form"
                   aria-labelledby="login-heading"
                   {...(apiError && { 'aria-describedby': "login-error" })}
@@ -229,7 +228,6 @@ export function LoginForm({
                     {hasPassword ? t('Login') : t('Continue')}
                   </Button>
                 </Form>
-              </div>
             </CardContent>
           </Card>
         </div>

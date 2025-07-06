@@ -65,7 +65,7 @@ const SettingDetails = () => {
   }, [companyData, methods]);
 
   return (
-      <Card className={`w-full bg-white rounded-md ${
+      <Card className={`w-full bg-card rounded-md ${
       sideOpen ? 'lg:max-w-[calc(100vw-20rem)]' : 'lg:max-w-[calc(100vw-5rem)]'
     }`}>
       {/* Header */}

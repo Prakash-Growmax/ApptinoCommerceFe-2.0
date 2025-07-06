@@ -5,7 +5,7 @@ import { LoadingFallback } from '@/components/organisms';
 
 export const AuthLayout = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/30">
       <Suspense fallback={<LoadingFallback />}>
         <Outlet />
       </Suspense>

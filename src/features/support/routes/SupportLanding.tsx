@@ -123,7 +123,7 @@ export default function SupportLanding() {
           case 'Open':
           case 'OPEN':
             return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-[#FBC02D] text-[#FBC02D]">
+              <span className="text-xs font-medium px-2 py-1 rounded-md border border-warning text-warning">
                 {row?.original?.status}
               </span>
             );
@@ -131,14 +131,14 @@ export default function SupportLanding() {
           case 'INPROGRESS':
           case 'IN PROGRESS':
             return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-[#F57C00] text-[#F57C00]">
+              <span className="text-xs font-medium px-2 py-1 rounded-md border border-warning/80 text-warning/80">
                 {row?.original?.status}
               </span>
             );
           case 'Completed':
           case 'COMPLETED':
             return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-[#4caf50] text-[#4caf50]">
+              <span className="text-xs font-medium px-2 py-1 rounded-md border border-success text-success">
                 {row?.original?.status}
               </span>
             );
@@ -197,14 +197,14 @@ export default function SupportLanding() {
 
   return (
     <div
-      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full bg-[#E5E5E5] ml-3  ${
+      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ml-3  ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
       <SupportFilters />
-      <div className="w-[76rem] overflow-hidden bg-white rounded-md ">
+      <div className="w-[76rem] overflow-hidden bg-card rounded-md ">
         <DashboardTable
           data={supportData}
           columns={Columns}
@@ -220,7 +220,7 @@ export default function SupportLanding() {
           rowPerPage={rowPerPage}
           setRowPerPage={setRowPerPage}
           onRowClick={handleRowClick}
-          tableHeight={`${sideOpen ? 'h-[calc(100vh-180px)]' : 'h-[calc(100vh-180px)]'} sm:h-[calc(105vh-200px)] bg-white`}
+          tableHeight={`${sideOpen ? 'h-[calc(100vh-180px)]' : 'h-[calc(100vh-180px)]'} sm:h-[calc(105vh-200px)] bg-card`}
         />
       </div>
     </div>

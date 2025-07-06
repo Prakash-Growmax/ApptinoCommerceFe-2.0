@@ -13,7 +13,7 @@ export const GetSupportFilter = async ({
     'x-tenant': tenantId,
   };
   const response = await apiGet<ParsedPropertyList>({
-    url: `/corecommerce/templates/get?domainName=siemensdev&propertyName=${userId}_filters`,
+    url: `/corecommerce/templates/get?domainName=dev3&propertyName=${userId}_filters`,
     config: {
       headers,
     },
@@ -175,48 +175,60 @@ export const postFieldAttachments = async (
   });
   return response;
 };
-export const createTicketss=async(tenantId:string,token:string,payload)=>{
-   const headers = {
+export const createTicketss = async (
+  tenantId: string,
+  token: string,
+  payload
+) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
   const response = await apiPost({
-    url:`/support/service-support/fieldService/createWithSupportTicket?domainName=${tenantId}`,
-    data:payload,
-    config:{
+    url: `/support/service-support/fieldService/createWithSupportTicket?domainName=${tenantId}`,
+    data: payload,
+    config: {
       headers,
-    }
-  })
+    },
+  });
   return response;
-}
-export const updateTicket=async(tenantId:string,token:string,payload)=>{
-    const headers = {
+};
+export const updateTicket = async (
+  tenantId: string,
+  token: string,
+  payload
+) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
   const response = await apiPost({
-    url:`/support/service-support/update`,
-    data:payload,
-    config:{
-      headers
-    }
-  })
- return response;
-}
-export const updateTicketServices=async(tenantId:string,token:string,payload)=>{
- const headers = {
+    url: `/support/service-support/update`,
+    data: payload,
+    config: {
+      headers,
+    },
+  });
+  return response;
+};
+export const updateTicketServices = async (
+  tenantId: string,
+  token: string,
+  payload
+) => {
+  const headers = {
     'Content-Type': 'application/json',
     'x-tenant': tenantId,
     Authorization: `Bearer ${token}`,
   };
   const response = await apiPut({
-    url:`/support/service-support/fieldService/update?domainName=${tenantId}`,
-    data:payload,
-    config:{
-      headers
-    }
-  })
+    url: `/support/service-support/fieldService/update?domainName=${tenantId}`,
+    data: payload,
+    config: {
+      headers,
+    },
+  });
   return response;
-}
+};

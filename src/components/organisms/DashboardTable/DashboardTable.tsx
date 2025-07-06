@@ -70,12 +70,12 @@ const DashboardTable = <T,>({
       table.getRowModel().rows.map((row, index) => (
         <TableRow
           key={row.id}
-          className="hover:bg-gray-100 cursor-pointer animate-in fade-in slide-in-from-bottom-1"
+          className="hover:bg-muted/50 cursor-pointer transition-colors animate-in fade-in slide-in-from-bottom-1"
           style={{ animationDelay: `${index * 50}ms` }}
           onClick={() => onRowClick?.(row.original)}
         >
           {row.getVisibleCells().map(cell => (
-            <TableCell key={cell.id} className="px-2 sm:px-3 py-2 text-xs sm:text-sm">
+            <TableCell key={cell.id} className="px-4 py-3 text-sm">
               {flexRender(
                 cell.column.columnDef.cell,
                 cell.getContext()
@@ -100,7 +100,7 @@ const DashboardTable = <T,>({
     <div
       className={`rounded-md border shadow-sm overflow-hidden flex flex-col ${tableHeight} w-full`}
     >
-      <div className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/20">
         {/* Loading overlay - covers table content for both initial load and filter changes */}
         {loading && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-30 flex items-center justify-center">
@@ -115,7 +115,7 @@ const DashboardTable = <T,>({
           </div>
         )}
         <Table className="min-w-full">
-          <TableHeader className="bg-gray-100 sticky top-0 z-10">
+          <TableHeader className="bg-muted/50 sticky top-0 z-10">
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (

@@ -72,18 +72,18 @@ export const BreadcrumbNavigation = () => {
   }
 
   return (
-    <nav className="flex items-center space-x-1 text-sm text-gray-500 mb-4">
+    <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-4">
       {breadcrumbs.map((item, index) => (
         <div key={item.path} className="flex items-center">
           {index > 0 && <ChevronRight className="h-4 w-4 mx-1" />}
           {item.isActive ? (
-            <span className="text-gray-900 font-medium">
+            <span className="text-foreground font-medium">
               {index === 0 ? <Home className="h-4 w-4" /> : item.label}
             </span>
           ) : (
             <Link
               to={item.path}
-              className="hover:text-gray-700 transition-colors flex items-center"
+              className="hover:text-foreground transition-colors flex items-center"
             >
               {index === 0 ? <Home className="h-4 w-4" /> : item.label}
             </Link>

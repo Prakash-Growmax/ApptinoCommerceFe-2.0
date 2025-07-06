@@ -22,7 +22,7 @@ export const AppHeader = memo(function AppHeader({ children }: AppHeaderProps) {
         <AppSidebar />
         <SidebarInset>
           <div className="flex flex-col h-full">
-            <header className="sticky top-0 z-50 flex h-12 shrink-0 items-center gap-2 border-b bg-white transition-[width,height] ease-linear">
+            <header className="sticky top-0 z-50 flex h-12 shrink-0 items-center gap-2 border-b bg-card transition-[width,height] ease-linear">
               <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
                 <SidebarTrigger className="-ml-1" />
                 <Separator
@@ -34,7 +34,7 @@ export const AppHeader = memo(function AppHeader({ children }: AppHeaderProps) {
                 </h1>
               </div>
             </header>
-            <main className="flex-1 bg-[#E5E5E5]  w-full ">{children}</main>
+            <main className="flex-1 bg-muted/20 w-full">{children}</main>
           </div>
         </SidebarInset>
       </SidebarProvider>

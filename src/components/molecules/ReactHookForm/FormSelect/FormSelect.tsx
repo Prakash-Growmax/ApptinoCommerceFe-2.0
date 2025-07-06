@@ -162,8 +162,8 @@ export const FormSelect = ({
               isDisabled={disabled}
               className={`react-select-container ${
                 fieldState.error
-                  ? 'border border-red-500 rounded-sm'
-                  : 'border focus:border-gray-300 rounded-xl'
+                  ? 'border border-destructive rounded-sm'
+                  : 'border focus:border-input rounded-xl'
               } ${rightElement ? 'pr-20' : ''}`}
               classNamePrefix="react-select"
               aria-invalid={!!fieldState.error}

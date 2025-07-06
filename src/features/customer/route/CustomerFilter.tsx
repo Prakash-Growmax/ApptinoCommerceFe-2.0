@@ -1,7 +1,7 @@
 import { Search, X } from 'lucide-react';
 
 import { ShadCnButton } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -108,12 +108,13 @@ const CustomerFilter = (): React.JSX.Element => {
   return (
     <div className='w-full'>
         <Card
-      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full rounded-md w-[900rem] ml-4 ${
+      className={`transition-all duration-300 w-full ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
+      <CardContent className="flex flex-col sm:flex-row justify-between p-6 gap-4">
       <div className="flex flex-1 gap-3 flex-wrap">
         {/* Search Input */}
         <div className="relative  w-full lg:w-[240px]">
@@ -127,10 +128,10 @@ const CustomerFilter = (): React.JSX.Element => {
           <div className="absolute inset-y-0 right-2 flex items-center">
             {searchText ? (
               <div onClick={handleSearchClear} className="cursor-pointer">
-                <X size={16} className="text-gray-400 hover:text-gray-600" />
+                <X size={16} className="text-muted-foreground hover:text-foreground" />
               </div>
             ) : (
-              <Search size={16} className="text-gray-400" />
+              <Search size={16} className="text-muted-foreground" />
             )}
           </div>
         </div>
@@ -176,6 +177,7 @@ const CustomerFilter = (): React.JSX.Element => {
           Create Customer
         </ShadCnButton>
       </div>
+      </CardContent>
     </Card>
      <CreateCustomer open={open} setOpen={setOpen}/>
     </div>

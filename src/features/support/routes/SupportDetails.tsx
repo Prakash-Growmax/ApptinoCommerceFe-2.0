@@ -2,55 +2,50 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
+import ActionHeader from '@/components/molecules/ActionHeader/ActionHeader';
 import { LoadingFallback } from '@/components/organisms/LoadingFallback/LoadingFallback';
+import useAppStore from '@/stores/appStore';
+import { TokenPayload } from '@/types/auth.types';
 
+import { updateTicket, updateTicketServices } from '../api/support.api';
 import SupportCustomerCard from '../components/SupportCustomerCard/SupportCustomerCard';
 import SupportTimeline from '../components/SupportTimeline/SupportTimeline';
+import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
 import { useGetSupportTicketDetails } from '../hook/useGetSupportTicketDetails';
 import { useGetSupportTicketFieldServices } from '../hook/useGetSupportTicketFieldServices';
 import { useSupportTimeline } from '../hook/useGetSupportTimeline';
+import { useSupportDetailStore } from '../store/useSupportDetailStore';
 import ServiceDetails from './ServiceDetails';
 import TicketHeader from './Serviceheader';
-import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
-import ActionHeader from '@/components/molecules/ActionHeader/ActionHeader';
-import { useSupportDetailStore } from '../store/useSupportDetailStore';
-import { TokenPayload } from '@/types/auth.types';
-import useAppStore from '@/stores/appStore';
-import { updateTicket, updateTicketServices } from '../api/support.api';
 
 const SupportDetails = () => {
   const { id } = useParams();
- const {
-  updateSupportIssue,
-  openSupportVisit,
-  updateSupportVisit,
-  openSupportIssue,
-  setOpenSupportIssue
-} = useSupportDetailStore();
-console.log(updateSupportVisit);
-console.log(openSupportIssue);
-   const { accessToken, payload } = useAppStore();
+  const {
+    updateSupportIssue,
+    openSupportVisit,
+    updateSupportVisit,
+    openSupportIssue,
+    setOpenSupportIssue,
+  } = useSupportDetailStore();
+  console.log(updateSupportVisit);
+  console.log(openSupportIssue);
+  const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
-  const {tenantId} = payload as TokenPayload;
+  const { tenantId } = payload as TokenPayload;
   const {
     data: fieldServicesData,
     isLoading: isFieldServicesLoading,
     error: fieldServicesError,
     refetch: refetchFieldData,
-  } = useGetSupportTicketFieldServices('siemensdev', id);
+  } = useGetSupportTicketFieldServices('dev3', id);
 
   const {
     data: ticketDetailsData,
     isLoading: isTicketDetailsLoading,
     error: ticketDetailsError,
-    refetch: refetchTicketDetails,
-  } = useGetSupportTicketDetails('siemensdev', id);
+  } = useGetSupportTicketDetails('dev3', id);
 
-  const {
-    data: ticketTimelineData,
-    isLoading: isTicketTimelineLoading,
-    error: ticketTimelineError,
-  } = useSupportTimeline('siemensdev', id);
+  const { data: ticketTimelineData } = useSupportTimeline('dev3', id);
 
   useGetSupportFilterSettings();
 
@@ -64,8 +59,6 @@ console.log(openSupportIssue);
     },
     mode: 'onChange',
   });
- 
-
 
   useEffect(() => {
     if (fieldServicesData && ticketDetailsData) {
@@ -84,21 +77,21 @@ console.log(openSupportIssue);
   if (error) {
     return <div className="p-4 text-sm text-red-600">Failed to load data</div>;
   }
-const matchedItem = fieldServicesData.find(
-  (item) => item.identifier === updateSupportVisit?.identifier
-);
-  const updatedFieldPayload={
+  const matchedItem = fieldServicesData.find(
+    item => item.identifier === updateSupportVisit?.identifier
+  );
+  const updatedFieldPayload = {
     ...matchedItem,
-    appointmentFromDateTime:updateSupportVisit?.allFormValues?.appointmentFromDateTime,
-    appointmentToDateTime:updateSupportVisit?.allFormValues?.appointmentToDateTime,
-    category:updateSupportVisit?.allFormValues?.category,
-    location:updateSupportVisit?.allFormValues?.location,
-    ownerUsername:updateSupportVisit?.allFormValues?.ownerUsername,
-    status:updateSupportVisit?.allFormValues?.status,
-    title:updateSupportVisit?.allFormValues?.title,
-
-
-  }
+    appointmentFromDateTime:
+      updateSupportVisit?.allFormValues?.appointmentFromDateTime,
+    appointmentToDateTime:
+      updateSupportVisit?.allFormValues?.appointmentToDateTime,
+    category: updateSupportVisit?.allFormValues?.category,
+    location: updateSupportVisit?.allFormValues?.location,
+    ownerUsername: updateSupportVisit?.allFormValues?.ownerUsername,
+    status: updateSupportVisit?.allFormValues?.status,
+    title: updateSupportVisit?.allFormValues?.title,
+  };
   const updateTicketPayload = {
     ...ticketDetailsData,
     category: updateSupportIssue?.category,
@@ -118,24 +111,31 @@ const matchedItem = fieldServicesData.find(
     ],
   };
 
-  const handleUpdateTicket = async() => {
-   const response = await updateTicket(tenantId,token,updateTicketPayload)
-   setOpenSupportIssue(false);
-   
+  const handleUpdateTicket = async () => {
+    const response = await updateTicket(tenantId, token, updateTicketPayload);
+    setOpenSupportIssue(false);
   };
-  const handleUpdateFieldService=async()=>{
-  const response = await updateTicketServices(tenantId,token,updatedFieldPayload);
-  setOpenSupportIssue(false)
-  }
+  const handleUpdateFieldService = async () => {
+    const response = await updateTicketServices(
+      tenantId,
+      token,
+      updatedFieldPayload
+    );
+    setOpenSupportIssue(false);
+  };
 
   return (
     <FormProvider {...methods}>
-      {(openSupportIssue || openSupportVisit) && (  <div className='px-4 py-2 '>
-         <ActionHeader handleSubmit={openSupportIssue ? handleUpdateTicket : handleUpdateFieldService} />
+      {(openSupportIssue || openSupportVisit) && (
+        <div className="px-4 py-2 ">
+          <ActionHeader
+            handleSubmit={
+              openSupportIssue ? handleUpdateTicket : handleUpdateFieldService
+            }
+          />
+        </div>
+      )}
 
-      </div>)}
-    
-     
       <TicketHeader />
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 lg:p-4 ">
         <div className="w-full lg:w-2/3">

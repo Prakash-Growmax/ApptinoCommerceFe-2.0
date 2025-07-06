@@ -5,7 +5,7 @@ import { cloneDeep } from '@/utils/object';
 import { X } from 'lucide-react';
 
 import { ShadCnButton } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
@@ -127,13 +127,14 @@ const SupportFilters = (): React.JSX.Element => {
 
   return (
     <Card
-      className={`flex flex-col sm:flex-row justify-between p-3 sm:p-4 gap-3 sm:gap-0 w-full rounded-md w-[900rem]  ${
+      className={`w-full transition-all duration-300 ${
         sideOpen
           ? 'lg:max-w-[calc(100vw-20rem)]'
           : 'lg:max-w-[calc(100vw-5rem)]'
       }`}
     >
-      <div className="lg:flex flex-1 lg:gap-2   flex-wrap  ">
+      <CardContent className="flex flex-col sm:flex-row justify-between p-6 gap-4">
+      <div className="flex flex-1 gap-3 flex-wrap">
         <Select
           value={selectedStatus}
           onValueChange={value => handleChange('status', value)}
@@ -240,6 +241,7 @@ const SupportFilters = (): React.JSX.Element => {
           </DialogTrigger>
         </Dialog>
       </div>
+      </CardContent>
     </Card>
   );
 };

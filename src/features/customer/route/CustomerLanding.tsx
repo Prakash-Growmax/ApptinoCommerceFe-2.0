@@ -43,7 +43,7 @@ const navigate = useNavigate();
       header: 'City',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span>{value || '_'}</span>;
+        return <span className="text-foreground">{value || '_'}</span>;
       },
     },
     {
@@ -52,7 +52,7 @@ const navigate = useNavigate();
       header: 'State',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span>{value || '_'}</span>;
+        return <span className="text-foreground">{value || '_'}</span>;
       },
     },
     {
@@ -61,7 +61,7 @@ const navigate = useNavigate();
       header: 'Industry Type',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span>{value || '_'}</span>;
+        return <span className="text-foreground">{value || '_'}</span>;
       },
     },
     {
@@ -70,7 +70,7 @@ const navigate = useNavigate();
       header: 'ERP Code',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span>{value || '_'}</span>;
+        return <span className="text-foreground">{value || '_'}</span>;
       },
     },
     {
@@ -83,8 +83,8 @@ const navigate = useNavigate();
           <span
             className={`text-xs font-medium px-2 py-1 rounded-md ${
               value === 1
-                ? 'bg-green-100 text-green-700'
-                : 'bg-red-100 text-red-700'
+                ? 'bg-success/10 text-success'
+                : 'bg-destructive/10 text-destructive'
             }`}
           >
             {value === 1 ? 'Active' : 'Inactive'}
@@ -151,7 +151,7 @@ const navigate = useNavigate();
   }, [setPage]);
   const { sideOpen } = useSideBarStore();
   return (
-    <div className="  w-[76rem] bg-white ml-4 rounded-md">
+    <div className="w-[76rem] ml-4">
       <DashboardTable
         data={data}
         columns={columns}

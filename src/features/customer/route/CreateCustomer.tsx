@@ -210,7 +210,7 @@ const CreateCustomer = ({
             onSubmit={handleSubmit(onSubmit)}
             className=""
           >
-            <div className="bg-white rounded-lg">
+            <div className="bg-card rounded-lg">
               {/* <FormSelect
                 name="customerBranchName"
                 label="Search By Company Name"
@@ -234,7 +234,7 @@ const CreateCustomer = ({
                   name="cutomername"
                   label="Customer Name *"
                   placeholder="Customer name"
-                  className="text-gray-700 "
+                  className="text-foreground"
                   rules={{ required: 'Customer name is required' }}
                 />
 
@@ -242,53 +242,53 @@ const CreateCustomer = ({
                   name="branchname"
                   label="Branch Name"
                   placeholder="Branch name"
-                  className="text-gray-700"
+                  className="text-foreground"
                 />
 
                 <FormInput
                   name="address"
                   label="Address"
-                  className="text-gray-700"
+                  className="text-foreground"
                   placeholder="Address"
                 />
                 <FormInput
                   name="locality"
                   label="Locality"
-                  className="text-gray-700"
+                  className="text-foreground"
                   placeholder="Locality"
                 />
                 <FormSelect
                   name="country"
                   label="Country"
                   placeholder="Select a country"
-                  className="text-gray-700"
+                  className="text-foreground"
                   options={countryList}
                 />
                 <FormSelect
                   name="state"
                   label="State/province"
                   placeholder="State/province"
-                  className="text-gray-700"
+                  className="text-foreground"
                   options={filteredStates}
                 />
                 <FormSelect
                   name="district"
                   label="District"
                   placeholder="District"
-                  className="text-gray-700"
+                  className="text-foreground"
                   options={filteredDistricts}
                 />
                 <FormInput
                   name="city"
                   label="City"
-                  className="text-gray-700"
+                  className="text-foreground"
                   placeholder="City"
                 />
                 <FormInput
                   name="pincode"
                   label="Postal Code / PIN Code"
                   placeholder="PIN Code"
-                  className="text-gray-700 md:w-[320px]"
+                  className="text-foreground md:w-[320px]"
                 />
               </div>
 
@@ -299,13 +299,13 @@ const CreateCustomer = ({
                 <div className="flex space-x-4">
                   <div className="flex items-center space-x-2">
                     <Checkbox id="billing" defaultChecked />
-                    <Label htmlFor="billing" className="text-gray-600">
+                    <Label htmlFor="billing" className="text-muted-foreground">
                       Billing
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox id="shipping" />
-                    <Label htmlFor="shipping" className="text-gray-600">
+                    <Label htmlFor="shipping" className="text-muted-foreground">
                       Shipping
                     </Label>
                   </div>
@@ -339,7 +339,7 @@ const CreateCustomer = ({
               />
             </div>
 
-            <div className="bg-white rounded-lg">
+            <div className="bg-card rounded-lg">
               <h3 className="font-semibold text-lg mb-2">
                 Customer - User Details
               </h3>
@@ -359,7 +359,7 @@ const CreateCustomer = ({
                     <div>
                       <PhoneInput
                         country="in"
-                        inputClass="!w-full h-[36px] !rounded-sm text-black !border !border-gray-300 p-1 pl-2"
+                        inputClass="!w-full h-[36px] !rounded-sm text-foreground !border !border-input p-1 pl-2"
                         placeholder="Enter phone number"
                         enableSearch
                         inputStyle={{ width: '100%' }}
@@ -372,14 +372,14 @@ const CreateCustomer = ({
                 <FormInput
                   name="email"
                   label="Business Email"
-                  className="text-gray-700"
+                  className="text-foreground"
                   placeholder="Business email"
                 />
                 <FormSelect
                   name="roles"
                   label="Roles"
                   placeholder="Roles"
-                  className="text-gray-700"
+                  className="text-foreground"
                   // options={roleList?.map(item => ({
                   //   value: item.roleId.roleName,
                   //   label: item.roleId.roleName,
@@ -403,13 +403,13 @@ const CreateCustomer = ({
                 <FormInput
                   name="job"
                   label="Job Title"
-                  className="text-gray-700"
+                  className="text-foreground"
                   placeholder="Job title"
                 />
                 <FormInput
                   name="department"
                   label="Department"
-                  className="text-gray-700"
+                  className="text-foreground"
                   placeholder="Department"
                 />
               </div>

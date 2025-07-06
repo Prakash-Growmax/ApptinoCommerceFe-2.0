@@ -9,7 +9,7 @@ const Settings = () =>{
     const {sideOpen} = useSideBarStore();
  return(
    <div 
-      className={`flex flex-col gap-4  p-5 transition-all duration-300 bg-[#E5E5E5] ${
+      className={`flex flex-col gap-4  p-5 transition-all duration-300 ${
         sideOpen ? 'lg:pl-4' : 'lg:pl-0'
       }`}
     >
