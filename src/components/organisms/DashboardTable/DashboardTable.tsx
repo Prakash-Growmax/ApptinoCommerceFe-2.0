@@ -67,11 +67,10 @@ const DashboardTable = <T,>({
     if (loading) return null;
     
     return table.getRowModel().rows.length > 0 ? (
-      table.getRowModel().rows.map((row, index) => (
+      table.getRowModel().rows.map((row) => (
         <TableRow
           key={row.id}
-          className="hover:bg-muted/50 cursor-pointer transition-colors animate-in fade-in slide-in-from-bottom-1"
-          style={{ animationDelay: `${index * 50}ms` }}
+          className="hover:bg-muted/50 cursor-pointer transition-colors"
           onClick={() => onRowClick?.(row.original)}
         >
           {row.getVisibleCells().map(cell => (
@@ -100,15 +99,15 @@ const DashboardTable = <T,>({
     <div
       className={`rounded-md border shadow-sm overflow-hidden flex flex-col ${tableHeight} w-full`}
     >
-      <div className="flex-1 overflow-auto relative scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/20">
+      <div className="flex-1 overflow-x-auto overflow-y-auto relative scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/20">
         {/* Loading overlay - covers table content for both initial load and filter changes */}
         {loading && (
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-30 flex items-center justify-center">
             <div className="bg-background border shadow-lg rounded-lg p-6 flex flex-col items-center gap-4">
               <div className="flex gap-1">
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
               </div>
               <p className="text-sm text-muted-foreground">Loading...</p>
             </div>

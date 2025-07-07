@@ -1,26 +1,33 @@
 import { useState, useMemo, useCallback } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
-import { Badge } from 'lucide-react';
 
+import { PageHeader } from '@/components/templates/PageLayout/PageLayout';
 import DashboardTable from '@/components/organisms/DashboardTable/DashboardTable';
+import { DataCard } from '@/components/ui/data-card';
+import { StatusBadge } from '@/components/ui/status-badge';
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import useSideBarStore from '@/stores/sidebarStore';
+import { TYPOGRAPHY } from '@/lib/design-system/constants';
+import { cn } from '@/lib/utils';
+import { ShadCnButton as Button } from '@/components/ui/button';
 import useAccountsStore from '@/stores/useAccountStore';
-
 import { useFetchCustomersWithFilters } from '../hook/useGetCustomersDetails';
-import { useNavigate } from 'react-router-dom';
+import CreateCustomer from './CreateCustomer';
+import CustomerFilter from './CustomerFilter';
 
 const CustomerLanding = () => {
+  const navigate = useNavigate();
+  const [createOpen, setCreateOpen] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 5, // You can change this as needed
+    pageSize: 20,
   });
-const navigate = useNavigate();
+
   const {
     data,
     loading,
@@ -30,12 +37,22 @@ const navigate = useNavigate();
     setRowPerPage,
     totalCount,
   } = useAccountsStore();
+  
   useFetchCustomersWithFilters();
+
   const columns: ColumnDef<any>[] = useMemo(() => [
     {
       id: 'companyName',
       accessorKey: 'companyName',
       header: 'Company Name',
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return (
+          <div className={cn(TYPOGRAPHY.bodySmall, "font-medium")}>
+            {value || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
+        );
+      },
     },
     {
       id: 'city',
@@ -43,7 +60,11 @@ const navigate = useNavigate();
       header: 'City',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span className="text-foreground">{value || '_'}</span>;
+        return (
+          <div className={TYPOGRAPHY.bodySmall}>
+            {value || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
+        );
       },
     },
     {
@@ -52,7 +73,11 @@ const navigate = useNavigate();
       header: 'State',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span className="text-foreground">{value || '_'}</span>;
+        return (
+          <div className={TYPOGRAPHY.bodySmall}>
+            {value || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
+        );
       },
     },
     {
@@ -61,7 +86,11 @@ const navigate = useNavigate();
       header: 'Industry Type',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span className="text-foreground">{value || '_'}</span>;
+        return (
+          <div className={TYPOGRAPHY.bodySmall}>
+            {value || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
+        );
       },
     },
     {
@@ -70,7 +99,11 @@ const navigate = useNavigate();
       header: 'ERP Code',
       cell: ({ getValue }) => {
         const value = getValue();
-        return <span className="text-foreground">{value || '_'}</span>;
+        return (
+          <div className={cn(TYPOGRAPHY.bodySmall, "font-mono")}>
+            {value || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
+        );
       },
     },
     {
@@ -80,15 +113,11 @@ const navigate = useNavigate();
       cell: ({ getValue }) => {
         const value = getValue();
         return (
-          <span
-            className={`text-xs font-medium px-2 py-1 rounded-md ${
-              value === 1
-                ? 'bg-success/10 text-success'
-                : 'bg-destructive/10 text-destructive'
-            }`}
+          <StatusBadge 
+            variant={value === 1 ? 'success' : 'destructive'}
           >
             {value === 1 ? 'Active' : 'Inactive'}
-          </span>
+          </StatusBadge>
         );
       },
     },
@@ -97,35 +126,36 @@ const navigate = useNavigate();
       accessorKey: 'accountOwner',
       header: 'Account Owner',
       cell: ({ getValue }) => {
-        const value = getValue();
+        const value = getValue() as string[] | undefined;
+        
+        if (!value || value.length === 0) {
+          return <span className={TYPOGRAPHY.caption}>-</span>;
+        }
 
         return (
-          <div className="flex items-center space-x-2 ">
-            {value[0] ? (
-              <Badge variant="outline" className="text-sm px-2 py-1">
-                {value[0]}
-              </Badge>
-            ) : (
-              <span>-</span>
-            )}
-
+          <div className="flex items-center gap-1.5">
+            <StatusBadge variant="secondary">
+              {value[0]}
+            </StatusBadge>
             {value.length > 1 && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="text-sm text-muted-foreground cursor-pointer">
-                    +{value.length - 1}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent className="p-2">
-                  <div className="flex flex-col space-y-1">
-                    {value.slice(1).map((owner, idx) => (
-                      <span key={idx} className="text-sm">
-                        {owner}
-                      </span>
-                    ))}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <span className={cn(TYPOGRAPHY.caption, "cursor-help")}>
+                      +{value.length - 1}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="space-y-1">
+                      {value.slice(1).map((owner: string, idx: number) => (
+                        <div key={idx} className={TYPOGRAPHY.caption}>
+                          {owner}
+                        </div>
+                      ))}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         );
@@ -133,12 +163,7 @@ const navigate = useNavigate();
     },
   ], []);
 
-  // const paginatedData = data.slice(
-  //   pagination.pageIndex * pagination.pageSize,
-  //   (pagination.pageIndex + 1) * pagination.pageSize
-  // );
-    const handleRowClick = useCallback((row: any) => {
-      console.log(row);
+  const handleRowClick = useCallback((row: any) => {
     navigate(`/customers/customerdetails/${row?.companyID}`);
   }, [navigate]);
   
@@ -149,26 +174,46 @@ const navigate = useNavigate();
   const handleNext = useCallback(() => {
     setPage(prev => prev + 1);
   }, [setPage]);
-  const { sideOpen } = useSideBarStore();
+
   return (
-    <div className="w-[76rem] ml-4">
-      <DashboardTable
-        data={data}
-        columns={columns}
-        loading={loading}
-        pagination={pagination}
-        setPagination={setPagination}
-        totalDataCount={totalCount}
-        pageOptions={[5, 10, 20]}
-        page={page}
-        setPage={setPage}
-        rowPerPage={rowPerPage}
-        setRowPerPage={setRowPerPage}
-        handlePrevious={handlePrevious}
-        handleNext={handleNext}
-        tableHeight="h-[calc(100vh-180px)] sm:h-[calc(106vh-200px)]"
-        onRowClick={handleRowClick}
-      />
+    <div className="min-h-screen bg-background">
+      <div className="p-4 sm:p-6 pb-2 sm:pb-4">
+        <PageHeader 
+          title="Customers" 
+          subtitle="Manage your customer accounts and relationships"
+          action={
+            <Button onClick={() => setCreateOpen(true)}>
+              Create Customer
+            </Button>
+          }
+        />
+      </div>
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+        <div className="w-full">
+          <div className="bg-background border border-border rounded-lg overflow-hidden">
+            <div className="border-b border-border">
+              <CustomerFilter />
+            </div>
+            <DashboardTable
+            data={data}
+            columns={columns}
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
+            totalDataCount={totalCount}
+            pageOptions={[10, 20, 50]}
+            page={page}
+            setPage={setPage}
+            rowPerPage={rowPerPage || 20}
+            setRowPerPage={setRowPerPage}
+            handlePrevious={handlePrevious}
+            handleNext={handleNext}
+            onRowClick={handleRowClick}
+            />
+          </div>
+        </div>
+      </div>
+      <CreateCustomer open={createOpen} setOpen={setCreateOpen} />
     </div>
   );
 };

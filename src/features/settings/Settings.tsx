@@ -1,22 +1,20 @@
-import useSideBarStore from "@/stores/sidebarStore";
-import { useGetCompanyDetails } from "./hook/useGetCompanyDetaiLs";
-import SettingCompanyBranch from "./SettingCompanyBranch";
-import SettingDetails from "./SettingDetails";
+import { PageHeader } from "@/components/templates/PageLayout/PageLayout";
+import SettingsTabs from "./components/SettingsTabs";
 
+const Settings = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="p-4 sm:p-6 pb-2 sm:pb-4">
+        <PageHeader 
+          title="Settings" 
+          subtitle="Manage your company details and preferences"
+        />
+      </div>
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+        <SettingsTabs />
+      </div>
+    </div>
+  );
+};
 
-const Settings = () =>{
-   useGetCompanyDetails();
-    const {sideOpen} = useSideBarStore();
- return(
-   <div 
-      className={`flex flex-col gap-4  p-5 transition-all duration-300 ${
-        sideOpen ? 'lg:pl-4' : 'lg:pl-0'
-      }`}
-    >
-      <SettingDetails/>
-   <SettingCompanyBranch/>
-   </div>
-
- )
-}
 export default Settings;

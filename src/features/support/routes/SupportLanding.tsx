@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { ColumnDef } from '@tanstack/react-table';
 
+import { PageHeader } from '@/components/templates/PageLayout/PageLayout';
 import DashboardTable from '@/components/organisms/DashboardTable/DashboardTable';
-import { TableCellText } from '@/components/ui/table-typography';
-import useSideBarStore from '@/stores/sidebarStore';
+import { DataCard } from '@/components/ui/data-card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { TYPOGRAPHY } from '@/lib/design-system/constants';
+import { cn } from '@/lib/utils';
+import { ShadCnButton as Button } from '@/components/ui/button';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 import SupportFilters from '../components/SupportFilters';
 import { useGetSupportTicketFilters } from '../hook/useGetSupportTicketFilter';
 import useSupportStore from '../store/useSupportStore';
+import SupportTicketsDialog from '../routes/createticket';
 
 export default function SupportLanding() {
   const navigate = useNavigate();
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 20,
@@ -29,8 +35,6 @@ export default function SupportLanding() {
     loading,
   } = useSupportStore();
 
-  const { sideOpen } = useSideBarStore();
-
   const handleRowClick = (row: any) => {
     navigate(`/supporttickets/servicedetails/${row?.ticketIdentifier}`);
   };
@@ -43,35 +47,64 @@ export default function SupportLanding() {
     setPage(prev => prev + 1);
   };
 
+  const getStatusVariant = (status: string): 'default' | 'secondary' | 'success' | 'warning' | 'destructive' | 'outline' => {
+    const normalizedStatus = status?.toUpperCase();
+    switch (normalizedStatus) {
+      case 'OPEN':
+        return 'warning';
+      case 'INPROGRESS':
+      case 'IN PROGRESS':
+        return 'secondary';
+      case 'COMPLETED':
+        return 'success';
+      case 'WAITING FOR CUSTOMER':
+        return 'outline';
+      default:
+        return 'default';
+    }
+  };
+
+  const getPriorityVariant = (priority: string): 'default' | 'secondary' | 'destructive' => {
+    const normalizedPriority = priority?.toUpperCase();
+    switch (normalizedPriority) {
+      case 'HIGH':
+        return 'destructive';
+      case 'MEDIUM':
+        return 'secondary';
+      case 'LOW':
+      default:
+        return 'default';
+    }
+  };
+
   const Columns: ColumnDef<any>[] = [
     {
       accessorKey: 'ticketIdentifier',
-      header: 'Ticket Id',
+      header: 'Ticket ID',
       cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.ticketIdentifier || '--'}
-        </TableCellText>
+        <div className={cn(TYPOGRAPHY.bodySmall, "font-mono")}>
+          {row.original?.ticketIdentifier || <span className={TYPOGRAPHY.caption}>-</span>}
+        </div>
       ),
     },
     {
       accessorKey: 'buyerCompanyName',
       header: 'Company',
       cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.buyerCompanyName || '--'}
-        </TableCellText>
+        <div className={cn(TYPOGRAPHY.bodySmall, "font-medium")}>
+          {row.original?.buyerCompanyName || <span className={TYPOGRAPHY.caption}>-</span>}
+        </div>
       ),
     },
     {
       accessorKey: 'title',
       header: 'Subject',
       cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.title || '--'}
-        </TableCellText>
+        <div className={cn(TYPOGRAPHY.bodySmall, "max-w-[200px] truncate")}>
+          {row.original?.title || <span className={TYPOGRAPHY.caption}>-</span>}
+        </div>
       ),
     },
-    
     {
       accessorKey: 'createdDateTime',
       header: 'Created',
@@ -83,9 +116,13 @@ export default function SupportLanding() {
               month: '2-digit',
               year: '2-digit',
             })
-          : '--';
+          : null;
 
-        return <TableCellText variant="primary">{formattedDate}</TableCellText>;
+        return (
+          <div className={TYPOGRAPHY.bodySmall}>
+            {formattedDate || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
+        );
       },
     },
     {
@@ -99,10 +136,12 @@ export default function SupportLanding() {
               month: '2-digit',
               year: '2-digit',
             })
-          : '--';
+          : null;
 
         return (
-          <TableCellText variant="primary">{formattedDueDate}</TableCellText>
+          <div className={TYPOGRAPHY.bodySmall}>
+            {formattedDueDate || <span className={TYPOGRAPHY.caption}>-</span>}
+          </div>
         );
       },
     },
@@ -110,62 +149,32 @@ export default function SupportLanding() {
       accessorKey: 'category',
       header: 'Category',
       cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.category || '--'}
-        </TableCellText>
+        <div className={TYPOGRAPHY.bodySmall}>
+          {row.original?.category || <span className={TYPOGRAPHY.caption}>-</span>}
+        </div>
       ),
     },
     {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => {
-        switch (row?.original?.status) {
-          case 'Open':
-          case 'OPEN':
-            return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-warning text-warning">
-                {row?.original?.status}
-              </span>
-            );
-          case 'Inprogress':
-          case 'INPROGRESS':
-          case 'IN PROGRESS':
-            return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-warning/80 text-warning/80">
-                {row?.original?.status}
-              </span>
-            );
-          case 'Completed':
-          case 'COMPLETED':
-            return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-success text-success">
-                {row?.original?.status}
-              </span>
-            );
-          case 'Waiting For Customer':
-          case 'WAITING FOR CUSTOMER':
-            return (
-              <span className="text-xs font-medium px-2 py-1 rounded-md border border-primary text-primary">
-                {row?.original?.status}
-              </span>
-            );
-          default:
-            return (
-              <span className="text-xs font-medium">
-                {row?.original?.status}
-              </span>
-            );
-        }
+        const status = row?.original?.status;
+        if (!status) return <span className={TYPOGRAPHY.caption}>-</span>;
+        
+        return (
+          <StatusBadge variant={getStatusVariant(status)}>
+            {status}
+          </StatusBadge>
+        );
       },
     },
-    
     {
       accessorKey: 'buyerContactPerson',
       header: 'Contact',
       cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row.original?.buyerContactPerson || '--'}
-        </TableCellText>
+        <div className={TYPOGRAPHY.bodySmall}>
+          {row.original?.buyerContactPerson || <span className={TYPOGRAPHY.caption}>-</span>}
+        </div>
       ),
     },
     {
@@ -174,54 +183,85 @@ export default function SupportLanding() {
       cell: ({ row }) => {
         const email = row?.original?.buyerEmail;
         const phone = row?.original?.buyerContactNumber;
+        
+        if (!email && !phone) {
+          return <span className={TYPOGRAPHY.caption}>-</span>;
+        }
+
         return (
-          <TableCellText variant="primary">
-            <div className="truncate max-w-32 sm:max-w-none">
-              {email || '--'}
-            </div>
-            <div>{phone || '--'}</div>
-          </TableCellText>
+          <div className="space-y-0.5">
+            {email && (
+              <div className={cn(TYPOGRAPHY.caption, "truncate max-w-[180px]")}>
+                {email}
+              </div>
+            )}
+            {phone && (
+              <div className={TYPOGRAPHY.caption}>
+                {phone}
+              </div>
+            )}
+          </div>
         );
       },
     },
     {
       accessorKey: 'priority',
       header: 'Priority',
-      cell: ({ row }) => (
-        <TableCellText variant="primary">
-          {row?.original?.priority || '--'}
-        </TableCellText>
-      ),
+      cell: ({ row }) => {
+        const priority = row?.original?.priority;
+        if (!priority) return <span className={TYPOGRAPHY.caption}>-</span>;
+        
+        return (
+          <StatusBadge variant={getPriorityVariant(priority)}>
+            {priority}
+          </StatusBadge>
+        );
+      },
     },
   ];
 
   return (
-    <div
-      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ml-3  ${
-        sideOpen
-          ? 'lg:max-w-[calc(100vw-20rem)]'
-          : 'lg:max-w-[calc(100vw-5rem)]'
-      }`}
-    >
-      <SupportFilters />
-      <div className="w-[76rem] overflow-hidden bg-card rounded-md ">
-        <DashboardTable
-          data={supportData}
-          columns={Columns}
-          loading={loading}
-          pagination={pagination}
-          setPagination={setPagination}
-          totalDataCount={totalCount}
-          setPage={setPage}
-          pageOptions={[10, 20, 50, 100]}
-          handlePrevious={handlePrevious}
-          handleNext={handleNext}
-          page={page}
-          rowPerPage={rowPerPage}
-          setRowPerPage={setRowPerPage}
-          onRowClick={handleRowClick}
-          tableHeight={`${sideOpen ? 'h-[calc(100vh-180px)]' : 'h-[calc(100vh-180px)]'} sm:h-[calc(105vh-200px)] bg-card`}
+    <div className="min-h-screen bg-background">
+      <div className="p-4 sm:p-6 pb-2 sm:pb-4">
+        <PageHeader 
+          title="Support Tickets" 
+          subtitle="Manage and track customer support requests"
+          action={
+            <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  Create Ticket
+                </Button>
+              </DialogTrigger>
+              <SupportTicketsDialog />
+            </Dialog>
+          }
         />
+      </div>
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+        <div className="w-full">
+          <div className="bg-background border border-border rounded-lg overflow-hidden">
+            <div className="border-b border-border">
+              <SupportFilters />
+            </div>
+            <DashboardTable
+            data={supportData}
+            columns={Columns}
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
+            totalDataCount={totalCount}
+            setPage={setPage}
+            pageOptions={[10, 20, 50, 100]}
+            handlePrevious={handlePrevious}
+            handleNext={handleNext}
+            page={page}
+            rowPerPage={rowPerPage || 20}
+            setRowPerPage={setRowPerPage}
+            onRowClick={handleRowClick}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

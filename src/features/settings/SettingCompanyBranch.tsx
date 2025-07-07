@@ -1,7 +1,5 @@
 import { useState } from 'react';
-
 import { ColumnDef } from '@tanstack/react-table';
-
 import DashboardTable from '@/components/organisms/DashboardTable/DashboardTable';
 import {
   Tooltip,
@@ -9,38 +7,33 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-
-import { useGetBranchDetails } from './hook/useGetBranchDetails';
+import { DataCard } from '@/components/ui/data-card';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { TYPOGRAPHY } from '@/lib/design-system/constants';
+import { cn } from '@/lib/utils';
+import { useGetBranchDetails } from './hooks/useGetBranchDetails';
 import useCompanyBranchStore from './store/useCompanyBranchStore';
-import useSideBarStore from '@/stores/sidebarStore';
 
 const SettingCompanyBranch = () => {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 20, // You can change this as needed
+    pageSize: 20,
   });
-   const {sideOpen} = useSideBarStore();
-  const {
-    branchData,
-    loading,
-    totalCount,
-    page,
-    setPage,
-    rowPerPage,
-    setRowPerPage,
-  } = useCompanyBranchStore();
-  useGetBranchDetails();
+  const { page, setPage, rowPerPage, setRowPerPage, searchString } = useCompanyBranchStore();
+  
+  // Use the hook and get data from TanStack Query
+  const { data, isLoading } = useGetBranchDetails({ searchString });
+  
+  // Extract data from the query response
+  const branchData = data?.data?.branchResponse || [];
+  const totalCount = data?.data?.totalCount || 0;
+
   const getCustomLabel = (key: string, address: any) =>
     address?.labels?.[key] || null;
   const getIsHidden = (key: string, address: any) =>
     address?.hidden?.includes(key);
   const getGST = (address: any) => address?.gst || null;
-  const formatAddress = (addressArray: string[][] = []) =>
-    addressArray.map((line, i) => (
-      <div key={i}>
-        {line.join(' ')} <br />
-      </div>
-    ));
+  // Removed unused formatAddress function
 
   // Replace with props/state if dynamic
   const address = {};
@@ -50,8 +43,8 @@ const SettingCompanyBranch = () => {
       accessorKey: 'branchName',
       header: () => getCustomLabel('branchName', address) || 'Branch Name',
       cell: ({ row }) => (
-        <div className="text-sm font-medium ">
-          {row.original?.addressId?.branchName}
+        <div className={cn(TYPOGRAPHY.bodySmall, "font-medium")}>
+          {row.original?.addressId?.branchName || '-'}
         </div>
       ),
       enableHiding: !getIsHidden('branchName', address),
@@ -62,12 +55,14 @@ const SettingCompanyBranch = () => {
       cell: ({ row }) => {
         const address = row?.original?.addressId;
 
+        if (!address) return <span className={TYPOGRAPHY.caption}>-</span>;
+
         return (
-          <div className="text-sm leading-5">
-            <div>{address?.city}</div>
-            <div>{address?.state}</div>
-            <div>{address?.pinCodeId}</div>
-            <div>{address?.country}</div>
+          <div className={cn(TYPOGRAPHY.bodySmall, "space-y-0.5")}>
+            {address.city && <div>{address.city}</div>}
+            {address.state && <div>{address.state}</div>}
+            {address.pinCodeId && <div>{address.pinCodeId}</div>}
+            {address.country && <div>{address.country}</div>}
           </div>
         );
       },
@@ -77,7 +72,9 @@ const SettingCompanyBranch = () => {
       header: () => getCustomLabel('gst', address) || 'Tax ID',
       enableHiding: !getIsHidden('gst', address),
       cell: ({ row }) => (
-        <div className="text-sm">{getGST(row.original?.addressId) || '-'}</div>
+        <div className={TYPOGRAPHY.bodySmall}>
+          {getGST(row.original?.addressId) || '-'}
+        </div>
       ),
     },
     {
@@ -85,7 +82,7 @@ const SettingCompanyBranch = () => {
       header: () => getCustomLabel('primaryContact', address) || 'Contact',
       enableHiding: !getIsHidden('primaryContact', address),
       cell: ({ row }) => (
-        <div className="text-sm">
+        <div className={TYPOGRAPHY.bodySmall}>
           {row.original?.addressId?.primaryContact || '-'}
         </div>
       ),
@@ -98,8 +95,8 @@ const SettingCompanyBranch = () => {
         const mobile = row.original?.addressId?.mobileNo;
         const countryCode = row.original?.addressId?.countryCode || '+91';
         return (
-          <div className="text-sm whitespace-nowrap">
-            {mobile ? `${mobile}` : '-'}
+          <div className={cn(TYPOGRAPHY.bodySmall, "whitespace-nowrap")}>
+            {mobile || '-'}
           </div>
         );
       },
@@ -110,29 +107,29 @@ const SettingCompanyBranch = () => {
       enableHiding: !seller,
       cell: ({ row }) => {
         const units = row.original?.businessUnits || [];
+        if (!units.length) return <span className={TYPOGRAPHY.caption}>-</span>;
+        
         return (
-          <div className="flex items-center gap-1 text-sm ">
-            {units[0] ? (
-              <span className="px-2 py-0.5 rounded-full border text-xs">
-                {units[0].unitName}
-              </span>
-            ) : (
-              '-'
-            )}
+          <div className="flex items-center gap-1.5">
+            <StatusBadge variant="secondary">
+              {units[0].unitName}
+            </StatusBadge>
             {units.length > 1 && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <span className="text-xs text-muted-foreground">
+                    <span className={cn(TYPOGRAPHY.caption, "cursor-help")}>
                       +{units.length - 1}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="space-y-1">
-                    {units.slice(1).map((u, i) => (
-                      <div key={i} className="text-xs">
-                        {u.unitName}
-                      </div>
-                    ))}
+                  <TooltipContent>
+                    <div className="space-y-1">
+                      {units.slice(1).map((u: any, i: number) => (
+                        <div key={i} className={TYPOGRAPHY.caption}>
+                          {u.unitName}
+                        </div>
+                      ))}
+                    </div>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -147,29 +144,29 @@ const SettingCompanyBranch = () => {
       enableHiding: !seller,
       cell: ({ row }) => {
         const wh = row.original?.wareHouses || [];
+        if (!wh.length) return <span className={TYPOGRAPHY.caption}>-</span>;
+        
         return (
-          <div className="flex items-center gap-1 text-sm">
-            {wh[0] ? (
-              <span className="px-2 py-0.5 rounded-full border text-xs">
-                {wh[0].wareHouseName}
-              </span>
-            ) : (
-              '-'
-            )}
+          <div className="flex items-center gap-1.5">
+            <StatusBadge variant="secondary">
+              {wh[0].wareHouseName}
+            </StatusBadge>
             {wh.length > 1 && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <span className="text-xs text-muted-foreground">
+                    <span className={cn(TYPOGRAPHY.caption, "cursor-help")}>
                       +{wh.length - 1}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="space-y-1">
-                    {wh.slice(1).map((w, i) => (
-                      <div key={i} className="text-xs">
-                        {w.wareHouseName}
-                      </div>
-                    ))}
+                  <TooltipContent>
+                    <div className="space-y-1">
+                      {wh.slice(1).map((w: any, i: number) => (
+                        <div key={i} className={TYPOGRAPHY.caption}>
+                          {w.wareHouseName}
+                        </div>
+                      ))}
+                    </div>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -180,14 +177,25 @@ const SettingCompanyBranch = () => {
     },
     {
       id: 'addressFor',
-      header: '',
+      header: 'Type',
       cell: ({ row }) => {
         const addr = row.original?.addressId;
+        if (!addr) return null;
+        
+        const types = [];
+        if (addr.regAddress) types.push('Registered');
+        if (addr.isBilling) types.push('Billing');
+        if (addr.isShipping) types.push('Shipping');
+        
+        if (!types.length) return <span className={TYPOGRAPHY.caption}>-</span>;
+        
         return (
-          <div className="flex flex-col justify-evenly h-[90px] text-primary text-xs">
-            {addr?.regAddress && <span>Registered</span>}
-            {addr?.isBilling && <span>Billing</span>}
-            {addr?.isShipping && <span>Shipping</span>}
+          <div className="flex flex-col gap-1">
+            {types.map((type) => (
+              <StatusBadge key={type} variant="outline">
+                {type}
+              </StatusBadge>
+            ))}
           </div>
         );
       },
@@ -201,27 +209,28 @@ const SettingCompanyBranch = () => {
     setPage(prev => prev + 1);
   };
   return (
-       <div className={`w-full bg-white  rounded-md ${
-      sideOpen ? 'lg:max-w-[calc(100vw-20rem)] ' : 'lg:max-w-[calc(100vw-5rem)]'
-    } overflow-x-auto`}>
-        <DashboardTable
+    <DataCard 
+      title="Company Branches"
+      description="Manage your company branch locations and details"
+      className="w-full overflow-hidden"
+      noPadding
+    >
+      <DashboardTable
         data={branchData}
         columns={Columns}
-        loading={loading}
+        loading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
-        totalDataCount={totalCount} // 👈 dynamically calculated
+        totalDataCount={totalCount}
         setPage={setPage}
         pageOptions={[5, 10, 20]}
         handlePrevious={handlePrevious}
         handleNext={handleNext}
         page={page}
-        rowPerPage={rowPerPage ? rowPerPage : 20}
+        rowPerPage={rowPerPage || 20}
         setRowPerPage={setRowPerPage}
       />
-    
-    </div>
-    
+    </DataCard>
   );
 };
 export default SettingCompanyBranch;

@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState } from 'react';
 
 import { cloneDeep } from '@/utils/object';
 import { X } from 'lucide-react';
 
 import { ShadCnButton } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -16,13 +13,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import useAppStore from '@/stores/appStore';
-import useSideBarStore from '@/stores/sidebarStore';
 import { TokenPayload } from '@/types/auth.types';
 import { handleError } from '@/utils/errorHandling';
 
 import { GetFetchSupportTicket } from '../api/support.api';
 import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
-import SupportTicketsDialog from '../routes/createticket';
 import useSupportStore from '../store/useSupportStore';
 import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
 
@@ -32,14 +27,6 @@ const SupportFilters = (): React.JSX.Element => {
   const { accessToken, payload } = useAppStore();
   const token = accessToken as string;
   const { tenantId } = payload as TokenPayload;
-  const { sideOpen } = useSideBarStore();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const { reset } = useForm();
-
-  useEffect(() => {
-    if (!isDialogOpen) reset();
-  }, [isDialogOpen, reset]);
 
   const [filters, setFilters] = useState({});
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -126,14 +113,7 @@ const SupportFilters = (): React.JSX.Element => {
     selectedStatus || selectedPriority || selectedCategory || ticketIdentifier;
 
   return (
-    <Card
-      className={`w-full transition-all duration-300 ${
-        sideOpen
-          ? 'lg:max-w-[calc(100vw-20rem)]'
-          : 'lg:max-w-[calc(100vw-5rem)]'
-      }`}
-    >
-      <CardContent className="flex flex-col sm:flex-row justify-between p-6 gap-4">
+    <div className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 gap-4 w-full">
       <div className="flex flex-1 gap-3 flex-wrap">
         <Select
           value={selectedStatus}
@@ -226,23 +206,7 @@ const SupportFilters = (): React.JSX.Element => {
           )}
         </div>
       </div>
-      <div className="flex justify-center sm:justify-end ">
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={open => {
-            setIsDialogOpen(open);
-            if (!open) {
-              reset();
-            }
-          }}
-        >
-          <DialogTrigger asChild>
-            <SupportTicketsDialog />
-          </DialogTrigger>
-        </Dialog>
-      </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 };
 

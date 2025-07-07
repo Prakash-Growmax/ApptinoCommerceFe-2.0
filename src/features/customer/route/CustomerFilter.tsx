@@ -1,7 +1,6 @@
 import { Search, X } from 'lucide-react';
 
 import { ShadCnButton } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -11,7 +10,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import useAppStore from '@/stores/appStore';
-import useSideBarStore from '@/stores/sidebarStore';
 import useAccountsStore from '@/stores/useAccountStore';
 import { TokenPayload } from '@/types/auth.types';
 import { ElasticSearchService } from '@/utils/Services/ElasticSearchServices';
@@ -20,7 +18,6 @@ import { handleError } from '@/utils/errorHandling';
 import { AccountElastic } from '../api/AccountElastics';
 import { ElasticSearchServices } from '../api/ElasticSearchServices';
 import React, { useState } from 'react';
-import CreateCustomer from './CreateCustomer';
 import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
 
 
@@ -103,18 +100,9 @@ const CustomerFilter = (): React.JSX.Element => {
 
   // Check if any filters are applied
   const hasActiveFilters = searchText || statuss;
-  const { sideOpen } = useSideBarStore();
-  const [open,setOpen]=useState(false)
+  
   return (
-    <div className='w-full'>
-        <Card
-      className={`transition-all duration-300 w-full ${
-        sideOpen
-          ? 'lg:max-w-[calc(100vw-20rem)]'
-          : 'lg:max-w-[calc(100vw-5rem)]'
-      }`}
-    >
-      <CardContent className="flex flex-col sm:flex-row justify-between p-6 gap-4">
+    <div className="flex flex-col sm:flex-row justify-between p-4 sm:p-6 gap-4 w-full">
       <div className="flex flex-1 gap-3 flex-wrap">
         {/* Search Input */}
         <div className="relative  w-full lg:w-[240px]">
@@ -172,14 +160,6 @@ const CustomerFilter = (): React.JSX.Element => {
           )}
         </div>
       </div>
-      <div>
-        <ShadCnButton type='button' className="flex-1 sm:flex-none w-full" onClick={()=>{setOpen(true)}} >
-          Create Customer
-        </ShadCnButton>
-      </div>
-      </CardContent>
-    </Card>
-     <CreateCustomer open={open} setOpen={setOpen}/>
     </div>
   
   );

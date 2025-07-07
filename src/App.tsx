@@ -6,10 +6,14 @@ import { Toaster } from 'sonner';
 import AppRouter from './app/router/AppRouter';
 import { LoadingFallback } from './components';
 import useAppStore from './stores/appStore';
+import { useInitializePreferences } from '@/features/settings/hooks/useInitializePreferences';
 
 function App() {
   const { hasHydrated, isAppLoading, isAuthLoading, initializeAuthAction } =
     useAppStore();
+
+  // Initialize user preferences
+  useInitializePreferences();
 
   useEffect(() => {
     initializeAuthAction();

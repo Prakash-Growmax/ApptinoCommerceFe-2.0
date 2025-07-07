@@ -1,39 +1,12 @@
-export interface CompanyState {
-  companyData: any[]; // Replace `any` with your actual data type
-  setCompanyData: (data: any[]) => void;
-
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-
-  error: string;
-  setError: (error: string) => void;
- 
+export type Pagination = {
+  searchString?: string;
 }
-export type Pagination={
- 
-    searchString?:string;
-}
-export interface BranchState {
-  branchData: any[]; // Replace `any` with your actual data type
-  setBranchData: (data: any[]) => void;
 
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-
-  error: string;
-  setError: (error: string) => void;
-  page:number;
-   setPage: (page: number | ((prev: number) => number)) => void;
-  rowPerPage:number | null;
-   setRowPerPage:(rowPerPage:number|string)=>void;
-  totalCount:number;
-  setTotalCount:(totalCount:number)=>void
- 
-}
 export type CommonParams = {
   tenantId: string
   token: string
 }
+
 export type GetBranchDetailsParams = CommonParams & {
   userId: number
   companyId: number
@@ -41,6 +14,11 @@ export type GetBranchDetailsParams = CommonParams & {
   rowPerPage: number
   searchString: string
 }
+
+export type GetCompanyDetailsParams = CommonParams & {
+  companyId: number
+}
+
 export interface AccountData {
   accountTypeId: {
     id: number;
@@ -101,6 +79,7 @@ export interface AccountData {
   verified: boolean;
   website: string;
 }
+
 export interface AccountResponse {
   data: AccountData;
   message: string | null;
