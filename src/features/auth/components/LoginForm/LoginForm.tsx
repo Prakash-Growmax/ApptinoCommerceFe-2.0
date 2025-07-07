@@ -31,7 +31,6 @@ export function LoginForm({
 
   const [hasPassword, setHasPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const passwordFieldRef = useRef<HTMLInputElement>(null);
 
@@ -56,13 +55,6 @@ export function LoginForm({
     }
   }, [hasPassword]);
 
-  // Focus management after form submission
-  useEffect(() => {
-    if (apiError) {
-      // Focus the password field when there's an error
-      passwordFieldRef.current?.focus();
-    }
-  }, [apiError]);
 
   const handleCheckUser = async (): Promise<void> => {
     if (!UserName) return;
@@ -71,7 +63,6 @@ export function LoginForm({
     if (!isValid) return;
 
     setIsLoading(true);
-    setApiError('');
     clearErrors();
 
     try {
@@ -82,11 +73,11 @@ export function LoginForm({
         }
       }
     } catch (error: unknown) {
-      const errorMessage = handleError(error, 'handleCheckUser', 'Failed to check user');
-      setApiError(errorMessage);
+      const errorMessage = handleError(error, 'auth.checkUser');
+      toast.error(errorMessage);
       setError('UserName', {
         type: 'manual',
-        message: 'User not found or invalid email',
+        message: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -100,7 +91,6 @@ export function LoginForm({
     if (!isValid) return;
 
     setIsLoading(true);
-    setApiError('');
     clearErrors();
 
     try {
@@ -116,9 +106,12 @@ export function LoginForm({
       toast.success('Logged In Successfully.');
       navigate('/');
     } catch (error: unknown) {
-      const errorMessage = handleError(error, 'handleLogin', 'Login failed');
-      setApiError(errorMessage);
+      const errorMessage = handleError(error, 'auth.login');
       toast.error(errorMessage);
+      setError('Password', {
+        type: 'manual',
+        message: ' ', // Empty to avoid showing duplicate message
+      });
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +136,6 @@ export function LoginForm({
                   className="flex flex-col gap-4"
                   role="form"
                   aria-labelledby="login-heading"
-                  {...(apiError && { 'aria-describedby': "login-error" })}
                 >
                   <div className="flex flex-col items-center text-center">
                     <h1 id="login-heading" className="text-2xl font-bold">Welcome</h1>
@@ -151,17 +143,6 @@ export function LoginForm({
                       Login to your Growmax account
                     </p>
                   </div>
-
-                  {apiError && (
-                    <div 
-                      className="rounded-md bg-destructive/10 p-3 text-sm text-destructive"
-                      role="alert"
-                      aria-live="polite"
-                      id="login-error"
-                    >
-                      {apiError}
-                    </div>
-                  )}
 
                   <FormInput
                     name="UserName"
@@ -223,7 +204,6 @@ export function LoginForm({
                       isLoading || !UserName || (hasPassword && !Password)
                     }
                     onClick={hasPassword ? handleLogin : handleCheckUser}
-                    {...(apiError && { ariaDescribedBy: "login-error" })}
                   >
                     {hasPassword ? t('Login') : t('Continue')}
                   </Button>

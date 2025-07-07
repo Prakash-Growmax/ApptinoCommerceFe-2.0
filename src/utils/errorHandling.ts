@@ -1,4 +1,10 @@
 import { ApiError } from '@/types/lib/api.types';
+import { 
+  getErrorMessage as getFormattedErrorMessage,
+  isNetworkError as checkNetworkError,
+  isAuthenticationError as checkAuthError,
+  isValidationError as checkValidationError
+} from './errorMessages';
 
 /**
  * Type guard to check if an error is an ApiError
@@ -23,31 +29,17 @@ export const isStandardError = (error: unknown): error is Error => {
 
 /**
  * Extracts a user-friendly error message from various error types
+ * This is the legacy function - new code should use getFormattedErrorMessage from errorMessages.ts
  */
 export const getErrorMessage = (error: unknown, fallbackMessage = 'An unexpected error occurred'): string => {
-  if (isApiError(error)) {
-    return error.message;
-  }
-  
-  if (isStandardError(error)) {
-    return error.message;
-  }
-  
-  // Handle cases where error might be a string
-  if (typeof error === 'string') {
-    return error;
-  }
-  
-  // Handle cases where error might be an object with a message property
-  if (typeof error === 'object' && error !== null && 'message' in error) {
-    const message = (error as { message: unknown }).message;
-    if (typeof message === 'string') {
-      return message;
-    }
-  }
-  
-  return fallbackMessage;
+  // Use the new error message system
+  return getFormattedErrorMessage(error, undefined, fallbackMessage);
 };
+
+// Re-export error checking utilities
+export const isNetworkError = checkNetworkError;
+export const isAuthenticationError = checkAuthError;
+export const isValidationError = checkValidationError;
 
 /**
  * Logs an error with appropriate context
@@ -73,5 +65,35 @@ export const handleError = (
   fallbackMessage?: string
 ): string => {
   logError(error, context);
-  return getErrorMessage(error, fallbackMessage);
+  return getFormattedErrorMessage(error, context, fallbackMessage);
+};
+
+/**
+ * Get error details for development/debugging
+ */
+export const getErrorDetails = (error: unknown): Record<string, unknown> => {
+  const details: Record<string, unknown> = {
+    message: getErrorMessage(error),
+    type: error?.constructor?.name || typeof error,
+  };
+
+  if (isApiError(error)) {
+    details.status = error.status;
+    details.code = error.code;
+    details.isApiError = true;
+  }
+
+  if (isNetworkError(error)) {
+    details.isNetworkError = true;
+  }
+
+  if (isAuthenticationError(error)) {
+    details.isAuthError = true;
+  }
+
+  if (isValidationError(error)) {
+    details.isValidationError = true;
+  }
+
+  return details;
 };

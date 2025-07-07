@@ -10,6 +10,7 @@ import {
   ApiError,
   ApiErrorResponse,
 } from '@/types/lib/api.types';
+import { getErrorMessage } from '@/utils/errorMessages';
 
 const { API_URL } = getEnvironmentVariables();
 
@@ -91,23 +92,47 @@ export const createApiClient = (
         logoutAction();
       }
 
-      let errorMessage = 'An unexpected error occurred';
+      const apiError: ApiError = {
+        message: 'An unexpected error occurred',
+        status,
+        code: 'UNKNOWN_ERROR',
+      };
 
-      if (responseData) {
-        errorMessage =
-          responseData.message ||
-          responseData.error ||
-          responseData.details ||
-          errorMessage;
-      } else if (error.message) {
-        errorMessage = error.message;
+      if (error.response) {
+        // Server responded with error status
+        apiError.status = error.response.status;
+        
+        // Extract error details from response
+        if (responseData) {
+          if (typeof responseData === 'string') {
+            apiError.message = responseData;
+          } else if (responseData.message) {
+            apiError.message = responseData.message;
+          } else if (responseData.error) {
+            apiError.message = responseData.error;
+          } else if (responseData.details) {
+            apiError.message = responseData.details;
+          }
+          
+          // Extract error code if available
+          if (responseData.code) {
+            apiError.code = responseData.code;
+          }
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        apiError.status = 0;
+        apiError.code = 'NETWORK_ERROR';
       }
 
-      const apiError: ApiError = {
-        message: errorMessage,
-        code: responseData?.code ?? undefined,
-        status,
-      };
+      // Transform to user-friendly message
+      // Pass the original extracted message for proper mapping
+      const userFriendlyMessage = getErrorMessage({
+        message: apiError.message,
+        status: apiError.status,
+        code: apiError.code
+      }, 'api');
+      apiError.message = userFriendlyMessage;
 
       return Promise.reject(apiError);
     }
