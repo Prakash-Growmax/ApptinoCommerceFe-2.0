@@ -1,50 +1,40 @@
-// import useUserStore from "@/stores/useUserStore";
-// import useSupportStore from "@/stores/useSupportStore";
-// import { useQuery } from "@tanstack/react-query";
+import useUserStore from "@/stores/useUserStore";
+import useSupportStore from "@/stores/useSupportStore";
+import { useQuery } from "@tanstack/react-query";
+import { GetSupportFilter } from "@/features/support/api/support.api";
 
-// export const useGetSupportFilters = () => {
-//   const { userId, tenantId } = useUserStore();
-//   const token = localStorage.getItem("accessToken");
-//   const { setFilters, setLoading } = useSupportStore();
+export const useGetSupportFilters = () => {
+  const { userId, tenantId } = useUserStore();
+  const { setFilters, setLoading } = useSupportStore();
 
-//   const fetchFilters = async () => {
-//     setLoading(true);
-//     try {
-//       const url = `https://api.myapptino.com/corecommerce/templates/get?domainName=${tenantId}&propertyName=${userId}_filters`;
-//       const res = await fetch(url, {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
+  const fetchFilters = async () => {
+    setLoading(true);
+    try {
+      const data = await GetSupportFilter({ userId, tenantId });
+      
+      // Assuming filters come in data.data or data (adjust if different)
+      const filters = data?.data || {
+        status: "all",
+        search: "",
+        limit: 20,
+        offset: 0,
+      };
 
-//       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      setFilters(filters);
+      setLoading(false);
+      return filters;
+    } catch (error) {
+      console.error("Error fetching support filters", error);
+      setLoading(false);
+      return null;
+    }
+  };
 
-//       const data = await res.json();
+  const query = useQuery({
+    queryKey: ["supportFilters", userId, tenantId],
+    queryFn: fetchFilters,
+    enabled: !!userId && !!tenantId,
+  });
 
-//       // Assuming filters come in data.data or data (adjust if different)
-//       const filters = data?.data || {
-//         status: "all",
-//         search: "",
-//         limit: 20,
-//         offset: 0,
-//       };
-
-//       setFilters(filters);
-//       setLoading(false);
-//       return filters;
-//     } catch (error) {
-//       console.error("Error fetching support filters", error);
-//       setLoading(false);
-//       return null;
-//     }
-//   };
-
-//   const query = useQuery({
-//     queryKey: ["supportFilters", userId],
-//     queryFn: fetchFilters,
-//   });
-
-//   return query;
-// };
+  return query;
+};

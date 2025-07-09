@@ -12,21 +12,17 @@ export type CurrencyType = {
 };
 
 export const getCurrencies = async ({
-  token,
   tenantId,
 }: {
-  token: string;
   tenantId: string | number;
 }): Promise<CurrencyType[]> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-
   const response = await apiGet<{ data: CurrencyType[] }>({
     url: "/corecommerce/currency",
-    config: { headers },
+    config: { 
+      headers: {
+        "x-tenant": tenantId,
+      }
+    },
   });
 
   return response.data ?? [];

@@ -127,13 +127,6 @@ const CustomerDetail = ({addressData,page,setPage,rowPerPage,setRowPerPage,loadi
   };
 
 return(
-     <div
-      className={`flex flex-col gap-2 sm:gap-4 p-2 sm:p-4 transition-all duration-300 w-full ${
-        sideOpen
-          ? 'lg:max-w-[calc(100vw-20rem)]'
-          : 'lg:max-w-[calc(100vw-5rem)]'
-      }`}
-    >
     <DashboardTable
        data={addressData}
           columns={columns}
@@ -150,7 +143,6 @@ return(
             tableHeight="min-h-[200px] max-h-[60vh] " 
 
     />
-  </div>
 )
 
 };

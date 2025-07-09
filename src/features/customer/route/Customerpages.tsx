@@ -1,36 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import CompanyDetailsCard from './CustomerDetail'; // adjust path if needed
 import { handleError } from '@/utils/errorHandling';
+import { apiGet } from '@/lib/api/client';
+import useUserStore from '@/stores/useUserStore';
 
 const CustomerPage = (): React.JSX.Element => {
   const [companyData, setCompanyData] = useState(null);
+  const { tenantId } = useUserStore();
 
- useEffect(() => {
-  const fetchCompanyDetails = async (): Promise<void> => {
-    try {
-        
-        const response = await fetch(
-            'https://api.myapptino.com/corecommerce/accountses/getAccountDetails?companyId=24354',
-            {
-                headers: {
-                    'Authorization': 'Bearer YOUR_TOKEN_HERE',
-                    'Content-Type': 'application/json',
-                },
-            }
+  useEffect(() => {
+    const fetchCompanyDetails = async (): Promise<void> => {
+      try {
+        const response = await apiGet(
+          '/corecommerce/accountses/getAccountDetails?companyId=24354',
+          { tenantId }
         );
         console.log('Calling service...');
+        console.log('Result:', response);
+        setCompanyData(response);
+      } catch (error: unknown) {
+        handleError(error, 'fetchCompanyDetails', 'Error calling service');
+      }
+    };
 
-      console.log('API status:', response.status);
-      const result = await response.json();
-      console.log('Result:', result);
-    } catch (error: unknown) {
-      handleError(error, 'fetchCompanyDetails', 'Error calling service');
+    if (tenantId) {
+      fetchCompanyDetails();
     }
-  };
-
-  fetchCompanyDetails();
-}, []);
-
+  }, [tenantId]);
 
   return (
     <div className="p-4">

@@ -9,8 +9,7 @@ import { getRoles } from '../api/customer.api';
 import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
 
 export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
-  const { accessToken, payload } = useAppStore();
-  const token = accessToken as string;
+  const { payload } = useAppStore();
   const { tenantId } = payload as TokenPayload;
   const {
     setStateList,
@@ -22,7 +21,7 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
   const getAllStateQuery = useQuery({
     queryKey: ['state', tenantId, open],
     queryFn: async () => {
-      const response = await getState(tenantId, token);
+      const response = await getState(tenantId);
 
       setStateList(response as any[]);
       return response;
@@ -34,7 +33,7 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
   const getAllDistrictQuery = useQuery({
     queryKey: ['district', tenantId, open],
     queryFn: async () => {
-      const response = await getDistrict(tenantId, token);
+      const response = await getDistrict(tenantId);
       setDistrictList(response as any[]);
       return response;
     },
@@ -46,7 +45,7 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
   const getAllCountQuery = useQuery({
     queryKey: ['country', tenantId, open],
     queryFn: async () => {
-      const response = await getCountry(tenantId, token);
+      const response = await getCountry(tenantId);
       setCountryList(response as any[]);
       return response;
     },
@@ -58,7 +57,7 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
   const getCurrencyQuery = useQuery({
     queryKey: ['currencies', tenantId, open],
     queryFn: async () => {
-      const response = await getCurrencies({ tenantId, token });
+      const response = await getCurrencies({ tenantId });
 
       const formatted = response.map(cur => ({
         value: cur.currencyCode,
@@ -75,8 +74,8 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
   const getRolesQuery = useQuery({
     queryKey: ['roles', tenantId, open],
     queryFn: async () => {
-      const response = await getRoles(tenantId, token);
-      setRoleList(response);
+      const response = await getRoles(tenantId);
+      setRoleList(response as any[]);
       return response;
     },  
     enabled: !!tenantId && open,

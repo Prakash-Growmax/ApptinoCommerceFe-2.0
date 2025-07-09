@@ -29,8 +29,7 @@ const SupportDetails = () => {
   } = useSupportDetailStore();
   console.log(updateSupportVisit);
   console.log(openSupportIssue);
-  const { accessToken, payload } = useAppStore();
-  const token = accessToken as string;
+  const { payload } = useAppStore();
   const { tenantId } = payload as TokenPayload;
   const {
     data: fieldServicesData,
@@ -112,13 +111,12 @@ const SupportDetails = () => {
   };
 
   const handleUpdateTicket = async () => {
-    const response = await updateTicket(tenantId, token, updateTicketPayload);
+    const response = await updateTicket(tenantId, updateTicketPayload);
     setOpenSupportIssue(false);
   };
   const handleUpdateFieldService = async () => {
     const response = await updateTicketServices(
       tenantId,
-      token,
       updatedFieldPayload
     );
     setOpenSupportIssue(false);

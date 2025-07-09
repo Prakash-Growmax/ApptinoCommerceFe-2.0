@@ -49,8 +49,7 @@ type CreateFieldServiceProps = {
 const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServiceProps): React.JSX.Element => {
   const handleClose = () => setOpen(false);
   const { id } = useParams();
-  const { accessToken, payload } = useAppStore();
-  const token = accessToken as string;
+  const { payload } = useAppStore();
   const {tenantId ,companyId,userId,displayName }= payload as TokenPayload;
   // useGetSupportFilterSettings();
 
@@ -153,12 +152,12 @@ const payload={
       category:data?.category
 
     }
-    const res = await createFieldService(tenantId,token,payload);
+    const res = await createFieldService(tenantId,payload) as any;
      handleRefreshFieldServices();
-    if(data?.notes){
+    if(data?.notes && res?.identifier){
       var body={
         ticketIdentifier:id,
-        fieldServiceIdentifier:res?.identifier,
+        fieldServiceIdentifier:res.identifier,
         identifier: "",
         notes:data?.notes,
         domainName:tenantId,
@@ -169,15 +168,16 @@ const payload={
         updatedByUsername: displayName,
         updatedByUserId: userId,
       };
-      await postFieldNotes(tenantId, token, body);
+      await postFieldNotes(tenantId, body);
     }
-    await postFieldAttachments(
-      tenantId,
-      token,
-      id,
-      res?.identifier,
-      data?.attachments
-    );
+    if(res?.identifier && id) {
+      await postFieldAttachments(
+        tenantId,
+        id,
+        res.identifier,
+        data?.attachments
+      );
+    }
     if (res) {
       setLoading(false);
       setOpen(false);

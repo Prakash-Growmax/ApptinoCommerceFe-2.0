@@ -59,8 +59,7 @@ type FormData = {
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
-    const { accessToken, payload } = useAppStore();
-  const token = accessToken as string;
+    const { payload } = useAppStore();
   const {tenantId ,companyId,displayName,companyName,userId} = payload as TokenPayload;
   useGetSupportFilterSettings();
 
@@ -211,7 +210,7 @@ const SupportTicketsDialog = () => {
     // }
 
     try {
-      const response = await createTicketss(tenantId,token,payload)
+      const response = await createTicketss(tenantId,payload)
       toast.success('Ticket created successfully!');
       setOpen(false);
       reset();

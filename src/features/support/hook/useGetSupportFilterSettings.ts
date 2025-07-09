@@ -5,8 +5,7 @@ import { getSupportFieldServiceRep, getSupportTicketStatus } from "../api/suppor
 import { useSupportTicketFilterStore } from "../store/useSupportTicketFilterStore";
 
 export const useGetSupportFilterSettings = () => {
-  const { accessToken, payload } = useAppStore();
-  const token = accessToken as string;
+  const { payload } = useAppStore();
   const {tenantId ,companyId} = payload as TokenPayload;
   const {setStatus, setPriority, setCategory,setFieldUser,setIssueCategory,setReason,setSeverity}=useSupportTicketFilterStore();
 
@@ -14,11 +13,10 @@ export const useGetSupportFilterSettings = () => {
     queryKey: ["status", tenantId],
     queryFn: async () => {
       const response = await getSupportTicketStatus(
-        tenantId,
-        token,
+        tenantId
       );
      
-      var data = JSON.parse(response[0].content)
+      var data = JSON.parse((response as any)[0].content)
       console.log(data);
       setCategory(data.tCategory)
       setIssueCategory(data?.fsCategory);
@@ -42,10 +40,9 @@ export const useGetSupportFilterSettings = () => {
     queryFn: async () => {
       const response = await getSupportFieldServiceRep(
         tenantId,
-        token,
         companyId
       );
-     setFieldUser(response.data.filter((item: any) => item.isActive))
+     setFieldUser((response as any).data.filter((item: any) => item.isActive))
     },
     enabled: !!tenantId && !!companyId,
     refetchOnWindowFocus: false,

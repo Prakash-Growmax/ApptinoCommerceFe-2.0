@@ -6,82 +6,63 @@ export const CustomerFilters = async ({
   userId,
   companyId,
   tenantId,
-  token,
-}:CustomerData):Promise<AccountFilterType> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-
+}:Omit<CustomerData, 'token'>):Promise<AccountFilterType> => {
   const response = await apiGet<AccountFilterType>({
     url: `/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`,
     config: {
-      headers,
-    },
+      headers: {
+        "x-tenant": tenantId,
+      }
+    }
   });
 
-  return response; // 👈 You should return or process this
+  return response;
 };
-export const getState=async(tenantId:string,token:string)=>{
-    const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
+export const getState = async (tenantId: string) => {
   const response = await apiGet({
-    url:`homepagepublic/getAllState`,
-    config:{
-      headers,
+    url: `homepagepublic/getAllState`,
+    config: {
+      headers: {
+        "x-tenant": tenantId,
+      }
     }
-  })
-  return response
+  });
+  return response;
 }
-export const getCountry=async(tenantId:string,token:string)=>{
-   const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-    const response = await apiGet({
-    url:`homepagepublic/getCountry`,
-    config:{
-      headers,
+export const getCountry = async (tenantId: string) => {
+  const response = await apiGet({
+    url: `homepagepublic/getCountry`,
+    config: {
+      headers: {
+        "x-tenant": tenantId,
+      }
     }
-  })
-  return response
+  });
+  return response;
 }
-export const getDistrict=async(tenantId:string,token:string)=>{
-    const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-   const response = await apiGet({
-    url:`/homepagepublic/getAllDistrict`,
-    config:{
-      headers,
+export const getDistrict = async (tenantId: string) => {
+  const response = await apiGet({
+    url: `/homepagepublic/getAllDistrict`,
+    config: {
+      headers: {
+        "x-tenant": tenantId,
+      }
     }
-  })
+  });
   return response;
 }
 
-export const getRoles = async (tenantId: string, token: string) => {
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-tenant': tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-
+export const getRoles = async (tenantId: string) => {
   const response = await apiGet({
     url: `/corecommerce/accessgroups`,
     config: {
-      headers,
-    },
+      headers: {
+        "x-tenant": tenantId,
+      }
+    }
   });
   
   return response;
-  // return response.data?? []
 };
 
 
