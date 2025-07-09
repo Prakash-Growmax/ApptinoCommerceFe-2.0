@@ -236,7 +236,7 @@ importers:
         version: 4.6.0(vite@6.3.5(@types/node@22.16.0)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@3.2.4(@types/node@22.16.0)(@vitest/ui@1.6.1)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.10.3(@types/node@22.16.0)(typescript@5.8.3))(yaml@2.8.0))
+        version: 1.6.1(vitest@3.2.4)
       '@vitest/ui':
         specifier: ^1.0.0
         version: 1.6.1(vitest@3.2.4)
@@ -12424,7 +12424,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.1(vitest@3.2.4(@types/node@22.16.0)(@vitest/ui@1.6.1)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.10.3(@types/node@22.16.0)(typescript@5.8.3))(yaml@2.8.0))':
+  '@vitest/coverage-v8@1.6.1(vitest@3.2.4)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3

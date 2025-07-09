@@ -145,5 +145,25 @@ export const handlers = [
     return HttpResponse.json({ message: 'Logged out successfully' });
   }),
 
+
+ // Preferences handlers
+http.get('*/user/preferences', () => {
+  return HttpResponse.json({
+    theme: { mode: 'dark' },
+    accessibility: {
+      highContrast: false,
+      reducedMotion: true,
+      fontSize: 'medium',
+    },
+    notifications: {
+      email: true,
+      sms: false,
+    },
+    language: 'en',
+  });
+}),
+
+
+
   // Add more handlers as needed
 ];

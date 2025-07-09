@@ -1,7 +1,7 @@
 // src/test/utils/render.ts
 import { ReactElement } from 'react';
 
-import { RenderOptions, RenderResult, render } from '@testing-library/react';
+import { RenderOptions, RenderResult, render as rtlRender, waitFor } from '@testing-library/react';
 import { UserEvent, userEvent } from '@testing-library/user-event';
 
 import {
@@ -33,7 +33,7 @@ export const customRender = (
 
   return {
     user: userEvent.setup(),
-    ...render(ui, {
+    ...rtlRender(ui, {
       wrapper: ({ children }) => (
         <TestMemoryRouterProvider routerOptions={routerOptions}>
           <TestQueryClientProvider>
@@ -48,3 +48,5 @@ export const customRender = (
 
 // Export with the expected name
 export { customRender as render };
+// Re-export waitFor for convenience
+export { waitFor };
