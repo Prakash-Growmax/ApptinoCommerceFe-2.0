@@ -1,5 +1,5 @@
 import { getEnvironmentVariables } from '@config/environment';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { z } from 'zod';
 
 import { ApiError, AuthClientOptions } from '@/types/lib/api.types';
@@ -10,8 +10,13 @@ const { AUTH_URL } = getEnvironmentVariables();
 export const createAuthClient = (
   options: AuthClientOptions = {}
 ): AxiosInstance => {
+  // In development, use /api prefix to enable proxy
+  const baseURL = import.meta.env.DEV 
+    ? '/api/auth/auth/' 
+    : (options.baseURL || AUTH_URL || '');
+    
   const client = axios.create({
-    baseURL: options.baseURL || AUTH_URL || '',
+    baseURL,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -20,7 +25,7 @@ export const createAuthClient = (
 
   // Response interceptor for error handling
   client.interceptors.response.use(
-    (response) => response,
+    response => response,
     (error: AxiosError) => {
       const apiError: ApiError = {
         message: 'An unexpected error occurred',
@@ -31,15 +36,15 @@ export const createAuthClient = (
       if (error.response) {
         // Server responded with error status
         apiError.status = error.response.status;
-        
+
         // Extract error details from response
         const responseData = error.response.data as any;
-        
+
         // Debug logging
         if (process.env.NODE_ENV === 'development') {
           console.log('[Auth Client] Response data:', responseData);
         }
-        
+
         // Try to extract error message from various possible response formats
         if (responseData) {
           if (typeof responseData === 'string') {
@@ -48,10 +53,14 @@ export const createAuthClient = (
             apiError.message = responseData.message;
           } else if (responseData.error) {
             apiError.message = responseData.error;
-          } else if (responseData.errors && Array.isArray(responseData.errors)) {
-            apiError.message = responseData.errors[0]?.message || responseData.errors[0];
+          } else if (
+            responseData.errors &&
+            Array.isArray(responseData.errors)
+          ) {
+            apiError.message =
+              responseData.errors[0]?.message || responseData.errors[0];
           }
-          
+
           // Extract error code if available
           if (responseData.code) {
             apiError.code = responseData.code;
@@ -59,14 +68,17 @@ export const createAuthClient = (
             apiError.code = responseData.errorCode;
           }
         }
-        
+
         // Transform to user-friendly message
         // Pass the original extracted message for proper mapping
-        const userFriendlyMessage = getErrorMessage({
-          message: apiError.message,
-          status: apiError.status,
-          code: apiError.code
-        }, 'auth');
+        const userFriendlyMessage = getErrorMessage(
+          {
+            message: apiError.message,
+            status: apiError.status,
+            code: apiError.code,
+          },
+          'auth'
+        );
         apiError.message = userFriendlyMessage;
       } else if (error.request) {
         // Request was made but no response received

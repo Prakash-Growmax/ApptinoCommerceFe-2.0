@@ -15,12 +15,6 @@ interface CompanyOptionsData {
 
 // Mock function - replace with actual API calls
 const fetchCompanyOptions = async (tenantId: string, token: string): Promise<CompanyOptionsData> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-
   // These would be actual API calls to fetch the options
   // For now, returning empty arrays - implement actual API calls when endpoints are available
   return {

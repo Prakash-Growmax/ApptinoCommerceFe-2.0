@@ -17,12 +17,7 @@ export const getCurrencies = async ({
   tenantId: string | number;
 }): Promise<CurrencyType[]> => {
   const response = await apiGet<{ data: CurrencyType[] }>({
-    url: "/corecommerce/currency",
-    config: { 
-      headers: {
-        "x-tenant": tenantId,
-      }
-    },
+    url: "/corecommerce/currency"
   });
 
   return response.data ?? [];

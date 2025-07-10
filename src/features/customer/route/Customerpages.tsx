@@ -11,10 +11,9 @@ const CustomerPage = (): React.JSX.Element => {
   useEffect(() => {
     const fetchCompanyDetails = async (): Promise<void> => {
       try {
-        const response = await apiGet(
-          '/corecommerce/accountses/getAccountDetails?companyId=24354',
-          { tenantId }
-        );
+        const response = await apiGet({
+          url: '/corecommerce/accountses/getAccountDetails?companyId=24354'
+        });
         console.log('Calling service...');
         console.log('Result:', response);
         setCompanyData(response);

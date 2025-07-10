@@ -8,58 +8,33 @@ export const CustomerFilters = async ({
   tenantId,
 }:Omit<CustomerData, 'token'>):Promise<AccountFilterType> => {
   const response = await apiGet<AccountFilterType>({
-    url: `/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`,
-    config: {
-      headers: {
-        "x-tenant": tenantId,
-      }
-    }
+    url: `/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`
   });
 
   return response;
 };
 export const getState = async (tenantId: string) => {
   const response = await apiGet({
-    url: `homepagepublic/getAllState`,
-    config: {
-      headers: {
-        "x-tenant": tenantId,
-      }
-    }
+    url: `homepagepublic/getAllState`
   });
   return response;
 }
 export const getCountry = async (tenantId: string) => {
   const response = await apiGet({
-    url: `homepagepublic/getCountry`,
-    config: {
-      headers: {
-        "x-tenant": tenantId,
-      }
-    }
+    url: `homepagepublic/getCountry`
   });
   return response;
 }
 export const getDistrict = async (tenantId: string) => {
   const response = await apiGet({
-    url: `/homepagepublic/getAllDistrict`,
-    config: {
-      headers: {
-        "x-tenant": tenantId,
-      }
-    }
+    url: `/homepagepublic/getAllDistrict`
   });
   return response;
 }
 
 export const getRoles = async (tenantId: string) => {
   const response = await apiGet({
-    url: `/corecommerce/accessgroups`,
-    config: {
-      headers: {
-        "x-tenant": tenantId,
-      }
-    }
+    url: `/corecommerce/accessgroups`
   });
   
   return response;
