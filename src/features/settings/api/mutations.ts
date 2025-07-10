@@ -16,18 +16,9 @@ export const updateCompanyDetails = async ({
   tenantId,
   token 
 }: UpdateCompanyDetailsParams & { tenantId: string; token: string }): Promise<UpdateCompanyResponse> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-  
   const response = await apiPut<UpdateCompanyResponse>({
     url: `/corecommerce/companys/${companyId}`,
-    data,
-    config: {
-      headers,
-    }
+    data
   });
   
   return response;

@@ -11,16 +11,8 @@ export const GetBranchDetails = async ({
   tenantId,
   token
 }: GetBranchDetailsParams): Promise<SettingsBranchResponse> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
   const response = apiGet<SettingsBranchResponse>({
-    url: `/corecommerce/branches/readBranchwithPagination/${userId}?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=${searchString}`,
-    config: {
-      headers,
-    }
+    url: `/corecommerce/branches/readBranchwithPagination/${userId}?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=${searchString}`
   })
   return response;
 }
@@ -30,16 +22,8 @@ export const GetCompanyDetails = async ({
   tenantId,
   token
 }: GetCompanyDetailsParams): Promise<AccountResponse> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
   const response = await apiGet<AccountResponse>({
-    url: `/corecommerce/companys/${companyId}`,
-    config: {
-      headers
-    }
+    url: `/corecommerce/companys/${companyId}`
   })
   return response;
 }

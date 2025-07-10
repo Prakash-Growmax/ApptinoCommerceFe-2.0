@@ -14,15 +14,8 @@ export const GetAddressDetails = async ({
   page:number,
   rowPerPage:number
 }): Promise<AddressDetailsType> => {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-tenant": tenantId,
-    Authorization: `Bearer ${token}`,
-  };
-
   const response = await apiGet<AddressDetailsType>({
-    url: `/corecommerce/accountses/getAddressDetails?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=`,
-    config: { headers },
+    url: `/corecommerce/accountses/getAddressDetails?companyId=${companyId}&offset=${page}&limit=${rowPerPage}&searchString=`
   });
 
   return response;

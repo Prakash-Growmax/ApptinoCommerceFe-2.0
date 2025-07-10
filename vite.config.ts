@@ -2,8 +2,8 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { defineConfig } from 'vite';
 import type { PluginOption } from 'vite';
+import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(({ command, mode }) => {
@@ -16,13 +16,15 @@ export default defineConfig(({ command, mode }) => {
       tailwindcss(),
       tsconfigPaths(),
       // Bundle analyzer (run with npm run build:analyze)
-      ...(mode === 'analyze' 
-        ? [visualizer({
-            filename: 'dist/stats.html',
-            open: true,
-            gzipSize: true,
-            brotliSize: true,
-          }) as PluginOption] 
+      ...(mode === 'analyze'
+        ? [
+            visualizer({
+              filename: 'dist/stats.html',
+              open: true,
+              gzipSize: true,
+              brotliSize: true,
+            }) as PluginOption,
+          ]
         : []),
     ],
 
@@ -49,6 +51,27 @@ export default defineConfig(({ command, mode }) => {
       port: 3000,
       open: true,
       cors: true,
+      proxy: {
+        // Proxy API calls to intercept and modify headers
+        '/api': {
+          target: 'https://api.myapptino.com',
+          changeOrigin: true,
+          secure: false,
+          rewrite: path => path.replace(/^\/api/, ''),
+          configure: proxy => {
+            proxy.on('proxyReq', (proxyReq, req) => {
+              // Only modify Origin header for auth endpoints
+              if (req.url?.includes('/auth/auth/')) {
+                proxyReq.setHeader('Origin', 'schwingstetter.myapptino.com');
+                console.log(
+                  'Proxying auth request with custom origin:',
+                  req.url
+                );
+              }
+            });
+          },
+        },
+      },
     },
 
     // Build configuration
@@ -66,7 +89,7 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           // Improved manual chunks for better caching
-          manualChunks: (id) => {
+          manualChunks: id => {
             // Vendor chunks
             if (id.includes('node_modules')) {
               // React ecosystem
@@ -114,7 +137,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('src/features/settings')) {
               return 'settings-feature';
             }
-            
+
             // Component chunks
             if (id.includes('src/components/organisms')) {
               return 'organisms-components';
@@ -136,7 +159,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('src/hooks')) {
               return 'hooks';
             }
-            
+
             // Default for other files
             return undefined;
           },
@@ -144,7 +167,7 @@ export default defineConfig(({ command, mode }) => {
           chunkFileNames: () => {
             return `js/[name]-[hash].js`;
           },
-          assetFileNames: (assetInfo) => {
+          assetFileNames: assetInfo => {
             if (/\.(css)$/.test(assetInfo.name || '')) {
               return 'css/[name]-[hash].[ext]';
             }

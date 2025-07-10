@@ -22,27 +22,39 @@ let refreshPromise: Promise<any> | null = null;
 export const createApiClient = (
   options: ApiClientOptions = {}
 ): AxiosInstance => {
+  // In development, use /api prefix to enable proxy
+  const baseURL = import.meta.env.DEV 
+    ? '/api' 
+    : (options.baseURL || API_URL || '');
+    
   const client = axios.create({
-    baseURL: options.baseURL || API_URL || '',
+    baseURL,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
-  const {
-    accessToken,
-    refreshToken,
-    isTokenValidAction,
-    refreshTokensAction,
-    logoutAction,
-  } = useAppStore.getState();
-
   client.interceptors.request.use(
     async config => {
+      // Get fresh tokens from the store
+      const {
+        accessToken,
+        refreshToken,
+        payload,
+        isTokenValidAction,
+        refreshTokensAction,
+        logoutAction,
+      } = useAppStore.getState();
+
       // If no tokens available, proceed without auth
       if (!accessToken || !refreshToken) {
         return config;
+      }
+
+      // Add x-tenant header if payload exists
+      if (payload?.tenantId && config.headers) {
+        config.headers['x-tenant'] = payload.tenantId;
       }
 
       const isValid = isTokenValidAction();
@@ -89,6 +101,7 @@ export const createApiClient = (
       const status = error.response?.status || 500;
       const responseData = error.response?.data;
       if (status === 401) {
+        const { logoutAction } = useAppStore.getState();
         logoutAction();
       }
 

@@ -10,10 +10,9 @@ export const useGetCustomersFilters = () => {
   
   const fetchFilters = async (): Promise<any> => {
     try {
-      const response = await apiGet<any>(
-        `/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`,
-        { tenantId }
-      );
+      const response = await apiGet<any>({
+        url: `/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`
+      });
 
       let data = response;
       if (!data?.data?.limit) {
