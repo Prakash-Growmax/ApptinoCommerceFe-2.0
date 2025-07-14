@@ -20,6 +20,7 @@ import { GetFetchSupportTicket } from '../api/support.api';
 import { useGetSupportFilterSettings } from '../hook/useGetSupportFilterSettings';
 import useSupportStore from '../store/useSupportStore';
 import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
+import SupportTicketsDialog from '../routes/createticket';
 
 const SupportFilters = (): React.JSX.Element => {
   useGetSupportFilterSettings();
@@ -204,6 +205,8 @@ const SupportFilters = (): React.JSX.Element => {
               <span className="hidden sm:inline">Clear</span>
             </ShadCnButton>
           )}
+
+          <SupportTicketsDialog/>
         </div>
       </div>
     </div>

@@ -36,3 +36,44 @@ export const useCompanyOptions = () => {
     gcTime: 60 * 60 * 1000, // 1 hour
   });
 };
+
+
+
+
+// import { useQuery } from '@tanstack/react-query';
+// import useAppStore from '@/stores/appStore';
+// import axios from 'axios';
+
+// interface Option {
+//   value: string;
+//   label: string;
+// }
+
+// export const useCompanyOptions = () => {
+//   const { payload, accessToken } = useAppStore();
+
+//   const fetchSubIndustries = async (): Promise<Option[]> => {
+//     const headers = {
+//       Authorization: `Bearer ${accessToken}`,
+//       'X-Tenant-Id': payload?.tenantId,
+//     };
+
+//     const res = await axios.get(
+//       'https://p5w483ff4a.execute-api.ap-south-1.amazonaws.com/schwing_api/corecommerce/subindustrys',
+//       { headers }
+//     );
+
+//     return res.data?.data?.map((si: any) => ({
+//       value: si.id.toString(),
+//       label: si.name,
+//     })) || [];
+//   };
+
+//   return useQuery({
+//     queryKey: ['subIndustries', payload?.tenantId],
+//     queryFn: fetchSubIndustries,
+//     enabled: false, // Lazy loading
+//     staleTime: 30 * 60 * 1000,
+//     gcTime: 60 * 60 * 1000,
+//   });
+// };

@@ -36,6 +36,7 @@ export const useGetSupportTicketFilters = () => {
         setFilters(response[0]?.content || {});
         isInitialLoadDone.current = true;
       }
+      setLoading(false);
       return response[0]?.content;
     } catch (error) {
       if (!signal?.aborted) {
@@ -72,6 +73,8 @@ export const useGetSupportTicketFilters = () => {
         setSupportData(response?.result);
         setTotalCount(response?.count);
       }
+       setLoading(false);
+       
       return response;
     } catch (error) {
       if (!signal?.aborted) {
@@ -79,6 +82,8 @@ export const useGetSupportTicketFilters = () => {
       }
     } finally {
       if (!signal?.aborted) {
+        
+
         setLoading(false);
       }
       isFetching.current = false;

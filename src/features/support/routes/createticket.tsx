@@ -223,7 +223,7 @@ const SupportTicketsDialog = () => {
 
   return (
     <>
-      <ShadCnButton className='w-[130px]' onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
+      <ShadCnButton className='w-[130px] ml-6' onClick={() => setOpen(true)}>Create Ticket</ShadCnButton>
       <div className="">
         <EditDialog
           open={open}
@@ -236,7 +236,7 @@ const SupportTicketsDialog = () => {
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
             {/* <Form form={methods} onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4"> */}
 
-            <div className="bg-white  rounded-lg">
+            <div className=" text-black dark:text-white rounded-lg">
               <h3 className="font-semibold md:text-lg mb-2">
                 Customer Information
               </h3>
@@ -372,7 +372,7 @@ const SupportTicketsDialog = () => {
               </div>
             </div>
 
-            <div className="bg-white  rounded-lg">
+            <div className=" text-black dark:text-white rounded-lg">
               <h3 className="font-semibold text-lg mb-2">Ticket Details</h3>
 
               <FormInput
@@ -414,7 +414,7 @@ const SupportTicketsDialog = () => {
             </div>
 
             {/* --------------------------------------------------- */}
-            <div className="bg-white  rounded-lg">
+            <div className="   text-black dark:text-white rounded-lg">
               <h3 className="font-semibold text-lg mb-2">Appointment</h3>
 
               <div className="md:flex  gap-10 mb-5">

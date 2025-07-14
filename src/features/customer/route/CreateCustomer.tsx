@@ -18,6 +18,7 @@ import { createCustomer } from '../api/company.api';
 import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
 import { useCustomerAddressStore } from '../store/useCustomerAddressStore';
 import { CurrencyType } from '../types/customer.type';
+import { ShadCnButton } from '@/components/ui/button';
 
 export type CurrencyOptionType = {
   value: string;
@@ -193,6 +194,9 @@ const CreateCustomer = ({
   };
 
   return (
+    <>
+    
+      
     <div>
       <EditDialog
         open={open}
@@ -210,7 +214,7 @@ const CreateCustomer = ({
             onSubmit={handleSubmit(onSubmit)}
             className=""
           >
-            <div className="bg-card rounded-lg">
+            <div className=" rounded-lg">
               {/* <FormSelect
                 name="customerBranchName"
                 label="Search By Company Name"
@@ -229,10 +233,10 @@ const CreateCustomer = ({
 
               {/* <h3 className="font-semibold text-lg mb-2">Address Details</h3> */}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 ">
                 <FormInput
                   name="cutomername"
-                  label="Customer Name *"
+                  label="Customer Name "
                   placeholder="Customer name"
                   className="text-foreground"
                   rules={{ required: 'Customer name is required' }}
@@ -320,7 +324,7 @@ const CreateCustomer = ({
               />
               <FormSelect
                 name="business"
-                label="Business Type *"
+                label="Business Type "
                 placeholder="Business type"
                 className="text-gray-700"
                 options={[
@@ -331,7 +335,7 @@ const CreateCustomer = ({
               />
               <FormSelect
                 name="currency"
-                label="Currency *"
+                label="Currency   "
                 placeholder="Select currency"
                 className="text-gray-700"
                 options={Array.isArray(currencyList) ? currencyList : []}
@@ -339,7 +343,7 @@ const CreateCustomer = ({
               />
             </div>
 
-            <div className="bg-card rounded-lg">
+            <div className=" rounded-lg">
               <h3 className="font-semibold text-lg mb-2">
                 Customer - User Details
               </h3>
@@ -418,6 +422,7 @@ const CreateCustomer = ({
         </FormProvider>
       </EditDialog>
     </div>
+    </>
   );
 };
 

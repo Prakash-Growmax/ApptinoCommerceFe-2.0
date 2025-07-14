@@ -19,6 +19,7 @@ import { AccountElastic } from '../api/AccountElastics';
 import { ElasticSearchServices } from '../api/ElasticSearchServices';
 import React, { useState } from 'react';
 import { useGetCustomerAddress } from '../hook/useGetCustomerAddress';
+import CreateCustomer from './CreateCustomer';
 
 
 
@@ -37,6 +38,9 @@ const CustomerFilter = (): React.JSX.Element => {
   const { payload } = useAppStore();
 
   const { tenantId } = payload as TokenPayload;
+
+  const [open, setOpen] = useState(false);
+   useGetCustomerAddress({ open });
   
 
   const handleSearch = (value: string) => {
@@ -158,6 +162,10 @@ const CustomerFilter = (): React.JSX.Element => {
               <span className="hidden sm:inline">Clear</span>
             </ShadCnButton>
           )}
+         <ShadCnButton className='ml-68' onClick={() => setOpen(true)}>Create Customer</ShadCnButton>
+          <CreateCustomer open={open} setOpen={setOpen} />
+
+          
         </div>
       </div>
     </div>
