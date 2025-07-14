@@ -60,8 +60,17 @@ export default defineConfig(({ command, mode }) => {
           rewrite: path => path.replace(/^\/api/, ''),
           configure: proxy => {
             proxy.on('proxyReq', (proxyReq, req) => {
-              // Only modify Origin header for auth endpoints
-              if (req.url?.includes('/auth/auth/')) {
+              // Only modify Origin header for specific auth endpoints
+              const authEndpointsWithCustomOrigin = [
+                '/auth/auth/CheckUserName',
+                '/auth/auth/loginNew'
+              ];
+              
+              const isAuthEndpoint = authEndpointsWithCustomOrigin.some(endpoint => 
+                req.url?.includes(endpoint)
+              );
+              
+              if (isAuthEndpoint) {
                 proxyReq.setHeader('Origin', 'schwingstetter.myapptino.com');
                 console.log(
                   'Proxying auth request with custom origin:',

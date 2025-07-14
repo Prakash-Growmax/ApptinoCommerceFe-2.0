@@ -23,10 +23,8 @@ export const createApiClient = (
   options: ApiClientOptions = {}
 ): AxiosInstance => {
   // In development, use /api prefix to enable proxy
-  const baseURL = import.meta.env.DEV 
-    ? '/api' 
-    : (options.baseURL || API_URL || '');
-    
+  const baseURL = options.baseURL || API_URL || '';
+
   const client = axios.create({
     baseURL,
     headers: {
@@ -114,7 +112,7 @@ export const createApiClient = (
       if (error.response) {
         // Server responded with error status
         apiError.status = error.response.status;
-        
+
         // Extract error details from response
         if (responseData) {
           if (typeof responseData === 'string') {
@@ -126,7 +124,7 @@ export const createApiClient = (
           } else if (responseData.details) {
             apiError.message = responseData.details;
           }
-          
+
           // Extract error code if available
           if (responseData.code) {
             apiError.code = responseData.code;
@@ -140,11 +138,14 @@ export const createApiClient = (
 
       // Transform to user-friendly message
       // Pass the original extracted message for proper mapping
-      const userFriendlyMessage = getErrorMessage({
-        message: apiError.message,
-        status: apiError.status,
-        code: apiError.code
-      }, 'api');
+      const userFriendlyMessage = getErrorMessage(
+        {
+          message: apiError.message,
+          status: apiError.status,
+          code: apiError.code,
+        },
+        'api'
+      );
       apiError.message = userFriendlyMessage;
 
       return Promise.reject(apiError);
