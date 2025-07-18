@@ -188,8 +188,8 @@ const CustomerLanding = () => {
           }
         />
       </div>
-      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-        <div className="w-full">
+      <div className="px-4  sm:px-6 pb-4 sm:pb-6">
+        <div className="w-[930px]">
           <div className="bg-background border border-border rounded-lg overflow-hidden">
             <div className="border-b border-border">
               <CustomerFilter />

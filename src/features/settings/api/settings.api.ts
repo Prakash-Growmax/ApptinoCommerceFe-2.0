@@ -1,5 +1,5 @@
 import { apiGet } from "@/lib/api/client"
-import { GetBranchDetailsParams, GetCompanyDetailsParams, AccountResponse } from "../types/company.types";
+import { GetBranchDetailsParams, GetCompanyDetailsParams, AccountResponse, AccountData } from "../types/company.types";
 import { SettingsBranchResponse } from "../schema/settingsBranch.schema";
 
 export const GetBranchDetails = async ({
@@ -27,3 +27,31 @@ export const GetCompanyDetails = async ({
   })
   return response;
 }
+
+
+
+export interface SubIndustryOption {
+  value: string;
+  label: string;
+  id: number;
+  name: string;
+}
+
+export const getSubIndustries = async (): Promise<SubIndustryOption[]> => {
+  const response = await apiGet<{ id: number; name: string }[]>({
+    url: '/corecommerce/subindustrys',
+  });
+
+
+  return (
+    response?.map((item) => ({
+      id: item.id,
+      name: item.name,
+      value: item.id.toString(),
+      label: item.name,
+    })) || []
+  );
+};
+
+
+

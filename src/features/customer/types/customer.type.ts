@@ -33,14 +33,8 @@ export type RoleType = {
 
 
 
-
-
-
-
-
-
-export type CreateCustomer={
- stateList: any[];
+export type CreateCustomer = {
+  stateList: any[];
   setStateList: (stateList: any[]) => void;
 
   countryList: any[];
@@ -52,7 +46,13 @@ export type CreateCustomer={
   currencyList: any[];
   setCurrencyList: (currencyList: any[]) => void;
 
-   roleList: any[]; 
-  setRoleList: (roleList: any[]) => void; 
-  
-}
+  roleList: any[];
+  setRoleList: (roleList: any[]) => void;
+
+  businessTypeList: any[];                
+  setBusinessTypeList: (businessTypeList: any[]) => void; 
+
+  customerTagsList: any[];
+  setCustomerTagsList: (customerTagsList: any[]) => void;
+};
+

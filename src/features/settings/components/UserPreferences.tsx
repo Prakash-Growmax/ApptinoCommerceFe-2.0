@@ -1,234 +1,284 @@
-import React from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { z } from "zod";
-import { Loader2 } from "lucide-react";
+  // import React, { useEffect } from "react";
+  import { useForm, FormProvider } from "react-hook-form";
+  import { zodResolver } from "@hookform/resolvers/zod";
+  import { useMutation } from "@tanstack/react-query";
+  import { z } from "zod";
+  import { Loader2 } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ShadCnButton as Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Sun, Settings } from "lucide-react";
-import { FormSelect } from "@/components/molecules/ReactHookForm/FormSelect/FormSelect";
-import { toast } from "sonner";
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card";
+  import { ShadCnButton as Button } from "@/components/ui/button";
+  import { Label } from "@/components/ui/label";
+  import { Switch } from "@/components/ui/switch";
+  import { Sun, Settings } from "lucide-react"; 
+  import { FormSelect } from "@/components/molecules/ReactHookForm/FormSelect/FormSelect";
+  import { toast } from "sonner";
+  import { useEffect } from "react";
 
-type UserPreferencesFormData = {
-  theme: { mode: "light" | "dark" | "system" };
-  accessibility: {
-    highContrast: boolean;
-    reducedMotion: boolean;
-    fontSize: "small" | "medium" | "large";
+  type UserPreferencesFormData = {
+    theme: { mode: "light" | "dark" | "system" };
+    accessibility: {
+      highContrast: boolean;
+      reducedMotion: boolean;
+      fontSize: "small" | "medium" | "large";
+    };
   };
-};
 
-const preferencesSchema = z.object({
-  theme: z.object({
-    mode: z.enum(["light", "dark", "system"]),
-  }),
-  accessibility: z.object({
-    highContrast: z.boolean(),
-    reducedMotion: z.boolean(),
-    fontSize: z.enum(["small", "medium", "large"]),
-  }),
-});
+  const preferencesSchema = z.object({
+    theme: z.object({
+      mode: z.enum(["light", "dark", "system"]),
+    }),
+    accessibility: z.object({
+      highContrast: z.boolean(),
+      reducedMotion: z.boolean(),
+      fontSize: z.enum(["small", "medium", "large"]),
+    }),
+  });
 
-const fontSizeOptions = [
-  { label: "Small", value: "small" },
-  { label: "Medium", value: "medium" },
-  { label: "Large", value: "large" },
-  
-];
+  const fontSizeOptions = [
+    { label: "Small", value: "small" },
+    { label: "Medium", value: "medium" },
+    { label: "Large", value: "large" },
 
-const defaultPreferences: UserPreferencesFormData = {
-  theme: { mode: "system" },
-  accessibility: {
-    highContrast: false,
-    reducedMotion: false,
-    fontSize: "medium",
-  },
-};
+  ];
 
-function applyTheme(mode: "light" | "dark" | "system") {
-  const root = document.documentElement;
-  if (mode === "dark") {
-    root.classList.add("dark");
-  } else if (mode === "light") {
-    root.classList.remove("dark");
-  } else {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    root.classList.toggle("dark", prefersDark);
-  }
-}
-
-function applyAccessibility({
-  highContrast,
-  reducedMotion,
-  fontSize,
-}: UserPreferencesFormData["accessibility"]) {
-  const root = document.documentElement;
-  root.classList.toggle("high-contrast", highContrast);
-  root.classList.toggle("reduced-motion", reducedMotion);
-
-  root.classList.remove("text-sm", "text-base", "text-lg");
-  const sizeClass = {
-    small: "text-sm",
-    medium: "text-base",
-    large: "text-lg",
+  const defaultPreferences: UserPreferencesFormData = {
+    theme: { mode: "light" }, // force light mode as default
+    accessibility: {
+      highContrast: false,
+      reducedMotion: false,
+      fontSize: "medium",
+    },
   };
-  root.classList.add(sizeClass[fontSize]);
-}
 
-function getStoredPreferences(): UserPreferencesFormData {
-  const stored = localStorage.getItem("userPreferences");
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch {
-      return defaultPreferences;
+
+  function applyTheme(mode: "light" | "dark" | "system") {
+    const root = document.documentElement;
+    if (mode === "dark") {
+      root.classList.add("dark");
+    } else if (mode === "light") {
+      root.classList.remove("dark");
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.classList.toggle("dark", prefersDark);
     }
   }
-  return defaultPreferences;
-}
 
-const UserPreferences: React.FC = () => {
-  const storedPreferences = getStoredPreferences();
+  function applyAccessibility({
+    highContrast,
+    reducedMotion,
+    fontSize,
+  }: UserPreferencesFormData["accessibility"]) {
+    const root = document.documentElement;
+    root.classList.toggle("high-contrast", highContrast);
+    root.classList.toggle("reduced-motion", reducedMotion);
 
-  const methods = useForm<UserPreferencesFormData>({
-    resolver: zodResolver(preferencesSchema),
-    defaultValues: storedPreferences,
-  });
+    root.classList.remove("text-sm", "text-base", "text-lg");
+    const sizeClass = {
+      small: "text-sm",
+      medium: "text-base",
+      large: "text-lg",
+    };
+    root.classList.add(sizeClass[fontSize]);
+  }
 
-  const { handleSubmit, watch, setValue } = methods;
-  const formValues = watch();
+  // function getStoredPreferences(): UserPreferencesFormData {
+  //   const stored = localStorage.getItem("userPreferences");
+  //   if (stored) {
+  //     try {
+  //       const parsed = JSON.parse(stored);
+  //       return {
+  //         ...parsed,
+  //         theme: { mode: "light" },
 
-  const updatePreferences = useMutation({
-    mutationFn: async (data: UserPreferencesFormData) => {
-      // Simulating save to localStorage (can be replaced with an API call)
-      localStorage.setItem("userPreferences", JSON.stringify(data));
-      applyTheme(data.theme.mode);
-      applyAccessibility(data.accessibility);
-    },
-    onSuccess: () => {
-      // alert("Preferences saved!");
-      toast.success('Preferences saved!');
-    },
-  });
-
-  const onSubmit = async (data: UserPreferencesFormData) => {
-  await updatePreferences.mutateAsync(data);
-};
+  //         accessibility: {
+  //           highContrast: false,
+  //           reducedMotion: false,
+  //           fontSize: "medium",
+  //         },
+  //       };
+  //     } catch {
+  //       return defaultPreferences;
+  //     }
+  //   }
+  //   return defaultPreferences;
+  // }
 
 
-  return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Theme */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sun className="h-5 w-5" />
-              Theme Preferences
-            </CardTitle>
-            <CardDescription>Customize the appearance of your dashboard</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="dark-mode">Dark Mode</Label>
-                <p className="text-sm text-muted-foreground">
-                  Enable dark theme for reduced eye strain
-                </p>
+  function getStoredPreferences(): UserPreferencesFormData {
+    const stored = localStorage.getItem("userPreferences");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        // Ensure all expected fields are present, or fall back to default
+        return {
+          theme: {
+            mode: parsed?.theme?.mode ?? defaultPreferences.theme.mode,
+          },
+          accessibility: {
+            highContrast:
+              parsed?.accessibility?.highContrast ?? defaultPreferences.accessibility.highContrast,
+            reducedMotion:
+              parsed?.accessibility?.reducedMotion ?? defaultPreferences.accessibility.reducedMotion,
+            fontSize:
+              parsed?.accessibility?.fontSize ?? defaultPreferences.accessibility.fontSize,
+          },
+        };
+      } catch {
+        return defaultPreferences;
+      }
+    }
+    return defaultPreferences;
+  }
+
+
+
+    
+
+  const UserPreferences: React.FC = () => {
+    const storedPreferences = getStoredPreferences();
+
+    const methods = useForm<UserPreferencesFormData>({
+      resolver: zodResolver(preferencesSchema),
+      defaultValues: storedPreferences,
+    });
+
+    const { handleSubmit, watch, setValue } = methods;
+    const formValues = watch();
+
+    useEffect(() => {
+    applyTheme(storedPreferences.theme.mode);
+    applyAccessibility(storedPreferences.accessibility);
+  }, []);
+
+      
+
+
+    const updatePreferences = useMutation({
+      mutationFn: async (data: UserPreferencesFormData) => {
+        // Simulating save to localStorage (can be replaced with an API call)
+        localStorage.setItem("userPreferences", JSON.stringify(data));
+        applyTheme(data.theme.mode);
+        applyAccessibility(data.accessibility);
+      },
+      onSuccess: () => {
+        toast.success('Preferences saved!');
+      },
+    });
+
+    const onSubmit = async (data: UserPreferencesFormData) => {
+      await updatePreferences.mutateAsync(data);
+    };
+
+
+    return (
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Theme */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sun className="h-5 w-5" />
+                Theme Preferences
+              </CardTitle>
+              <CardDescription>Customize the appearance of your dashboard</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="dark-mode">Dark Mode</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Enable dark theme for reduced eye strain
+                  </p>
+                </div>
+                <Switch
+                  id="dark-mode"
+                  checked={formValues.theme.mode === "dark"}
+                  onCheckedChange={(checked) =>
+                    setValue("theme.mode", checked ? "dark" : "light")
+                  }
+                />
               </div>
-              <Switch
-                id="dark-mode"
-                checked={formValues.theme.mode === "dark"}
-                onCheckedChange={(checked) =>
-                  setValue("theme.mode", checked ? "dark" : "light")
-                }
-              />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Accessibility */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Accessibility
-            </CardTitle>
-            <CardDescription>Make the application easier to use</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="contrast">High Contrast Mode</Label>
-                <p className="text-sm text-muted-foreground">
-                  Increase color contrast for better visibility
-                </p>
+          {/* Accessibility */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Accessibility
+              </CardTitle>
+              <CardDescription>Make the application easier to use</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="contrast">High Contrast Mode</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Increase color contrast for better visibility
+                  </p>
+                </div>
+                <Switch
+                  id="contrast"
+                  checked={formValues.accessibility.highContrast}
+                  onCheckedChange={(checked) =>
+                    setValue("accessibility.highContrast", checked)
+                  }
+                />
               </div>
-              <Switch
-                id="contrast"
-                checked={formValues.accessibility.highContrast}
-                onCheckedChange={(checked) =>
-                  setValue("accessibility.highContrast", checked)
-                }
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="motion">Reduced Motion</Label>
-                <p className="text-sm text-muted-foreground">
-                  Minimize animations and transitions
-                </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="motion">Reduced Motion</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Minimize animations and transitions
+                  </p>
+                </div>
+                <Switch
+                  id="motion"
+                  checked={formValues.accessibility.reducedMotion}
+                  onCheckedChange={(checked) =>
+                    setValue("accessibility.reducedMotion", checked)
+                  }
+                />
               </div>
-              <Switch
-                id="motion"
-                checked={formValues.accessibility.reducedMotion}
-                onCheckedChange={(checked) =>
-                  setValue("accessibility.reducedMotion", checked)
-                }
+
+              <FormSelect
+                name="accessibility.fontSize"
+                label="Font Size"
+                options={fontSizeOptions}
+                placeholder="Select font size"
+                className="text-black dark:text-black "
+
               />
-            </div>
+            </CardContent>
+          </Card>
 
-            <FormSelect
-              name="accessibility.fontSize"
-              label="Font Size"
-              options={fontSizeOptions}
-              placeholder="Select font size"
-              className="text-black dark:text-black "
-              
-            />
-          </CardContent>
-        </Card>
+          {/* Submit Button only */}
+          <div className="flex justify-end">
+            <Button type="submit" disabled={updatePreferences.isPending}>
+              {updatePreferences.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Preferences"
+              )}
+            </Button>
+          </div>
 
-        {/* Submit Button only */}
-        <div className="flex justify-end">
-          <Button type="submit" disabled={updatePreferences.isPending}>
-            {updatePreferences.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              "Save Preferences"
-            )}
-          </Button>
-        </div>
+        </form>
+      </FormProvider>
+    );
+  };
 
-      </form>
-    </FormProvider>
-  );
-};
-
-export default UserPreferences;
+  export default UserPreferences;
 
 
 
@@ -371,7 +421,7 @@ export default UserPreferences;
 //               <Switch
 //                 id="dark-mode"
 //                 checked={formValues.theme.mode === 'dark'}
-//                 onCheckedChange={(checked) => 
+//                 onCheckedChange={(checked) =>
 //                   setValue('theme.mode', checked ? 'dark' : 'light')
 //                 }
 //               />
@@ -401,7 +451,7 @@ export default UserPreferences;
 //               <Switch
 //                 id="high-contrast"
 //                 checked={formValues.accessibility.highContrast}
-//                 onCheckedChange={(checked) => 
+//                 onCheckedChange={(checked) =>
 //                   setValue('accessibility.highContrast', checked)
 //                 }
 //               />
@@ -417,7 +467,7 @@ export default UserPreferences;
 //               <Switch
 //                 id="reduced-motion"
 //                 checked={formValues.accessibility.reducedMotion}
-//                 onCheckedChange={(checked) => 
+//                 onCheckedChange={(checked) =>
 //                   setValue('accessibility.reducedMotion', checked)
 //                 }
 //               />

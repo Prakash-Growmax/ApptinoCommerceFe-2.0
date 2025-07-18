@@ -140,7 +140,6 @@ const CustomerFilter = (): React.JSX.Element => {
         </Select>
 
         {/* Action Buttons */}
-        <div className="flex gap-2 w-full sm:w-auto">
           <ShadCnButton
             type="button"
             onClick={handleApplyFilters}
@@ -162,11 +161,10 @@ const CustomerFilter = (): React.JSX.Element => {
               <span className="hidden sm:inline">Clear</span>
             </ShadCnButton>
           )}
-         <ShadCnButton className='ml-68' onClick={() => setOpen(true)}>Create Customer</ShadCnButton>
+         <ShadCnButton className='ml-46' onClick={() => setOpen(true)}>Create Customer</ShadCnButton>
           <CreateCustomer open={open} setOpen={setOpen} />
 
           
-        </div>
       </div>
     </div>
   

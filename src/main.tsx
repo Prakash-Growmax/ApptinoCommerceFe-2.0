@@ -11,6 +11,8 @@ if (initialLoader) {
   setTimeout(() => initialLoader.remove(), 300);
 }
 
+
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

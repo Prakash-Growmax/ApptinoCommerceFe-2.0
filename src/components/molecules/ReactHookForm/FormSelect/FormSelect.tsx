@@ -113,7 +113,9 @@ export const FormSelect = ({
   className,
   rightElement,
 }: FormSelectProps) => {
-  const isPrimitive = typeof options[0]?.value !== 'undefined';
+  // const isPrimitive = typeof options[0]?.value !== 'undefined';
+  const isPrimitive = options.length > 0 && typeof options[0]?.value !== 'undefined';
+
 
   const formattedOptions = options.map((option: any) =>
     isPrimitive
@@ -143,7 +145,7 @@ export const FormSelect = ({
         const ariaDescribedBy = [descriptionId, errorId].filter(Boolean).join(' ') || undefined;
         
         return (
-          <div className="relative">
+          <div className="relative z-0">
             <Select
               inputId={name}
               options={formattedOptions}
@@ -172,7 +174,7 @@ export const FormSelect = ({
               isSearchable={true}
               isClearable={!rules?.required}
               menuPlacement="auto"
-              menuPosition="fixed"
+              menuPosition="absolute"
               onKeyDown={(e) => {
                 // Enhanced keyboard navigation
                 if (e.key === 'Escape') {

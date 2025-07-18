@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CompanyDetailsCard from './CustomerDetail'; // adjust path if needed
+import CompanyDetailsCard from './CustomerDetail'; 
 import { handleError } from '@/utils/errorHandling';
 import { apiGet } from '@/lib/api/client';
 import useUserStore from '@/stores/useUserStore';

@@ -1,19 +1,4 @@
-// export interface AddressDetailsType {
-//   // define structure based on API response
-//   data: any[]; // or use exact typing if you know structure
-//   totalCount: number;
-//   // etc...
-// }
 
-// Keep this file only for input params
-// export interface GetAddressParams {
-//   companyId: string;
-//   tenantId: string;
-//   token: string;
-//   page: number;
-//   rowPerPage: number;
-//   searchString: string;
-// }
 
 export type AddressDetailsType = {
   data: {
@@ -40,3 +25,5 @@ export type AddressDetailsType = {
   message: string;
   statusts: string;
 };
+
+

@@ -11,3 +11,17 @@ export interface CompanyDetailsType {
   supportOwnerName: string;
   tags: string[];
 }
+
+
+export type GetCustomerDetailsParams = {
+  customerId: string;
+  tenantId: string;
+  token: string;
+};
+
+export type CustomerResponse = {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+};

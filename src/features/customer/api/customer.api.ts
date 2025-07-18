@@ -1,5 +1,5 @@
 import { apiGet } from "@/lib/api/client";
-import { CustomerData } from "../types/customer.type";
+import { CurrencyType, CustomerData } from "../types/customer.type";
 import { AccountFilterType } from "../schema/customer.schema";
 
 export const CustomerFilters = async ({
@@ -17,7 +17,7 @@ export const getState = async (tenantId: string) => {
   const response = await apiGet({
     url: `homepagepublic/getAllState`
   });
-  return response;
+  return response;  
 }
 export const getCountry = async (tenantId: string) => {
   const response = await apiGet({
@@ -29,7 +29,7 @@ export const getDistrict = async (tenantId: string) => {
   const response = await apiGet({
     url: `/homepagepublic/getAllDistrict`
   });
-  return response;
+  return response ;
 }
 
 export const getRoles = async (tenantId: string) => {
@@ -41,4 +41,19 @@ export const getRoles = async (tenantId: string) => {
 };
 
 
+export const getBusinessTypes = async (tenantId: string) => {
+  const response = await apiGet({
+    url: `/corecommerce/businesstype?tenantId=${tenantId}`,
+  });
+  return response;
+};
+
+
+
+export const getCustomerTags = async () => {
+  const response = await apiGet({
+    url: `/corecommerce/tags/getAllTags`, 
+  });
+  return response;
+};
 

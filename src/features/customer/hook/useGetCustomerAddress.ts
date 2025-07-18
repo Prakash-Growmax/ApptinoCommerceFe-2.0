@@ -1,3 +1,5 @@
+
+import { getBusinessTypes, getCustomerTags } from '../api/customer.api';
 import { useQuery } from '@tanstack/react-query';
 
 import useAppStore from '@/stores/appStore';
@@ -17,13 +19,17 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
     setDistrictList,
     setCurrencyList,
     setRoleList,
+    setBusinessTypeList,
+    setCustomerTagsList,
   } = useCustomerAddressStore();
   const getAllStateQuery = useQuery({
     queryKey: ['state', tenantId, open],
     queryFn: async () => {
       const response = await getState(tenantId);
+      
+      const State = response?.data || response;
 
-      setStateList(response as any[]);
+      setStateList(State);
       return response;
     },
     enabled: !!tenantId && !!open,
@@ -34,7 +40,10 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
     queryKey: ['district', tenantId, open],
     queryFn: async () => {
       const response = await getDistrict(tenantId);
-      setDistrictList(response as any[]);
+      
+      const districts = response?.data || response;
+      
+      setDistrictList(districts);
       return response;
     },
     enabled: !!tenantId && !!open,
@@ -46,26 +55,21 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
     queryKey: ['country', tenantId, open],
     queryFn: async () => {
       const response = await getCountry(tenantId);
-      setCountryList(response as any[]);
+
+      setCountryList(response?.data);
       return response;
+
     },
     enabled: !!tenantId && !!open,
     refetchOnWindowFocus: false,
-    placeholderData: (previousData) => previousData,
+    keepPreviousData: true,
   });
 
   const getCurrencyQuery = useQuery({
     queryKey: ['currencies', tenantId, open],
     queryFn: async () => {
-      const response = await getCurrencies({ tenantId });
-
-      const formatted = response.map(cur => ({
-        value: cur.currencyCode,
-        label: cur.currencyCode,
-        fullData: cur,
-      }));
+      const formatted = await getCurrencies({ tenantId });
       setCurrencyList(formatted);
-
       return formatted;
     },
     enabled: !!tenantId && open,
@@ -77,8 +81,29 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
       const response = await getRoles(tenantId);
       setRoleList(response as any[]);
       return response;
-    },  
+    },
     enabled: !!tenantId && open,
+  });
+
+  const getBusinessTypeQuery = useQuery({
+    queryKey: ['businessTypes', tenantId, open],
+    queryFn: async () => {
+      const response = await getBusinessTypes(tenantId);
+      setBusinessTypeList(response?.data);
+      return response;
+    },
+    enabled: !!tenantId && open,
+  });
+
+
+  const getCustomerTagsQuery = useQuery({
+    queryKey: ['customerTags', tenantId],
+    queryFn: async () => {
+      const response = await getCustomerTags(tenantId);
+      setCustomerTagsList(response?.data ?? []);
+      return response;
+    },
+    enabled: true,
   });
 
   return {
@@ -87,5 +112,7 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
     getAllCountQuery,
     getCurrencyQuery,
     getRolesQuery,
+    getBusinessTypeQuery,
+    getCustomerTagsQuery,
   };
 };

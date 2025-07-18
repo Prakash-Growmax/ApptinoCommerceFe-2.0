@@ -17,6 +17,7 @@ const AddressComponent = () => {
       icon={MapPin}
       collapsible={true}
       defaultCollapsed={false}
+      className='w-[930px]'
     >
       <CustomerDetail 
         addressData={addressData?.data?.addressTags ?? []} 
@@ -26,6 +27,7 @@ const AddressComponent = () => {
         setRowPerPage={setRowPerPage} 
         loading={isLoading} 
         totalCount={addressData?.data?.totalCount}
+        
       />
     </InfoCard>
   );

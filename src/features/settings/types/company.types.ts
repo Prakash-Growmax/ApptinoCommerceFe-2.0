@@ -67,7 +67,7 @@ export interface AccountData {
     tenantId: number;
   };
   superSeller: boolean;
-  taxDetailsId: {
+    taxDetailsId: {
     id: number;
     pan: string;
     panImage: string | null;

@@ -1,6 +1,9 @@
 
-import { apiGet, apiPost } from "@/lib/api/client";
+import { apiGet, apiPost, apiPut } from "@/lib/api/client";
 import { CompanyDetailsType } from "../types/company.type";
+
+import { GetCustomerDetailsParams, CustomerResponse } from "../types/company.type";
+
 
 type CompanyDetailsParams = {
   companyId: string;
@@ -17,7 +20,7 @@ export const getCompanyDetails = async ({
     url: `/corecommerce/accountses/getAccountDetails?companyId=${companyId}`
   });
 
-  return response.data; // ✅ Only return inner `data`
+  return response.data; 
 };
 export const createCustomer=async(tenantId:string,token:string,payload: any)=>{
   const response = await apiPost({
@@ -26,3 +29,23 @@ export const createCustomer=async(tenantId:string,token:string,payload: any)=>{
   })
   return response;
 }
+
+
+export const GetCustomerDetails = async ({
+  customerId,
+  tenantId,
+  token
+}: GetCustomerDetailsParams): Promise<CustomerResponse> => {
+  const response = await apiGet<CustomerResponse>({
+    url: `/corecommerce/customers/${customerId}`,
+    config: {
+      headers: {
+        tenantId,
+        Authorization: `Bearer ${token}`
+      }
+    }
+  });
+
+  return response;
+};
+

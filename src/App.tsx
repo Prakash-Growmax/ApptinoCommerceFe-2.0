@@ -7,6 +7,7 @@ import AppRouter from './app/router/AppRouter';
 import { LoadingFallback } from './components';
 import useAppStore from './stores/appStore';
 import { useInitializePreferences } from '@/features/settings/hooks/useInitializePreferences';
+import { loadUserPreferences } from './utils/performance/loadUserPreferences';
 
 function App() {
   const { hasHydrated, isAppLoading, isAuthLoading, initializeAuthAction } =
@@ -22,6 +23,8 @@ function App() {
   if (!hasHydrated || isAppLoading || isAuthLoading) {
     return <LoadingFallback />;
   }
+
+loadUserPreferences();  
 
   return (
     <AppProviders>

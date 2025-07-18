@@ -15,10 +15,16 @@ export const getCurrencies = async ({
   tenantId,
 }: {
   tenantId: string | number;
-}): Promise<CurrencyType[]> => {
+}): Promise<{ label: string; value: string; fullData: CurrencyType }[]> => {
   const response = await apiGet<{ data: CurrencyType[] }>({
-    url: "/corecommerce/currency"
+    url: `/corecommerce/currency`,
   });
 
-  return response.data ?? [];
+
+  return response.map((currency) => ({
+    label: currency.currencyCode,
+    value: currency.currencyCode,
+    fullData: currency,
+  }));
+
 };

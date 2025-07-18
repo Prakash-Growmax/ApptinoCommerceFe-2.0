@@ -9,7 +9,6 @@ export interface AddressDetailsType {
       tenantId: string | null;
       branch: {
         active: boolean;
-        // Add other fields if needed
       };
       zoneId: {
         id: number;
