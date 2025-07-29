@@ -59,8 +59,8 @@ type FormData = {
 
 const SupportTicketsDialog = () => {
   const [open, setOpen] = useState(false);
-    const { payload } = useAppStore();
-  const {tenantId ,companyId,displayName,companyName,userId} = payload as TokenPayload;
+  const { payload } = useAppStore();
+  const { tenantId, companyId, displayName, companyName, userId } = payload as TokenPayload;
   useGetSupportFilterSettings();
 
   // const { skillsList, selectedSkills, toggleSkill } = useSkillsMultiSelect();
@@ -75,21 +75,27 @@ const SupportTicketsDialog = () => {
   // Fetch all customers for support ticket creation
   useGetSupportFilters('');
   const { supportData } = useSupportStore();
-  const supportOptions = supportData?.map(item => ({
-    value: item.id.toString(),
-    label: item.companyName,
-    disabled: !item.isActivated,
-  }));
+  console.log('supportData:', supportData);
+ const supportOptions = supportData?.map(item => ({
+  value: item.id.toString(),
+  label: item.name, // <-- changed from companyName
+  // disabled: !item.isActivated, 
+}));
 
-  const { status, fieldUser } = useSupportTicketFilterStore();
+
+
+  const { status, fieldUser, priority } = useSupportTicketFilterStore();
   const statusOptions = status.map(s => ({ value: s, label: s }));
+
+  const priorityOptions = priority?.map(p => ({ value: p, label: p })) || [];
+
   // const categoryOptions = category.map(c => ({ value: c, label: c }));
   const fieldUserOptions = fieldUser?.map(f => ({
     value: f?.displayName,
     label: f?.displayName,
     id: f?.id,
   }));
-      
+
 
 
   const methods = useForm<FormData>({
@@ -172,19 +178,19 @@ const SupportTicketsDialog = () => {
         updatedDateTime: new Date().toISOString(),
         createdDateTime: new Date().toISOString(),
         updatedByUserId: userId,
-        updatedByUsername:displayName,
+        updatedByUsername: displayName,
         createdByUserId: userId,
-        createdByUserName:displayName,
+        createdByUserName: displayName,
         createdByCompanyId: companyId,
-        createdByCompanyName:companyName,
+        createdByCompanyName: companyName,
         resolution: '',
-        domainName:tenantId,
+        domainName: tenantId,
       },
       fieldServiceRequestDTO: {
         title: 'New Field Service',
         ticketIdentifier: null,
         ownerUserId: userId,
-        ownerUsername:displayName,
+        ownerUsername: displayName,
         status: 'Open',
         location: data.address,
         appointmentFromDateTime: new Date().toISOString(),
@@ -194,9 +200,9 @@ const SupportTicketsDialog = () => {
         createdDateTime: new Date().toISOString(),
         updatedDateTime: new Date().toISOString(),
         createdByUserId: userId,
-        createdByUsername:displayName,
+        createdByUsername: displayName,
         updatedByUserId: userId,
-        updatedByUsername:displayName,
+        updatedByUsername: displayName,
         attachments: [],
       },
     };
@@ -210,7 +216,7 @@ const SupportTicketsDialog = () => {
     // }
 
     try {
-      const response = await createTicketss(tenantId,payload)
+      const response = await createTicketss(tenantId, payload)
       toast.success('Ticket created successfully!');
       setOpen(false);
       reset();
@@ -231,7 +237,7 @@ const SupportTicketsDialog = () => {
           closeDialog={handleDialogClose}
           handleSubmit={methods.handleSubmit(onSubmit)}
           hideDialogActions={false}
-          primaryBtnText="Create Ticket" 
+          primaryBtnText="Create Ticket"
         >
           <Form form={methods} onSubmit={onSubmit} className="space-y-4 ">
             {/* <Form form={methods} onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4"> */}
@@ -307,20 +313,18 @@ const SupportTicketsDialog = () => {
                 <FormSelect
                   name="priority"
                   label="Priority"
-                  placeholder="Select a Priority"
-                  className="text-gray-700 md:w-[330px]"
-                  options={[
-                    { value: 'Low', label: 'Low' },
-                    { value: 'High', label: 'High' },
-                  ]}
-                  disabled={false}
+                  placeholder="Select Priority"
+                  className="text-gray-700 md:w-[330px] z-30"
+                  options={priorityOptions}
+                  disabled={priorityOptions.length === 0}
                 />
+
 
                 <FormSelect
                   name="severity"
                   label="Severity"
                   placeholder="Severity"
-                  className="text-gray-700 md:w-[320px]"
+                  className="text-gray-700 md:w-[320px] z-10"
                   options={[
                     { value: 'Low', label: 'Low' },
                     { value: 'High', label: 'High' },
@@ -331,7 +335,7 @@ const SupportTicketsDialog = () => {
                   name="reason"
                   label="Reason"
                   placeholder="Reason"
-                  className="text-gray-700 md:w-[330px]"
+                  className="text-gray-700 md:w-[330px] z-20"
                   options={[
                     { value: 'Field Work', label: 'Field Work' },
                     { value: 'Repair reasons', label: 'Repair reasons' },
@@ -343,8 +347,8 @@ const SupportTicketsDialog = () => {
                   label="Ticket Owner"
                   placeholder="Ticket Owner"
                   className="text-gray-700 md:w-[320px]"
-                  // autoComplete="contactPerson"
-                  // rules={{ required: 'Contact person is required' }}
+                // autoComplete="contactPerson"
+                // rules={{ required: 'Contact person is required' }}
                 />
                 <FormSelect
                   name="ticketSource"
@@ -380,7 +384,7 @@ const SupportTicketsDialog = () => {
                 label="Subject"
                 placeholder="Brief subject"
                 autoComplete="subject"
-                // rules={{ required: 'Subject is required' }}
+              // rules={{ required: 'Subject is required' }}
               />
               <div className="  ">
                 <FormTextarea
@@ -388,7 +392,7 @@ const SupportTicketsDialog = () => {
                   label="Problem Description"
                   placeholder="Problem Description"
                   className=""
-                  // rules={{ required: 'Subject is required' }}
+                // rules={{ required: 'Subject is required' }}
                 />
               </div>
               <div className="">
@@ -461,7 +465,7 @@ const SupportTicketsDialog = () => {
                   label="Select Field Service Representative"
                   className="text-gray-700 md:w-[330px]"
                   placeholder="service representative"
-                   options={fieldUserOptions}
+                  options={fieldUserOptions}
                   disabled={false}
                 />
               </div>
@@ -470,13 +474,13 @@ const SupportTicketsDialog = () => {
                 label="Customer Address"
                 placeholder="Customer address"
                 className="text-gray-700 "
-                // rules={{
-                //   required: 'Phone is required',
-                //   pattern: {
-                //     value: /^[0-9]{10}$/,
-                //     message: 'Phone must be 10 digits',
-                //   },
-                // }}
+              // rules={{
+              //   required: 'Phone is required',
+              //   pattern: {
+              //     value: /^[0-9]{10}$/,
+              //     message: 'Phone must be 10 digits',
+              //   },
+              // }}
               />
             </div>
             {/* <div className="flex justify-end gap-4  ">

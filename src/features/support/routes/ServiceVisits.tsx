@@ -1,3 +1,4 @@
+
 import { useFormContext } from 'react-hook-form';
 import { ShadCnButton } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +8,8 @@ import { Wrench } from 'lucide-react';
 import { useState } from 'react';
 import CreateFieldService from '../components/CreateFieldService';
 
-const ServiceVisits = ({refetchFieldData}) => {
-  const { watch } = useFormContext();
+const ServiceVisits = ({ refetchFieldData }) => {
+  const { watch, setValue } = useFormContext(); // ✅ added setValue
   const fieldServicesData = watch('fieldServicesData') ?? [];
   const [open, setOpen] = useState(false);
 
@@ -16,22 +17,22 @@ const ServiceVisits = ({refetchFieldData}) => {
     if (!date) return '';
     const formatDate = new Date(date);
     const options = {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: true,
     };
-    return formatDate.toLocaleString("en-GB", options);
+    return formatDate.toLocaleString('en-GB', options);
   };
-   
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <Card className="border border-gray-200 shadow-sm rounded-md">
-        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between ">
-          <CardTitle className="text-base sm:text-lg">Service Visits</CardTitle>
-          
+        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-2">
+          <CardTitle className="text-base sm:text-lg ml-2">Service Visits</CardTitle>
+
           <ShadCnButton
             variant="default"
             className="w-full sm:w-auto h-[36px] text-sm flex items-center gap-2"
@@ -41,16 +42,16 @@ const ServiceVisits = ({refetchFieldData}) => {
             Add Service Visit
           </ShadCnButton>
         </CardHeader>
-        <div className="h-px bg-gray-300  w-full  p-0 " />  
+        <div className="h-px bg-gray-300 w-full p-0 mt-2" />
 
         <CardContent className="p-0">
           {fieldServicesData.length > 0 ? (
             <div className="lg:p-6 p-3 pb-6">
               <Accordion type="multiple" className="w-full">
                 {fieldServicesData.map((fieldService, index) => (
-                  <AccordionItem 
-                    key={index} 
-                    value={`item-${index}`} 
+                  <AccordionItem
+                    key={index}
+                    value={`item-${index}`}
                     className={`border border-gray-200 rounded-lg px-4 bg-white shadow-sm ${
                       index !== fieldServicesData.length - 1 ? 'mb-3' : ''
                     }`}
@@ -66,7 +67,8 @@ const ServiceVisits = ({refetchFieldData}) => {
                             created on: {formatDate(fieldService?.createdDateTime)}
                           </span>
                           <span className="text-xs text-gray-500">
-                            Appointment: {formatDate(fieldService?.appointmentFromDateTime)} - {formatDate(fieldService?.appointmentToDateTime)}
+                            Appointment: {formatDate(fieldService?.appointmentFromDateTime)} -{' '}
+                            {formatDate(fieldService?.appointmentToDateTime)}
                           </span>
                         </div>
                       </div>
@@ -88,7 +90,12 @@ const ServiceVisits = ({refetchFieldData}) => {
         </CardContent>
       </Card>
 
-      <CreateFieldService open={open} setOpen={setOpen} refetchFieldData={refetchFieldData}/>
+      <CreateFieldService
+        open={open}
+        setOpen={setOpen}
+        refetchFieldData={refetchFieldData}
+        setFieldServicesInForm={(data) => setValue('fieldServicesData', data)} // ✅ Added line
+      />
     </div>
   );
 };

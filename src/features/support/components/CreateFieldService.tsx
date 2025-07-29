@@ -43,14 +43,15 @@ import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStor
 type CreateFieldServiceProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  refetchFieldData?: () => void; 
+  refetchFieldData?: () => void;
+   setFieldServicesInForm: (data: any[]) => void;
 };
 
-const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServiceProps): React.JSX.Element => {
+const CreateFieldService = ({ open, setOpen, refetchFieldData, setFieldServicesInForm, }: CreateFieldServiceProps): React.JSX.Element => {
   const handleClose = () => setOpen(false);
   const { id } = useParams();
   const { payload } = useAppStore();
-  const {tenantId ,companyId,userId,displayName }= payload as TokenPayload;
+  const { tenantId, companyId, userId, displayName } = payload as TokenPayload;
   // useGetSupportFilterSettings();
 
   const methods = useForm({
@@ -65,6 +66,7 @@ const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServi
       status: '',
       category: '',
       customerAddress: '',
+         fieldServicesData: [],
     },
   });
 
@@ -92,112 +94,124 @@ const CreateFieldService = ({ open, setOpen,refetchFieldData }: CreateFieldServi
     const updated = attachments.filter((_, i) => i !== index);
     setValue('attachments', updated);
   };
-  const [loading,setLoading] = useState(false);
-  const { status,issueCategory, fieldUser } = useSupportTicketFilterStore();
+  const [loading, setLoading] = useState(false);
+  const { status, issueCategory, fieldUser } = useSupportTicketFilterStore();
 
-const statusOptions = status?.map((s: string) => ({
-  value: s?.trim(),
-  label: s,
-}));
+  const statusOptions = status?.map((s: string) => ({
+    value: s?.trim(),
+    label: s,
+  }));
 
-const categoryOptions = issueCategory?.map((c: string) => ({
-  value: c?.trim(),
-  label: c,
-}));
+  const categoryOptions = issueCategory?.map((c: string) => ({
+    value: c?.trim(),
+    label: c,
+  }));
 
-const fieldUserOptions = fieldUser?.map((f) => ({
-  value: f?.displayName?.trim(),
-  label: f?.displayName,
-  id: f?.id,
-}));
+  const fieldUserOptions = fieldUser?.map((f) => ({
+    value: f?.displayName?.trim(),
+    label: f?.displayName,
+    id: f?.id,
+  }));
 
-    const handleRefreshFieldServices = async (): Promise<void> => {
-    try {
-      await refetchFieldData?.();
-      console.log('Field services data refreshed');
-    } catch (error: unknown) {
-      handleError(error, 'handleRefreshFieldServices', 'Failed to refresh field services');
-    }
+  // const handleRefreshFieldServices = async (): Promise<void> => {
+  //   try {
+  //     await refetchFieldData?.();
+  //     console.log('Field services data refreshed');
+  //   } catch (error: unknown) {
+  //     handleError(error, 'handleRefreshFieldServices', 'Failed to refresh field services');
+  //   }
+  // }
+
+  const handleRefreshFieldServices = async (): Promise<void> => {
+  try {
+    await refetchFieldData?.(); // ✅ this refetches
+    const updatedData = await getSupportTicketFieldServices(tenantId, id); // 🔁 fetch latest
+    setFieldServicesInForm(updatedData); // ✅ update RHF with new list
+    console.log('Field services data refreshed');
+  } catch (error: unknown) {
+    handleError(error, 'handleRefreshFieldServices', 'Failed to refresh field services');
   }
+};
+
 
   const onSubmit = async (data: CreateFieldServiceFormData): Promise<void> => {
     console.log(data)
     setLoading(true)
-    
-    try {
-const userRep = fieldUser.find(
-  (user) =>
-    user.displayName?.trim().toLowerCase() ===
-    data?.fieldServiceRep?.trim().toLowerCase()
-);
-const appointmentFromDate = new Date(data?.appointmentDateFrom);
-const appointmentToDate=new Date(data?.appointmentDateTo);
-const payload={
-      title:data?.subject,
-      description:data?.description,
-      ticketIdentifier:id,
-      ownerUserId:userRep?.id,
-      ownerUsername:data?.fieldServiceRep,
-      status:data?.status,
-      location:data?.customerAddress,
-      appointmentFromDateTime:appointmentFromDate,
-      appointmentToDateTime:appointmentToDate,
-      createdDateTime: new Date().toISOString(),
-      updatedDateTime:new Date().toISOString(),
-      createdByUserId:userId,
-      createdByUsername:data?.fieldServiceRep,
-      updatedByUserId:userId,
-      updatedByUsername:displayName,
-      attachments:data?.attachments??[],
-      category:data?.category
 
-    }
-    const res = await createFieldService(tenantId,payload) as any;
-     handleRefreshFieldServices();
-    if(data?.notes && res?.identifier){
-      var body={
-        ticketIdentifier:id,
-        fieldServiceIdentifier:res.identifier,
-        identifier: "",
-        notes:data?.notes,
-        domainName:tenantId,
+    try {
+      const userRep = fieldUser.find(
+        (user) =>
+          user.displayName?.trim().toLowerCase() ===
+          data?.fieldServiceRep?.trim().toLowerCase()
+      );
+      const appointmentFromDate = new Date(data?.appointmentDateFrom);
+      const appointmentToDate = new Date(data?.appointmentDateTo);
+      const payload = {
+        title: data?.subject,
+        description: data?.description,
+        ticketIdentifier: id,
+        ownerUserId: userRep?.id,
+        ownerUsername: data?.fieldServiceRep,
+        status: data?.status,
+        location: data?.customerAddress,
+        appointmentFromDateTime: appointmentFromDate,
+        appointmentToDateTime: appointmentToDate,
         createdDateTime: new Date().toISOString(),
         updatedDateTime: new Date().toISOString(),
         createdByUserId: userId,
-        createdByUsername: displayName,
-        updatedByUsername: displayName,
+        createdByUsername: data?.fieldServiceRep,
         updatedByUserId: userId,
-      };
-      await postFieldNotes(tenantId, body);
-    }
-    if(res?.identifier && id) {
-      await postFieldAttachments(
-        tenantId,
-        id,
-        res.identifier,
-        data?.attachments
-      );
-    }
-    if (res) {
-      setLoading(false);
-      setOpen(false);
-      toast.success('Field Service created successfully');
-    } else {
-      setLoading(false);
-      toast.error('Failed to create Field Service');
-    }
+        updatedByUsername: displayName,
+        attachments: data?.attachments ?? [],
+        category: data?.category
+
+      }
+      const res = await createFieldService(tenantId, payload) as any;
+      handleRefreshFieldServices();
+      if (data?.notes && res?.identifier) {
+        var body = {
+          ticketIdentifier: id,
+          fieldServiceIdentifier: res.identifier,
+          identifier: "",
+          notes: data?.notes,
+          domainName: tenantId,
+          createdDateTime: new Date().toISOString(),
+          updatedDateTime: new Date().toISOString(),
+          createdByUserId: userId,
+          createdByUsername: displayName,
+          updatedByUsername: displayName,
+          updatedByUserId: userId,
+        };
+        await postFieldNotes(tenantId, body);
+      }
+      if (res?.identifier && id) {
+        await postFieldAttachments(
+          tenantId,
+          id,
+          res.identifier,
+          data?.attachments
+        );
+      }
+      if (res) {
+        setLoading(false);
+        setOpen(false);
+        toast.success('Field Service created successfully');
+      } else {
+        setLoading(false);
+        toast.error('Failed to create Field Service');
+      }
     } catch (error: unknown) {
       const errorMessage = handleError(error, 'onSubmit', 'Failed to create Field Service');
       setLoading(false);
       toast.error(errorMessage);
     }
   };
-useEffect(() => {
-  const subscription = methods.watch((value) => {
-    console.log("Form Values:", value);
-  });
-  return () => subscription.unsubscribe();
-}, [methods]);
+  useEffect(() => {
+    const subscription = methods.watch((value) => {
+      console.log("Form Values:", value);
+    });
+    return () => subscription.unsubscribe();
+  }, [methods]);
 
   return (
     <EditDialog
@@ -274,33 +288,34 @@ useEffect(() => {
             </FormField>
           </div>
 
-       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  <FormSelect
-    name="status"
-    label="Status"
-    options={statusOptions}
-    placeholder="Select Status"
-  />
-  <FormSelect
-    name="category"
-    label="Category"
-    options={categoryOptions}
-    placeholder="Select Category"
-  />
-</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormSelect
+              name="status"
+              label="Status"
+              options={statusOptions}
+              placeholder="Select Status"
+              className='z-10'
+            />
+            <FormSelect
+              name="category"
+              label="Category"
+              options={categoryOptions}
+              placeholder="Select Category"
+            />
+          </div>
 
-<FormSelect
-  name="fieldServiceRep"
-  label="Field Service Rep"
-  options={fieldUserOptions}
-  placeholder="Select Representative"
-/>
+          <FormSelect
+            name="fieldServiceRep"
+            label="Field Service Rep"
+            options={fieldUserOptions}
+            placeholder="Select Representative"
+          />
 
 
-         
+
           <FormTextarea name="customerAddress" label="Customer Address" placeholder="Enter customer address" />
 
-         
+
         </form>
       </FormProvider>
     </EditDialog>

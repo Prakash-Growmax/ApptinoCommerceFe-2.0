@@ -29,10 +29,10 @@ const { watch } = useFormContext();
     {Boolean(ticketTimelineData.length) && (
         <div>
       <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Activity Timeline</CardTitle>
+        <CardHeader className="mt-2 p-0 mb-2">
+          <CardTitle className="ml-3">Activity Timeline</CardTitle>
         </CardHeader>
-        <div className="h-px bg-gray-300 mt-1 w-full mt-3 p-0 " />
+        <div className="h-px bg-gray-300  w-full  p-0 " />
 
         <CardContent className=" mt-8 ">
           {ticketTimelineData?.map((entry, index) => {

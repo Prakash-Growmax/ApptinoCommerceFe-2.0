@@ -39,7 +39,7 @@ export const InfoCard = React.forwardRef<HTMLDivElement, InfoCardProps>(
 
     return (
       <Card ref={ref} className={cn('w-full rounded-md', className)}>
-        <CardHeader className="p-4 md:p-6">
+        <CardHeader className="p-2 md:p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}

@@ -1,9 +1,12 @@
 import { ShadCnButton } from "@/components/ui/button";
 interface ActionHeaderProps {
   handleSubmit: () => void;
+  handleCancel: () => void;
 }
 export default function ActionHeader({
-handleSubmit
+handleSubmit,
+ handleCancel,
+
 }:ActionHeaderProps) {
   return (
     <header className="bg-white shadow-lg border-b border-gray-200">
@@ -12,7 +15,7 @@ handleSubmit
 
           {/* Action Buttons */}
           <div className="ml-auto flex items-center space-x-3">
-            <ShadCnButton variant="outline">
+            <ShadCnButton variant="outline" onClick={handleCancel}>
               Cancel
             </ShadCnButton>
             <ShadCnButton variant="default" onClick={handleSubmit}>

@@ -21,14 +21,27 @@ import { isEqual } from '@/utils/object';
 
 const VisitDetails = ({ fieldService }) => {
   const methods = useForm({
-    defaultValues: {
-      title: fieldService?.title || "",
+    // defaultValues: {
+    //   title: fieldService?.title || "",
+    //   ownerUsername: fieldService?.ownerUsername || "",
+    //   appointmentFromDateTime: fieldService?.appointmentFromDateTime || "",
+    //   appointmentToDateTime: fieldService?.appointmentToDateTime || "",
+    //   category: fieldService?.category || "",
+    //   status: fieldService?.status || "",
+    //   location: (fieldService?.location ?? "").replace(/, /g, "\n")
+    // }
+     defaultValues: {
+      fieldServicesData: [
+        {
+          title: fieldService?.title || "",
       ownerUsername: fieldService?.ownerUsername || "",
       appointmentFromDateTime: fieldService?.appointmentFromDateTime || "",
       appointmentToDateTime: fieldService?.appointmentToDateTime || "",
       category: fieldService?.category || "",
       status: fieldService?.status || "",
       location: (fieldService?.location ?? "").replace(/, /g, "\n")
+        },
+      ],
     }
   });
 
@@ -129,7 +142,7 @@ const VisitDetails = ({ fieldService }) => {
           <FormSelect
             name="ownerUsername"
             label="Service Representative"
-            className="text-gray-700"
+            className="text-gray-700 z-30"
             options={fieldUserOptions}
           />
         </div>
@@ -161,7 +174,7 @@ const VisitDetails = ({ fieldService }) => {
           <FormSelect
             name="status"
             label="Status"
-            className="text-gray-700"
+            className="text-gray-700 z-20"
             options={statusOptions}
           />
         </div>

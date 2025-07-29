@@ -28,11 +28,11 @@ function SupportCustomerCard() {
 
   return (
     <Card className="w-full  rounded-md">
-      <CardHeader>
-        <CardTitle className="text-lg">Customer Information</CardTitle>
+      <CardHeader className='mt-2 p-0 mb-2'>
+        <CardTitle className="text-lg ml-3">Customer Information</CardTitle>
       </CardHeader>
-      <div className="h-px bg-gray-300  w-full  p-0 " />  
-      <CardContent className="space-y-4">
+      <div className="h-px bg-gray-300  w-full  p-0  " />  
+      <CardContent className="space-y-4 mt-3">
         <InfoRow label="Customer Name" value={supportTicketData?.buyerCompanyName ? supportTicketData?.buyerCompanyName : "_"} />
         <InfoRow label="Contact Person" value={supportTicketData?.buyerContactPerson ? supportTicketData?.buyerContactPerson : "_"} />
         <InfoRow

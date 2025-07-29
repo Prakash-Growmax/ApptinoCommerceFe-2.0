@@ -14,6 +14,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { useSupportDetailStore } from '../store/useSupportDetailStore';
 import { useSupportTicketFilterStore } from '../store/useSupportTicketFilterStore';
+import ActionHeader from '@/components/molecules/ActionHeader/ActionHeader';
+
+
 
 // ✅ import lodash comparison utility
 
@@ -24,7 +27,7 @@ const ServiceIssueDetails = () => {
     getValues,
   } = useFormContext();
 
-  const { status, category, reason } = useSupportTicketFilterStore();
+  const { status, category, reason, priority, severity } = useSupportTicketFilterStore();
   const {
     updateSupportIssue,
     setUpdateSupportIssue,
@@ -39,7 +42,7 @@ const ServiceIssueDetails = () => {
     'supportTicketData.severity',
     'supportTicketData.reason',
     'supportTicketData.source',
-     'supportTicketData.tags',
+    'supportTicketData.tags',
     'supportTicketData.category',
     'supportTicketData.description',
     'supportTicketData.productSKUs.0',
@@ -67,7 +70,7 @@ const ServiceIssueDetails = () => {
     if (dirtyFields.supportTicketData?.severity || supportTicketData.severity) {
       updatedValues.severity = supportTicketData.severity;
     }
-    
+
     if (dirtyFields.supportTicketData?.reason || supportTicketData.reason) {
       updatedValues.reason = supportTicketData.reason;
     }
@@ -161,11 +164,21 @@ const ServiceIssueDetails = () => {
     value: s?.trim(),
     label: s,
   }));
+  const priorityOptions = priority?.map((p: string) => ({
+    value: p?.trim(),
+    label: p,
+  }));
 
   const categoryOptions = category?.map((c: string) => ({
     value: c?.trim(),
     label: c,
   }));
+
+  const severityOptions = Array.isArray(severity)
+    ? severity
+      .filter((s): s is string => typeof s === 'string')
+      .map((s) => ({ value: s.trim(), label: s.trim() }))
+    : [];
 
   const reasonOptions = reason?.map((r: string) => ({
     value: r?.trim(),
@@ -176,39 +189,33 @@ const ServiceIssueDetails = () => {
     <div className="flex justify-start ">
       <div className="w-full">
         <Card className="rounded-md">
-          <CardHeader>
-            <CardTitle className="text-lg">Service Details</CardTitle>
+          <CardHeader className='m-0 p-2'>
+            <CardTitle className="text-lg ml-2 ">Service Details</CardTitle>
           </CardHeader>
           <div className="h-px bg-gray-300  w-full  p-0 " />
 
           <CardContent className="space-y-4 ">
-            <div className="grid grid-cols-1 md:grid-cols-2  gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-2 mt-4">
               <FormSelect
                 name="supportTicketData.priority"
                 label="Priority"
                 placeholder="Select the priority"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                  { value: 'Medium', label: 'Medium' },
-                  { value: 'High', label: 'High' },
-                ]}
+                className='z-40'
+                options={priorityOptions}
               />
               <FormSelect
                 name="supportTicketData.status"
                 label="Status"
                 placeholder="Status"
+                className='z-10'
                 options={statusOptions}
               />
               <FormSelect
                 name="supportTicketData.severity"
                 label="Severity"
                 placeholder="Select severity"
-                options={[
-                  { value: 'Low', label: 'Low' },
-                  { value: 'Medium', label: 'Medium' },
-                  { value: 'High', label: 'High' },
-                  { value: 'Critical', label: 'Critical' },
-                ]}
+                className='z-30'
+                options={severityOptions}
               />
               <FormSelect
                 name="supportTicketData.reason"
@@ -225,6 +232,7 @@ const ServiceIssueDetails = () => {
                 name="supportTicketData.source"
                 label="Ticket Source"
                 placeholder="Ticket source"
+                className='z-10'
                 options={[
                   { value: 'Low', label: 'Low' },
                   { value: 'Medium', label: 'Medium' },
@@ -242,10 +250,17 @@ const ServiceIssueDetails = () => {
                 ]}
               />
 
-              </div>
-              <h3 className='text-bold'>Product Information</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2  gap-2">
+            </div>
+              </CardContent>
+            <CardHeader className='m-0 p-2'>
+              <CardTitle className="text-lg ml-2 p-0 ">Product Information</CardTitle>
+            </CardHeader>
+            <div className="h-px bg-gray-300  w-full  p-0 " />
+
+            <CardContent className="space-y-4 ">
+
+
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-2 mt-3">
 
 
               <FormSelect
@@ -276,8 +291,8 @@ const ServiceIssueDetails = () => {
                 options={reasonOptions}
               /> */}
 
-              </div>
-            
+            </div>
+
 
             <div className="w-full">
               <FormTextarea
@@ -329,9 +344,9 @@ const ServiceIssueDetails = () => {
                   Reference Order No / Invoice
                 </label>
                 <p className="font-medium">
-                  {getValues('supportTicketData.referenceIdentifiers.0') || '-'}
+                {getValues('supportTicketData.referenceIdentifiers.0') || '-'}
                 </p>
-              </div>
+                </div>
 
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase">
@@ -341,15 +356,15 @@ const ServiceIssueDetails = () => {
                   {getValues('supportTicketData.reason') || '-'}
                 </p>
               </div>
-
+              
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase">
                   Status
-                </label>
+                  </label>
                 <p className="font-medium">
                   {getValues('supportTicketData.status') || '-'}
-                </p>
-              </div>
+                  </p>
+                  </div>
 
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase">
@@ -363,24 +378,24 @@ const ServiceIssueDetails = () => {
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase">
                   Ticket Owner
-                </label>
-                <p className="font-medium">
+                  </label>
+                  <p className="font-medium">
                   {getValues('supportTicketData.ownerDetails.0.ownerName') ||
-                    '-'}
-                </p>
-              </div>
+                  '-'}
+                  </p>
+                  </div>
             </div>
 
             <div>
               <label className="text-xs font-medium text-muted-foreground uppercase">
-                Problem Description
+              Problem Description
               </label>
               <p className="font-medium whitespace-pre-line">
                 {getValues('supportTicketData.description') || '-'}
               </p>
-            </div>
-
-            <div>
+              </div>
+              
+              <div>
               <label className="text-muted-foreground text-sm">
                 Resolution Due Date
               </label>
@@ -392,8 +407,8 @@ const ServiceIssueDetails = () => {
                   : '-'}
               </p>
             </div> */}
-          </CardContent>
-        </Card>
+              </CardContent>
+              </Card>
       </div>
     </div>
   );

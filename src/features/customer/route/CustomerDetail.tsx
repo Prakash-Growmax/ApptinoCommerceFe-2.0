@@ -149,8 +149,8 @@ const CustomerDetailsPage = (): React.JSX.Element => {
         loading={loading}
         error={error ? new Error(error) : null}
       >
-        <InfoCard className="w-[930px]" title="Customer Information" icon={Building}>
-          <InfoGrid data={customerInfoData} columns={2} gap="md" />
+        <InfoCard className="w-[930px]  " title="Customer Information"  icon={Building}>
+          <InfoGrid className='' data={customerInfoData} columns={2} gap="md" />
         </InfoCard>
 
         <InfoCard className="w-[930px]" title="Business Details" icon={Tag}>
