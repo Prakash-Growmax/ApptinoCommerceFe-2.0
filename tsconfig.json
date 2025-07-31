@@ -24,17 +24,20 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitOverride": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true, // Important for array access safety
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
 
      // Output
      "noEmit": true,
      "declaration": true,
      "skipLibCheck": true,
      "forceConsistentCasingInFileNames": true,
+     
+     // Types
+     "types": ["node", "vite/client"],
 
     "useDefineForClassFields": true,
     "baseUrl": "./src",

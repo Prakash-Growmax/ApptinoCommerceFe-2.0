@@ -62,7 +62,7 @@ export const useGetCustomerAddress = ({ open }: { open: boolean }) => {
     },
     enabled: !!tenantId && !!open,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
+    placeholderData: previousData => previousData,
   });
 
   const getCurrencyQuery = useQuery({

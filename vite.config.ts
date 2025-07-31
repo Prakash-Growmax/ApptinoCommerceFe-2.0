@@ -52,31 +52,23 @@ export default defineConfig(({ command, mode }) => {
       open: true,
       cors: true,
       proxy: {
-        // Proxy API calls to intercept and modify headers
+        // Proxy API calls to AWS API Gateway
         '/api': {
-          target: 'https://api.myapptino.com',
+          target: 'https://p5w483ff4a.execute-api.ap-south-1.amazonaws.com/schwing_api',
           changeOrigin: true,
           secure: false,
           rewrite: path => path.replace(/^\/api/, ''),
           configure: proxy => {
             proxy.on('proxyReq', (proxyReq, req) => {
-              // Only modify Origin header for specific auth endpoints
-              const authEndpointsWithCustomOrigin = [
-                '/auth/auth/CheckUserName',
-                '/auth/auth/loginNew'
-              ];
+              // Set Origin header for all requests
+              proxyReq.setHeader('Origin', 'demo.schwingstetterindia.com');
               
-              const isAuthEndpoint = authEndpointsWithCustomOrigin.some(endpoint => 
-                req.url?.includes(endpoint)
+              // Log all proxied requests
+              console.log(
+                'Proxying request to AWS:',
+                req.url,
+                'with origin: demo.schwingstetterindia.com'
               );
-              
-              if (isAuthEndpoint) {
-                proxyReq.setHeader('Origin', 'schwingstetter.myapptino.com');
-                console.log(
-                  'Proxying auth request with custom origin:',
-                  req.url
-                );
-              }
             });
           },
         },

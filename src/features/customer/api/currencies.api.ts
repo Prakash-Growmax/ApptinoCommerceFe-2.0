@@ -21,7 +21,7 @@ export const getCurrencies = async ({
   });
 
 
-  return response.map((currency) => ({
+  return response.data.map((currency: CurrencyType) => ({
     label: currency.currencyCode,
     value: currency.currencyCode,
     fullData: currency,

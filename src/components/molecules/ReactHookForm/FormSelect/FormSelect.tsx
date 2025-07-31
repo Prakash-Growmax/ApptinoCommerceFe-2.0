@@ -134,7 +134,7 @@ export const FormSelect = ({
   return (
     <FormField
       name={name}
-      rules={rules}
+      {...(rules && { rules })}
       {...(label && { label })}
       {...(description && { description })}
       {...(className && { className })}

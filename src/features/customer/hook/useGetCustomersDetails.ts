@@ -44,7 +44,6 @@ export const useFetchCustomersWithFilters = () => {
         userId,
         companyId,
         tenantId,
-        token,
       });
 
       let data;
@@ -76,7 +75,7 @@ export const useFetchCustomersWithFilters = () => {
     },
     enabled: filtersEnabled,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
+    placeholderData: previousData => previousData,
   });
 
   const customersQuery = useQuery({
@@ -97,7 +96,7 @@ export const useFetchCustomersWithFilters = () => {
     },
     enabled: !!filtersQuery.data,
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
+    placeholderData: previousData => previousData,
   });
 
   return {

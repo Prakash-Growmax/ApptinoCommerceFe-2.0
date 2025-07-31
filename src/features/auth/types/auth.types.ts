@@ -7,7 +7,7 @@ export interface User {
   id: number;
   email: string;
   displayName: string;
-  picture: string | undefined;
+  picture?: string;
   status: 'CONFIRMED' | 'PENDING' | 'INACTIVE';
   companyId: number;
   companyName: string;

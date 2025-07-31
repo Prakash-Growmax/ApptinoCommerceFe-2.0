@@ -1,13 +1,13 @@
 import { apiGet } from "@/lib/api/client";
 import { CurrencyType, CustomerData } from "../types/customer.type";
-import { AccountFilterType } from "../schema/customer.schema";
+import { AccountFilterData } from "../schema/customer.schema";
 
 export const CustomerFilters = async ({
   userId,
   companyId,
   tenantId,
-}:Omit<CustomerData, 'token'>):Promise<AccountFilterType> => {
-  const response = await apiGet<AccountFilterType>({
+}:Omit<CustomerData, 'token'>):Promise<AccountFilterData> => {
+  const response = await apiGet<AccountFilterData>({
     url: `/corecommerce/filters/fetchAllAccountsFilterByUser?userId=${userId}&companyId=${companyId}`
   });
 

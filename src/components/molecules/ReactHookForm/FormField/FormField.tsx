@@ -34,7 +34,7 @@ export const FormField = ({
     <Controller
       name={name}
       control={control}
-      rules={rules}
+      {...(rules && { rules })}
       render={({ field, fieldState }) => (
         <FormControl
           htmlFor={name}
